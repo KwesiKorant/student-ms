@@ -1,8 +1,9 @@
 "use client";
 
 import * as React from "react";
+import Link from "next/link";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { Plus } from "lucide-react";
+import { Plus, Sparkles } from "lucide-react";
 
 interface HeaderProps {
   onOpenEnrollModal: () => void;
@@ -21,8 +22,12 @@ export function Header({
     <header className="sticky top-0 z-30 w-full glass-nav transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-14 gap-4">
-          {/* Left: Brand Identity */}
-          <div className="flex items-center gap-3 min-w-0">
+          {/* Left: Brand Identity with Link to Landing */}
+          <Link
+            href="/landing"
+            className="flex items-center gap-3 min-w-0 hover:opacity-85 transition-opacity"
+            title="View Landing Page"
+          >
             <div className="w-7 h-7 rounded-md bg-zinc-900 dark:bg-zinc-100 flex items-center justify-center text-zinc-100 dark:text-zinc-900 font-mono font-bold text-xs shadow-xs tracking-tighter">
               A
             </div>
@@ -35,7 +40,7 @@ export function Header({
                 Registry
               </span>
             </div>
-          </div>
+          </Link>
 
           {/* Center: Clean Live Census (Desktop) */}
           <div className="hidden md:flex items-center gap-3 text-[11px] font-mono text-zinc-400">
@@ -58,6 +63,15 @@ export function Header({
 
           {/* Right: Actions & Theme Toggle */}
           <div className="flex items-center gap-2 shrink-0">
+            <Link
+              href="/landing"
+              className="tap-target hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium rounded-lg border border-zinc-200/80 dark:border-white/10 bg-white/70 dark:bg-zinc-900/70 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+              title="View SMS Landing Page"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-purple-500" />
+              <span>Overview</span>
+            </Link>
+
             <ThemeToggle />
 
             <button

@@ -46,7 +46,12 @@ export default function StudentManagementPortal() {
   });
 
   // Modal States
-  const [isEnrollModalOpen, setIsEnrollModalOpen] = React.useState(false);
+  const [isEnrollModalOpen, setIsEnrollModalOpen] = React.useState(() => {
+    if (typeof window !== "undefined") {
+      return new URLSearchParams(window.location.search).get("enroll") === "true";
+    }
+    return false;
+  });
   const [detailStudent, setDetailStudent] = React.useState<Student | null>(null);
   const [editStudent, setEditStudent] = React.useState<Student | null>(null);
   const [archiveStudent, setArchiveStudent] = React.useState<Student | null>(null);
