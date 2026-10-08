@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test": "node tests/api.test.mjs",
+    "db:setup": "prisma db push && prisma db seed"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

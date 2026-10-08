@@ -9,6 +9,7 @@ import {
   Archive,
   ArrowUpDown,
   Filter,
+  Download,
 } from "lucide-react";
 import { Tooltip } from "@/components/ui/tooltip";
 
@@ -29,6 +30,8 @@ interface ToolbarProps {
   onRefresh: () => void;
   isLoading: boolean;
   onResetFilters: () => void;
+  onExport?: () => void;
+  isExporting?: boolean;
 }
 
 export function Toolbar({
@@ -48,7 +51,11 @@ export function Toolbar({
   onRefresh,
   isLoading,
   onResetFilters,
+  onExport,
+  isExporting = false,
 }: ToolbarProps) {
+  const searchInputRef = React.useRef<HTMLInputElement>(null);
+
   // Sync prop changes during render without cascading useEffect renders
   const [prevSearch, setPrevSearch] = React.useState(search);
   const [localSearch, setLocalSearch] = React.useState(search);
@@ -57,6 +64,38 @@ export function Toolbar({
     setPrevSearch(search);
     setLocalSearch(search);
   }
+
+  // Global keyboard shortcut to focus search on '/' or 'Cmd+K'/'Ctrl+K'
+  React.useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const isSlash = e.key === "/" && !e.ctrlKey && !e.metaKey && !e.altKey;
+      const isCmdK = (e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k";
+
+      if (isSlash || isCmdK) {
+        const target = e.target as HTMLElement | null;
+        const isEditable =
+          target &&
+          (target.tagName === "INPUT" ||
+            target.tagName === "TEXTAREA" ||
+            target.tagName === "SELECT" ||
+            target.isContentEditable);
+
+        // If already inside an input and pressing slash, allow normal typing
+        if (isEditable && isSlash) return;
+
+        e.preventDefault();
+        searchInputRef.current?.focus();
+        searchInputRef.current?.select();
+      } else if (e.key === "Escape") {
+        if (document.activeElement === searchInputRef.current) {
+          searchInputRef.current?.blur();
+        }
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   React.useEffect(() => {
     const handler = setTimeout(() => {
@@ -83,6 +122,7 @@ export function Toolbar({
             <Search className="w-3.5 h-3.5" />
           </div>
           <input
+            ref={searchInputRef}
             type="text"
             value={localSearch}
             onChange={(e) => setLocalSearch(e.target.value)}
@@ -106,7 +146,8 @@ export function Toolbar({
             <div className="absolute inset-y-0 right-0 pr-2.5 flex items-center">
               <kbd
                 title="Press / to search"
-                className="hidden sm:inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-mono font-medium text-zinc-400 bg-zinc-100 dark:bg-zinc-800 border border-zinc-200/60 dark:border-white/5"
+                className="hidden sm:inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-mono font-medium text-zinc-400 bg-zinc-100 dark:bg-zinc-800 border border-zinc-200/60 dark:border-white/5 cursor-pointer"
+                onClick={() => searchInputRef.current?.focus()}
               >
                 /
               </kbd>
@@ -205,6 +246,25 @@ export function Toolbar({
               <RotateCw className={`w-3.5 h-3.5 ${isLoading ? "animate-spin" : ""}`} />
             </button>
           </Tooltip>
+
+          {/* Export CSV Action */}
+          {onExport && (
+            <Tooltip
+              content="Export Registry CSV"
+              subContent="Download active cohort as standard RFC-4180 CSV"
+              side="top"
+            >
+              <button
+                type="button"
+                onClick={onExport}
+                disabled={isExporting}
+                aria-label="Export filtered student records to CSV"
+                className="tap-target p-1.5 rounded-lg border border-zinc-200/80 dark:border-white/10 bg-white/70 dark:bg-zinc-900/70 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-zinc-100/80 dark:hover:bg-zinc-800/80 disabled:opacity-50 cursor-pointer transition-colors"
+              >
+                <Download className={`w-3.5 h-3.5 ${isExporting ? "animate-pulse" : ""}`} />
+              </button>
+            </Tooltip>
+          )}
         </div>
       </div>
 

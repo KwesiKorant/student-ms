@@ -343,6 +343,123 @@ export default function StudentManagementPortal() {
     setCurrentPage(1);
   };
 
+  const [isExporting, setIsExporting] = React.useState(false);
+
+  const handleExportCSV = React.useCallback(async () => {
+    setIsExporting(true);
+    try {
+      const params = new URLSearchParams();
+      if (search.trim()) params.set("search", search.trim());
+      if (departmentId) params.set("departmentId", departmentId);
+      if (status) params.set("status", status);
+      if (includeArchived) params.set("includeArchived", "true");
+      params.set("sortBy", sortBy);
+      params.set("sortOrder", sortOrder);
+      params.set("page", "1");
+      params.set("limit", "1000");
+
+      const res = await fetch(`/api/v1/students?${params.toString()}`);
+      const json = await res.json();
+      const recordsToExport: Student[] =
+        json.success && Array.isArray(json.data) ? json.data : students;
+
+      if (recordsToExport.length === 0) {
+        toast({
+          type: "info",
+          title: "No Records to Export",
+          description: "There are no student profiles matching the current filter criteria.",
+        });
+        return;
+      }
+
+      const headers = [
+        "Student ID",
+        "First Name",
+        "Last Name",
+        "Email",
+        "Phone",
+        "Date of Birth",
+        "Department",
+        "Academic Year",
+        "GPA",
+        "Status",
+        "Archived",
+        "Date Enrolled",
+      ];
+
+      const escapeCSV = (val: unknown) => {
+        if (val === null || val === undefined) return '""';
+        const str = String(val).replace(/"/g, '""');
+        return `"${str}"`;
+      };
+
+      const rows = recordsToExport.map((s) => [
+        escapeCSV(s.studentId),
+        escapeCSV(s.firstName),
+        escapeCSV(s.lastName),
+        escapeCSV(s.email),
+        escapeCSV(s.phone || "N/A"),
+        escapeCSV(s.dateOfBirth || "N/A"),
+        escapeCSV(
+          s.department?.name ||
+            departments.find((d) => d.id === s.departmentId)?.name ||
+            s.departmentId
+        ),
+        escapeCSV(s.academicYear),
+        escapeCSV(
+          s.gpa !== null && s.gpa !== undefined ? s.gpa.toFixed(2) : "N/A"
+        ),
+        escapeCSV(s.status),
+        escapeCSV(s.isArchived ? "Yes" : "No"),
+        escapeCSV(new Date(s.createdAt).toISOString().split("T")[0]),
+      ]);
+
+      const csvContent =
+        "\uFEFF" +
+        [
+          headers.map(escapeCSV).join(","),
+          ...rows.map((r) => r.join(",")),
+        ].join("\r\n");
+
+      const blob = new Blob([csvContent], {
+        type: "text/csv;charset=utf-8;",
+      });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      const dateStr = new Date().toISOString().split("T")[0];
+      link.setAttribute("href", url);
+      link.setAttribute("download", `arcfield-student-registry-${dateStr}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+
+      toast({
+        type: "success",
+        title: "Registry Exported",
+        description: `Successfully exported ${recordsToExport.length} student records to CSV.`,
+      });
+    } catch {
+      toast({
+        type: "error",
+        title: "Export Failed",
+        description: "An error occurred while compiling the registry export.",
+      });
+    } finally {
+      setIsExporting(false);
+    }
+  }, [
+    search,
+    departmentId,
+    status,
+    includeArchived,
+    sortBy,
+    sortOrder,
+    students,
+    departments,
+    toast,
+  ]);
+
   return (
     <>
       <React.Suspense fallback={null}>
@@ -405,6 +522,8 @@ export default function StudentManagementPortal() {
               }}
               isLoading={isLoading}
               onResetFilters={handleResetFilters}
+              onExport={handleExportCSV}
+              isExporting={isExporting}
             />
           </section>
 
