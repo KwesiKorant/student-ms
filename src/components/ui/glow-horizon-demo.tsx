@@ -16,10 +16,10 @@ export default function GlowHorizonDemo({
 }: GlowHorizonDemoProps) {
   return (
     <div
-      className={`relative w-full min-h-[82vh] overflow-hidden flex items-center justify-center bg-[#050507] text-white ${className}`}
+      className={`relative w-full h-full overflow-hidden flex items-center justify-center bg-zinc-50 dark:bg-[#050507] text-zinc-900 dark:text-zinc-100 transition-colors duration-200 ${className}`}
     >
       <GlowHorizonFM variant="top" />
-      <div className="relative z-10 w-full flex flex-col items-center justify-center py-12">
+      <div className="relative z-10 w-full flex flex-col items-center justify-center py-8">
         <AnimatedTitleFM
           open={true}
           onExploreClick={onExploreClick}
