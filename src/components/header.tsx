@@ -3,7 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { Plus, Sparkles } from "lucide-react";
+import { Plus } from "lucide-react";
 
 interface HeaderProps {
   onOpenEnrollModal: () => void;
@@ -63,15 +63,6 @@ export function Header({
 
           {/* Right: Actions & Theme Toggle */}
           <div className="flex items-center gap-2 shrink-0">
-            <Link
-              href="/landing"
-              className="tap-target hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium rounded-lg border border-zinc-200/80 dark:border-white/10 bg-white/70 dark:bg-zinc-900/70 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
-              title="View SMS Landing Page"
-            >
-              <Sparkles className="w-3.5 h-3.5 text-purple-500" />
-              <span>Overview</span>
-            </Link>
-
             <ThemeToggle />
 
             <button

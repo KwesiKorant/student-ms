@@ -46,7 +46,7 @@ export function AnimatedTitleFM({
         initial={{ opacity: 0, y: 14 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: EASE, delay: 0.5 }}
-        className="flex flex-wrap items-center justify-center gap-3.5 mt-24 sm:mt-28 md:mt-32"
+        className="flex flex-wrap items-center justify-center gap-3.5 mt-36 sm:mt-44 md:mt-52"
       >
         <Link
           href="/"
