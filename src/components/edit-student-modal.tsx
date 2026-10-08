@@ -184,6 +184,7 @@ export function EditStudentModal({
               <input
                 type="text"
                 required
+                autoComplete="given-name"
                 value={formData.firstName}
                 onChange={(e) =>
                   setFormData({ ...formData, firstName: e.target.value })
@@ -202,6 +203,7 @@ export function EditStudentModal({
               <input
                 type="text"
                 required
+                autoComplete="family-name"
                 value={formData.lastName}
                 onChange={(e) =>
                   setFormData({ ...formData, lastName: e.target.value })
@@ -222,6 +224,8 @@ export function EditStudentModal({
             <input
               type="email"
               required
+              autoComplete="email"
+              spellCheck={false}
               value={formData.email}
               onChange={(e) =>
                 setFormData({ ...formData, email: e.target.value })

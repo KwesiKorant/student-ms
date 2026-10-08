@@ -12,6 +12,11 @@ export const EnrollmentStatusEnum = z.enum([
 
 export const CreateStudentSchema = z
   .object({
+    studentId: z
+      .string()
+      .trim()
+      .regex(/^STU-\d{4}-[A-Fa-f0-9]{4}$/, "Student ID must follow format STU-YYYY-XXXX (hex)")
+      .optional(),
     firstName: z
       .string()
       .trim()
@@ -122,7 +127,7 @@ export const StudentQuerySchema = z
       .enum(["true", "false"])
       .optional()
       .transform((val) => val === "true"),
-    sortBy: z.enum(["name", "studentId", "gpa", "createdAt", "academicYear"]).optional().default("createdAt"),
+    sortBy: z.enum(["name", "studentId", "gpa", "createdAt", "academicYear", "department"]).optional().default("createdAt"),
     sortOrder: z.enum(["asc", "desc"]).optional().default("desc"),
   })
   .strip();

@@ -37,9 +37,12 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* 120 FPS Compositor Standard Motion Rules */
 .tap-target {
   transition: transform 160ms var(--spring-snappy), opacity 160ms var(--spring-snappy);
+}
+
+.tap-target:hover,
+.tap-target:focus-visible {
   will-change: transform;
 }
 

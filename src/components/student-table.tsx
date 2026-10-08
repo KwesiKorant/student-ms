@@ -11,11 +11,17 @@ import {
   Check,
   AlertCircle,
   GraduationCap,
+  ArrowUp,
+  ArrowDown,
+  ArrowUpDown,
 } from "lucide-react";
 
 interface StudentTableProps {
   students: Student[];
   isLoading: boolean;
+  sortBy?: string;
+  sortOrder?: "asc" | "desc";
+  onSort?: (field: string) => void;
   onViewStudent: (student: Student) => void;
   onEditStudent: (student: Student) => void;
   onArchiveStudent: (student: Student) => void;
@@ -26,6 +32,9 @@ interface StudentTableProps {
 export function StudentTable({
   students,
   isLoading,
+  sortBy,
+  sortOrder,
+  onSort,
   onViewStudent,
   onEditStudent,
   onArchiveStudent,
@@ -136,17 +145,41 @@ export function StudentTable({
     );
   }
 
+  const renderSortHeader = (label: string, field: string, className = "") => {
+    const isCurrent = sortBy === field;
+    return (
+      <th
+        className={`py-3 px-4 ${className} ${onSort ? "cursor-pointer select-none hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors" : ""}`}
+        onClick={() => onSort?.(field)}
+        aria-sort={isCurrent ? (sortOrder === "asc" ? "ascending" : "descending") : undefined}
+      >
+        <div className="inline-flex items-center gap-1.5">
+          <span>{label}</span>
+          {isCurrent ? (
+            sortOrder === "asc" ? (
+              <ArrowUp className="w-3 h-3 text-zinc-900 dark:text-zinc-100" />
+            ) : (
+              <ArrowDown className="w-3 h-3 text-zinc-900 dark:text-zinc-100" />
+            )
+          ) : onSort ? (
+            <ArrowUpDown className="w-2.5 h-2.5 opacity-30 hover:opacity-100 transition-opacity" />
+          ) : null}
+        </div>
+      </th>
+    );
+  };
+
   return (
     <div className="w-full rounded-xl border border-zinc-200 dark:border-white/10 bg-white dark:bg-zinc-900/60 overflow-hidden shadow-xs isolated-card">
       <div className="overflow-x-auto">
         <table className="w-full text-left border-collapse">
           <thead>
             <tr className="border-b border-zinc-200 dark:border-white/10 bg-zinc-50/75 dark:bg-zinc-950/75 text-[11px] font-mono tracking-wider uppercase text-zinc-500 dark:text-zinc-400">
-              <th className="py-3 px-4">Student ID</th>
-              <th className="py-3 px-4">Student Profile</th>
-              <th className="py-3 px-4 hidden md:table-cell">Department</th>
-              <th className="py-3 px-4 hidden sm:table-cell">Year</th>
-              <th className="py-3 px-4">GPA</th>
+              {renderSortHeader("Student ID", "studentId")}
+              {renderSortHeader("Student Profile", "name")}
+              {renderSortHeader("Department", "department", "hidden md:table-cell")}
+              {renderSortHeader("Year", "academicYear", "hidden sm:table-cell")}
+              {renderSortHeader("GPA", "gpa")}
               <th className="py-3 px-4">Status</th>
               <th className="py-3 px-4 text-right">Actions</th>
             </tr>
@@ -173,6 +206,7 @@ export function StudentTable({
                         type="button"
                         onClick={(e) => copyToClipboard(student.studentId, e)}
                         title="Copy student ID"
+                        aria-label="Copy student ID"
                         className="opacity-0 group-hover:opacity-100 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 p-0.5 transition-opacity cursor-pointer"
                       >
                         {copiedId === student.studentId ? (
@@ -244,6 +278,7 @@ export function StudentTable({
                         type="button"
                         onClick={() => onViewStudent(student)}
                         title="View profile details"
+                        aria-label={`View profile for ${student.firstName} ${student.lastName}`}
                         className="tap-target p-1.5 rounded text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer"
                       >
                         <Eye className="w-3.5 h-3.5" />
@@ -253,6 +288,7 @@ export function StudentTable({
                         type="button"
                         onClick={() => onEditStudent(student)}
                         title="Edit student record"
+                        aria-label={`Edit profile for ${student.firstName} ${student.lastName}`}
                         className="tap-target p-1.5 rounded text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer"
                       >
                         <Edit2 className="w-3.5 h-3.5" />
@@ -263,6 +299,7 @@ export function StudentTable({
                           type="button"
                           onClick={() => onRestoreStudent(student)}
                           title="Restore student profile"
+                          aria-label={`Restore student profile for ${student.firstName} ${student.lastName}`}
                           className="tap-target p-1.5 rounded text-amber-500 hover:text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-950/40 cursor-pointer"
                         >
                           <RotateCcw className="w-3.5 h-3.5" />
@@ -272,6 +309,7 @@ export function StudentTable({
                           type="button"
                           onClick={() => onArchiveStudent(student)}
                           title="Archive student record"
+                          aria-label={`Archive student record for ${student.firstName} ${student.lastName}`}
                           className="tap-target p-1.5 rounded text-zinc-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 cursor-pointer"
                         >
                           <Archive className="w-3.5 h-3.5" />

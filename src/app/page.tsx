@@ -203,6 +203,16 @@ export default function StudentManagementPortal() {
     setCurrentPage(1);
   };
 
+  const handleSort = (field: string) => {
+    if (sortBy === field) {
+      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+    } else {
+      setSortBy(field);
+      setSortOrder("asc");
+    }
+    setCurrentPage(1);
+  };
+
   // Modal Handlers
   const handleStudentCreated = (newStudent: Student) => {
     setStudents((prev) => [newStudent, ...prev]);
@@ -366,6 +376,9 @@ export default function StudentManagementPortal() {
           <StudentTable
             students={students}
             isLoading={isLoading}
+            sortBy={sortBy}
+            sortOrder={sortOrder}
+            onSort={handleSort}
             onViewStudent={(student) => setDetailStudent(student)}
             onEditStudent={(student) => setEditStudent(student)}
             onArchiveStudent={(student) => setArchiveStudent(student)}

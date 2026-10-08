@@ -9,6 +9,7 @@ import {
   successResponse,
   rateLimitErrorResponse,
   handleApiError,
+  jsonResponse,
 } from "@/lib/api-response";
 import {
   CreateStudentSchema,
@@ -67,12 +68,24 @@ export async function GET(req: NextRequest) {
     // Search query matching firstName, lastName, email, studentId
     if (search && search.trim() !== "") {
       const term = search.trim();
-      where.OR = [
-        { firstName: { contains: term } },
-        { lastName: { contains: term } },
-        { email: { contains: term } },
-        { studentId: { contains: term } },
-      ];
+      const words = term.split(/\s+/).filter(Boolean);
+      if (words.length > 1) {
+        where.AND = words.map((w) => ({
+          OR: [
+            { firstName: { contains: w } },
+            { lastName: { contains: w } },
+            { email: { contains: w } },
+            { studentId: { contains: w } },
+          ],
+        }));
+      } else {
+        where.OR = [
+          { firstName: { contains: term } },
+          { lastName: { contains: term } },
+          { email: { contains: term } },
+          { studentId: { contains: term } },
+        ];
+      }
     }
 
     // Sorting
@@ -88,6 +101,8 @@ export async function GET(req: NextRequest) {
       orderBy = { gpa: sortOrder };
     } else if (sortBy === "academicYear") {
       orderBy = { academicYear: sortOrder };
+    } else if (sortBy === "department") {
+      orderBy = { department: { name: sortOrder } };
     } else if (sortBy === "createdAt") {
       orderBy = { createdAt: sortOrder };
     }
@@ -139,12 +154,27 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const validatedData = CreateStudentSchema.parse(body);
 
-    let studentId = generateStudentId();
-    // Ensure uniqueness
-    let exists = await prisma.student.findUnique({ where: { studentId } });
-    while (exists) {
+    let studentId = validatedData.studentId?.toUpperCase();
+    if (!studentId) {
       studentId = generateStudentId();
-      exists = await prisma.student.findUnique({ where: { studentId } });
+      // Ensure uniqueness
+      let exists = await prisma.student.findUnique({ where: { studentId } });
+      while (exists) {
+        studentId = generateStudentId();
+        exists = await prisma.student.findUnique({ where: { studentId } });
+      }
+    } else {
+      const existingId = await prisma.student.findUnique({ where: { studentId } });
+      if (existingId) {
+        return jsonResponse(
+          {
+            success: false,
+            error: "CONFLICT",
+            message: `A student with ID "${studentId}" already exists.`,
+          },
+          { status: 409, rateLimit }
+        );
+      }
     }
 
     const newStudent = await prisma.$transaction(async (tx) => {

@@ -2,7 +2,16 @@ interface RateLimitRecord {
   timestamps: number[];
 }
 
-const rateLimitStore = new Map<string, RateLimitRecord>();
+const globalForRateLimit = globalThis as unknown as {
+  rateLimitStore?: Map<string, RateLimitRecord>;
+};
+
+export const rateLimitStore =
+  globalForRateLimit.rateLimitStore ?? new Map<string, RateLimitRecord>();
+
+if (process.env.NODE_ENV !== "production") {
+  globalForRateLimit.rateLimitStore = rateLimitStore;
+}
 
 // Cleanup stale records every 5 minutes
 const CLEANUP_INTERVAL_MS = 5 * 60 * 1000;

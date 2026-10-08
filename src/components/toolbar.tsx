@@ -97,6 +97,7 @@ export function Toolbar({
               }}
               className="absolute inset-y-0 right-0 pr-3 flex items-center text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 cursor-pointer"
               title="Clear search query"
+              aria-label="Clear search query"
             >
               <X className="w-3.5 h-3.5" />
             </button>
@@ -144,6 +145,7 @@ export function Toolbar({
             <option value="createdAt">Date Enrolled</option>
             <option value="name">Full Name</option>
             <option value="studentId">Student ID</option>
+            <option value="department">Department</option>
             <option value="gpa">GPA Score</option>
             <option value="academicYear">Academic Year</option>
           </select>
@@ -153,6 +155,7 @@ export function Toolbar({
             type="button"
             onClick={() => onSortOrderChange(sortOrder === "asc" ? "desc" : "asc")}
             title={`Sort order: ${sortOrder.toUpperCase()} (Click to toggle)`}
+            aria-label={`Toggle sort direction, currently ${sortOrder.toUpperCase()}`}
             className="tap-target inline-flex items-center gap-1 px-2.5 py-2 text-xs rounded-lg border border-zinc-200 dark:border-white/10 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800 cursor-pointer shadow-xs"
           >
             <ArrowUpDown className="w-3.5 h-3.5" />
@@ -177,6 +180,7 @@ export function Toolbar({
             onClick={onRefresh}
             disabled={isLoading}
             title="Refresh student records"
+            aria-label="Refresh student records"
             className="tap-target p-2 rounded-lg border border-zinc-200 dark:border-white/10 bg-white dark:bg-zinc-900 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-zinc-50 dark:hover:bg-zinc-800 disabled:opacity-50 cursor-pointer shadow-xs"
           >
             <RotateCw className={`w-3.5 h-3.5 ${isLoading ? "animate-spin" : ""}`} />
