@@ -68,7 +68,7 @@ export async function GET(req: NextRequest) {
     // Search query matching firstName, lastName, email, studentId
     if (search && search.trim() !== "") {
       const term = search.trim();
-      const words = term.split(/\s+/).filter(Boolean);
+      const words = term.split(/\s+/).filter(Boolean).slice(0, 5);
       if (words.length > 1) {
         where.AND = words.map((w) => ({
           OR: [

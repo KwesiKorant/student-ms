@@ -112,6 +112,18 @@ export function handleApiError(error: unknown, rateLimit?: RateLimitResult) {
     );
   }
 
+  // 1b. JSON Syntax Errors (malformed payload body)
+  if (error instanceof SyntaxError) {
+    return jsonResponse(
+      {
+        success: false,
+        error: "MALFORMED_JSON",
+        message: "Malformed JSON request body.",
+      },
+      { status: 400, rateLimit }
+    );
+  }
+
   // 2. Prisma Database Errors
   if (error instanceof Prisma.PrismaClientKnownRequestError) {
     if (error.code === "P2002") {
