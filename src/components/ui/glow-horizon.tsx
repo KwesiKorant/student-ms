@@ -48,21 +48,34 @@ export default function GlowHorizonFM({
 
   const { axis, scaleAxis, enterPct, restPct } = VARIANTS[variant];
 
-  // Professional monochrome palette (Black & White with subtle metallic zinc gradations)
+  // Professional monochrome palette (Rich celestial depth in dark mode, substantial full canopy in light mode)
   const arcConfigs = isDark
     ? {
         crest: "#FFFFFF",
-        crestShadow: "0px -4px 32px 0px rgba(255, 255, 255, 0.9)",
+        crestShadow: "0px -4px 34px 0px rgba(255, 255, 255, 0.95)",
+        crestSize: "132%",
         aura: "rgba(228, 228, 231, 0.35)", // zinc-200 silver halo
+        auraSize: "120%",
+        auraBlur: 31,
         glow: "rgba(113, 113, 122, 0.30)", // zinc-500 platinum sheen
+        glowSize: "124%",
+        glowBlur: 21,
         base: "#09090b", // zinc-950 deep void
+        baseBlur: 51,
       }
     : {
-        crest: "rgba(9, 9, 11, 0.85)", // deep charcoal rim
-        crestShadow: "0px 4px 28px 0px rgba(0, 0, 0, 0.16)",
-        aura: "rgba(161, 161, 170, 0.35)", // zinc-400 graphite mist
-        glow: "rgba(212, 212, 216, 0.50)", // zinc-300 diffuse
-        base: "#fafafa", // zinc-50 clean canvas
+        // Substantial, weighted, rich canopy for light mode so it never looks thin
+        crest: "#18181b", // zinc-900 defined horizon rim
+        crestShadow: "0px 8px 36px 0px rgba(0, 0, 0, 0.38), 0px 2px 14px 0px rgba(0, 0, 0, 0.22)",
+        crestSize: "134%",
+        aura: "rgba(24, 24, 27, 0.25)", // deep graphite canopy aura
+        auraSize: "122%",
+        auraBlur: 36,
+        glow: "rgba(82, 82, 91, 0.22)", // zinc-600 rich atmospheric body
+        glowSize: "126%",
+        glowBlur: 26,
+        base: "rgba(113, 113, 122, 0.15)", // feathered base grounding
+        baseBlur: 56,
       };
 
   return (
@@ -87,24 +100,24 @@ export default function GlowHorizonFM({
       <Arc
         variant={variant}
         color={arcConfigs.crest}
-        size="132%"
+        size={arcConfigs.crestSize}
         boxShadow={arcConfigs.crestShadow}
         delay={1.2}
       />
       <Arc
         variant={variant}
         color={arcConfigs.aura}
-        size="120%"
+        size={arcConfigs.auraSize}
         initialOffset="10%"
-        blur={31}
+        blur={arcConfigs.auraBlur}
         delay={0.6}
       />
       <Arc
         variant={variant}
         color={arcConfigs.glow}
-        size="124%"
+        size={arcConfigs.glowSize}
         initialOffset="10%"
-        blur={21}
+        blur={arcConfigs.glowBlur}
         delay={0}
       />
       <Arc
@@ -112,7 +125,7 @@ export default function GlowHorizonFM({
         color={arcConfigs.base}
         size="120%"
         initialOffset="10%"
-        blur={51}
+        blur={arcConfigs.baseBlur}
         delay={0}
       />
     </motion.div>
