@@ -1,0 +1,204 @@
+import { NextRequest } from "next/server";
+import crypto from "crypto";
+import { prisma } from "@/lib/prisma";
+import {
+  checkRateLimit,
+  RateLimitResult,
+} from "@/lib/rate-limiter";
+import {
+  successResponse,
+  rateLimitErrorResponse,
+  handleApiError,
+} from "@/lib/api-response";
+import {
+  CreateStudentSchema,
+  StudentQuerySchema,
+} from "@/lib/validations/student";
+import { Prisma } from "@prisma/client";
+
+function generateStudentId(): string {
+  const year = new Date().getFullYear();
+  const hex = crypto.randomBytes(2).toString("hex").toUpperCase();
+  return `STU-${year}-${hex}`;
+}
+
+export async function GET(req: NextRequest) {
+  const rateLimit: RateLimitResult = checkRateLimit(req, "read");
+  if (!rateLimit.allowed) {
+    return rateLimitErrorResponse(rateLimit);
+  }
+
+  try {
+    const { searchParams } = new URL(req.url);
+    const queryObj: Record<string, string> = {};
+    searchParams.forEach((val, key) => {
+      queryObj[key] = val;
+    });
+
+    const parsedQuery = StudentQuerySchema.parse(queryObj);
+    const {
+      search,
+      departmentId,
+      status,
+      page,
+      limit,
+      includeArchived,
+      sortBy,
+      sortOrder,
+    } = parsedQuery;
+
+    const where: Prisma.StudentWhereInput = {};
+
+    // Archival filtering
+    if (!includeArchived) {
+      where.isArchived = false;
+    }
+
+    // Department filtering
+    if (departmentId) {
+      where.departmentId = departmentId;
+    }
+
+    // Status filtering
+    if (status) {
+      where.status = status;
+    }
+
+    // Search query matching firstName, lastName, email, studentId
+    if (search && search.trim() !== "") {
+      const term = search.trim();
+      where.OR = [
+        { firstName: { contains: term } },
+        { lastName: { contains: term } },
+        { email: { contains: term } },
+        { studentId: { contains: term } },
+      ];
+    }
+
+    // Sorting
+    let orderBy: Prisma.StudentOrderByWithRelationInput | Prisma.StudentOrderByWithRelationInput[] = {
+      createdAt: sortOrder,
+    };
+
+    if (sortBy === "name") {
+      orderBy = [{ lastName: sortOrder }, { firstName: sortOrder }];
+    } else if (sortBy === "studentId") {
+      orderBy = { studentId: sortOrder };
+    } else if (sortBy === "gpa") {
+      orderBy = { gpa: sortOrder };
+    } else if (sortBy === "academicYear") {
+      orderBy = { academicYear: sortOrder };
+    } else if (sortBy === "createdAt") {
+      orderBy = { createdAt: sortOrder };
+    }
+
+    const skip = (page - 1) * limit;
+
+    const [totalRecords, students] = await Promise.all([
+      prisma.student.count({ where }),
+      prisma.student.findMany({
+        where,
+        skip,
+        take: limit,
+        orderBy,
+        include: {
+          department: {
+            select: {
+              id: true,
+              name: true,
+              code: true,
+            },
+          },
+        },
+      }),
+    ]);
+
+    const totalPages = Math.ceil(totalRecords / limit) || 1;
+
+    return successResponse(students, {
+      pagination: {
+        totalRecords,
+        page,
+        limit,
+        totalPages,
+      },
+      rateLimit,
+    });
+  } catch (error) {
+    return handleApiError(error, rateLimit);
+  }
+}
+
+export async function POST(req: NextRequest) {
+  const rateLimit: RateLimitResult = checkRateLimit(req, "mutation");
+  if (!rateLimit.allowed) {
+    return rateLimitErrorResponse(rateLimit);
+  }
+
+  try {
+    const body = await req.json();
+    const validatedData = CreateStudentSchema.parse(body);
+
+    let studentId = generateStudentId();
+    // Ensure uniqueness
+    let exists = await prisma.student.findUnique({ where: { studentId } });
+    while (exists) {
+      studentId = generateStudentId();
+      exists = await prisma.student.findUnique({ where: { studentId } });
+    }
+
+    const newStudent = await prisma.$transaction(async (tx) => {
+      const student = await tx.student.create({
+        data: {
+          studentId,
+          firstName: validatedData.firstName,
+          lastName: validatedData.lastName,
+          email: validatedData.email,
+          dateOfBirth: validatedData.dateOfBirth || null,
+          phone: validatedData.phone || null,
+          departmentId: validatedData.departmentId,
+          academicYear: validatedData.academicYear,
+          gpa: validatedData.gpa,
+          status: validatedData.status,
+          isArchived: false,
+        },
+        include: {
+          department: {
+            select: {
+              id: true,
+              name: true,
+              code: true,
+            },
+          },
+        },
+      });
+
+      await tx.auditLog.create({
+        data: {
+          studentId: student.id,
+          action: "CREATE",
+          details: JSON.stringify({
+            event: "Student enrolled via portal",
+            studentId: student.studentId,
+            fullName: `${student.firstName} ${student.lastName}`,
+            departmentId: student.departmentId,
+            academicYear: student.academicYear,
+            status: student.status,
+            gpa: student.gpa,
+          }),
+          performedBy: "admin_registrar",
+        },
+      });
+
+      return student;
+    });
+
+    return successResponse(newStudent, {
+      message: `Student ${newStudent.firstName} ${newStudent.lastName} enrolled successfully.`,
+      status: 201,
+      rateLimit,
+    });
+  } catch (error) {
+    return handleApiError(error, rateLimit);
+  }
+}

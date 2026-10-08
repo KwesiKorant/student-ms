@@ -1,0 +1,103 @@
+@import "tailwindcss";
+
+@variant dark (&:where(.dark, .dark *));
+
+:root {
+  --background: #fafafa; /* zinc-50 */
+  --foreground: #09090b; /* zinc-950 */
+  --surface: #ffffff;
+  --surface-raised: #f4f4f5; /* zinc-100 */
+  --surface-border: #e4e4e7; /* zinc-200 */
+  --surface-border-subtle: #f4f4f5; /* zinc-100 */
+  --muted: #71717a; /* zinc-500 */
+  --muted-foreground: #52525b; /* zinc-600 */
+  
+  /* Snappy spring easing token */
+  --spring-snappy: cubic-bezier(0.23, 1, 0.32, 1);
+  --spring-smooth: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dark {
+  --background: #09090b; /* zinc-950 */
+  --foreground: #fafafa; /* zinc-50 */
+  --surface: #0e0e11;
+  --surface-raised: #151518;
+  --surface-border: rgba(255, 255, 255, 0.1);
+  --surface-border-subtle: rgba(255, 255, 255, 0.05);
+  --muted: #a1a1aa; /* zinc-400 */
+  --muted-foreground: #71717a; /* zinc-500 */
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  overflow-x: hidden;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 120 FPS Compositor Standard Motion Rules */
+.tap-target {
+  transition: transform 160ms var(--spring-snappy), opacity 160ms var(--spring-snappy);
+  will-change: transform;
+}
+
+.tap-target:active {
+  transform: scale3d(0.97, 0.97, 1);
+}
+
+/* Modal and Dropdown Hardware-Accelerated Animations */
+@keyframes modalEnter {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 8px, 0) scale3d(0.96, 0.96, 1);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale3d(1, 1, 1);
+  }
+}
+
+@keyframes backdropEnter {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-modal-enter {
+  animation: modalEnter 220ms var(--spring-snappy) forwards;
+  will-change: transform, opacity;
+}
+
+.animate-backdrop-enter {
+  animation: backdropEnter 180ms ease-out forwards;
+  will-change: opacity;
+}
+
+/* CSS Boundary Isolation */
+.isolated-card {
+  contain: layout style paint;
+}
+
+/* Respect user's motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .tap-target:active {
+    transform: none !important;
+  }
+
+  .animate-modal-enter {
+    animation: backdropEnter 120ms ease-out forwards !important;
+    transform: none !important;
+  }
+}

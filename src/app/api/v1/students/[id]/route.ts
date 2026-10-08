@@ -1,0 +1,215 @@
+import { NextRequest } from "next/server";
+import { prisma } from "@/lib/prisma";
+import {
+  checkRateLimit,
+  RateLimitResult,
+} from "@/lib/rate-limiter";
+import {
+  successResponse,
+  rateLimitErrorResponse,
+  handleApiError,
+  jsonResponse,
+} from "@/lib/api-response";
+import { UpdateStudentSchema } from "@/lib/validations/student";
+
+interface RouteParams {
+  params: Promise<{ id: string }>;
+}
+
+export async function GET(req: NextRequest, { params }: RouteParams) {
+  const rateLimit: RateLimitResult = checkRateLimit(req, "read");
+  if (!rateLimit.allowed) {
+    return rateLimitErrorResponse(rateLimit);
+  }
+
+  try {
+    const { id } = await params;
+
+    const student = await prisma.student.findFirst({
+      where: {
+        OR: [{ id }, { studentId: id }],
+      },
+      include: {
+        department: true,
+        auditLogs: {
+          orderBy: { timestamp: "desc" },
+          take: 20,
+        },
+      },
+    });
+
+    if (!student) {
+      return jsonResponse(
+        {
+          success: false,
+          error: "NOT_FOUND",
+          message: `Student with identifier "${id}" could not be found.`,
+        },
+        { status: 404, rateLimit }
+      );
+    }
+
+    return successResponse(student, { rateLimit });
+  } catch (error) {
+    return handleApiError(error, rateLimit);
+  }
+}
+
+export async function PUT(req: NextRequest, { params }: RouteParams) {
+  const rateLimit: RateLimitResult = checkRateLimit(req, "mutation");
+  if (!rateLimit.allowed) {
+    return rateLimitErrorResponse(rateLimit);
+  }
+
+  try {
+    const { id } = await params;
+    const body = await req.json();
+    const validatedData = UpdateStudentSchema.parse(body);
+
+    const existingStudent = await prisma.student.findFirst({
+      where: {
+        OR: [{ id }, { studentId: id }],
+      },
+    });
+
+    if (!existingStudent) {
+      return jsonResponse(
+        {
+          success: false,
+          error: "NOT_FOUND",
+          message: `Student with identifier "${id}" could not be found.`,
+        },
+        { status: 404, rateLimit }
+      );
+    }
+
+    // Compute diff between existing and new values
+    const diff: Record<string, { from: unknown; to: unknown }> = {};
+    const updateData: Record<string, unknown> = {};
+
+    for (const [key, value] of Object.entries(validatedData)) {
+      if (value !== undefined) {
+        const currentVal = existingStudent[key as keyof typeof existingStudent];
+        if (currentVal !== value) {
+          diff[key] = { from: currentVal, to: value };
+          updateData[key] = value;
+        }
+      }
+    }
+
+    const updated = await prisma.$transaction(async (tx) => {
+      const student = await tx.student.update({
+        where: { id: existingStudent.id },
+        data: updateData,
+        include: {
+          department: true,
+        },
+      });
+
+      if (Object.keys(diff).length > 0) {
+        await tx.auditLog.create({
+          data: {
+            studentId: student.id,
+            action: "UPDATE",
+            details: JSON.stringify({
+              event: "Student profile updated",
+              modifiedFields: diff,
+            }),
+            performedBy: "admin_registrar",
+          },
+        });
+      }
+
+      return student;
+    });
+
+    return successResponse(updated, {
+      message: "Student record updated successfully.",
+      rateLimit,
+    });
+  } catch (error) {
+    return handleApiError(error, rateLimit);
+  }
+}
+
+export async function DELETE(req: NextRequest, { params }: RouteParams) {
+  const rateLimit: RateLimitResult = checkRateLimit(req, "mutation");
+  if (!rateLimit.allowed) {
+    return rateLimitErrorResponse(rateLimit);
+  }
+
+  try {
+    const { id } = await params;
+    const { searchParams } = new URL(req.url);
+    const isHardDelete = searchParams.get("hard") === "true";
+
+    const existingStudent = await prisma.student.findFirst({
+      where: {
+        OR: [{ id }, { studentId: id }],
+      },
+    });
+
+    if (!existingStudent) {
+      return jsonResponse(
+        {
+          success: false,
+          error: "NOT_FOUND",
+          message: `Student with identifier "${id}" could not be found.`,
+        },
+        { status: 404, rateLimit }
+      );
+    }
+
+    if (isHardDelete) {
+      // Hard physical deletion (cascades audit logs)
+      await prisma.student.delete({
+        where: { id: existingStudent.id },
+      });
+
+      return successResponse(
+        { id: existingStudent.id, deleted: true },
+        {
+          message: `Student ${existingStudent.firstName} ${existingStudent.lastName} permanently deleted.`,
+          rateLimit,
+        }
+      );
+    }
+
+    // Default: Soft Archival
+    const archived = await prisma.$transaction(async (tx) => {
+      const student = await tx.student.update({
+        where: { id: existingStudent.id },
+        data: {
+          isArchived: true,
+          archivedAt: new Date(),
+        },
+        include: {
+          department: true,
+        },
+      });
+
+      await tx.auditLog.create({
+        data: {
+          studentId: student.id,
+          action: "ARCHIVE",
+          details: JSON.stringify({
+            event: "Student record soft-archived",
+            studentId: student.studentId,
+            fullName: `${student.firstName} ${student.lastName}`,
+            archivedAt: student.archivedAt,
+          }),
+          performedBy: "admin_registrar",
+        },
+      });
+
+      return student;
+    });
+
+    return successResponse(archived, {
+      message: `Student ${archived.firstName} ${archived.lastName} archived safely.`,
+      rateLimit,
+    });
+  } catch (error) {
+    return handleApiError(error, rateLimit);
+  }
+}
