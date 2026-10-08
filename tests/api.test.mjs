@@ -49,6 +49,8 @@ async function runTests() {
     return fetch(url, { ...init, headers });
   }
 
+  const createdIds = [];
+
   try {
     // ----------------------------------------------------
     // Test 1: Department Registry
@@ -118,6 +120,7 @@ async function runTests() {
     assert(createJson.data.email === testEmail, "Created student email matches");
     assert(createJson.data.studentId.startsWith("STU-"), `Generated unique ID format (${createJson.data.studentId})`);
     const createdId = createJson.data.id;
+    if (createdId) createdIds.push(createdId);
 
     // Test 4b: Manual Student ID ingestion
     console.log("\n--> Testing FR-1.2: Manual Student ID Ingestion");
@@ -136,6 +139,7 @@ async function runTests() {
     const manualJson = await manualRes.json();
     assert(manualRes.status === 201, "Manual Student ID enrollment returns 201 Created");
     assert(manualJson.data.studentId === manualStudentId, `Manual Student ID ingested accurately (${manualJson.data.studentId})`);
+    if (manualJson.data?.id) createdIds.push(manualJson.data.id);
 
     // Duplicate Student ID conflict test
     const dupIdRes = await apiFetch(`${BASE_URL}/api/v1/students`, {
@@ -288,6 +292,20 @@ async function runTests() {
   } catch (err) {
     console.error("Test execution exception:", err);
     failed++;
+  } finally {
+    if (createdIds && createdIds.length > 0) {
+      console.log("\n--> Teardown: Purging temporary test fixtures from database...");
+      for (const id of createdIds) {
+        try {
+          await apiFetch(`${BASE_URL}/api/v1/students/${id}?hard=true`, {
+            method: "DELETE",
+          });
+        } catch {
+          // Quiet teardown
+        }
+      }
+      console.log(`  ✓ Successfully purged ${createdIds.length} test fixture(s).`);
+    }
   }
 
   console.log("\n==========================================================");

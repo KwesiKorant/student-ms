@@ -54,61 +54,66 @@ export function StudentTable({
   const getStatusBadge = (status: string, isArchived: boolean) => {
     if (isArchived) {
       return (
-        <Tooltip content="Archived Record" subContent="Preserved in soft-archival tier" side="top">
-          <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-mono font-medium bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20 cursor-help">
-            <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
-            ARCHIVED
-          </span>
-        </Tooltip>
+        <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-mono font-medium bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20">
+          <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+          ARCHIVED
+        </span>
       );
     }
 
     switch (status) {
       case "ACTIVE":
         return (
-          <Tooltip content="Active Enrollment" subContent="Student enrolled in good standing" side="top">
-            <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-mono font-medium bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20 cursor-help">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-              ACTIVE
-            </span>
-          </Tooltip>
+          <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-mono font-medium bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+            ACTIVE
+          </span>
         );
       case "SUSPENDED":
         return (
-          <Tooltip content="Disciplinary Suspension" subContent="Academic registration hold active" side="top">
-            <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-mono font-medium bg-rose-500/10 text-rose-700 dark:text-rose-400 border border-rose-500/20 cursor-help">
-              <span className="w-1.5 h-1.5 rounded-full bg-rose-500" />
-              SUSPENDED
-            </span>
-          </Tooltip>
+          <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-mono font-medium bg-rose-500/10 text-rose-700 dark:text-rose-400 border border-rose-500/20">
+            <span className="w-1.5 h-1.5 rounded-full bg-rose-500" />
+            SUSPENDED
+          </span>
         );
       case "GRADUATED":
         return (
-          <Tooltip content="Program Graduate" subContent="Degree conferred successfully" side="top">
-            <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-mono font-medium bg-indigo-500/10 text-indigo-700 dark:text-indigo-400 border border-indigo-500/20 cursor-help">
-              <span className="w-1.5 h-1.5 rounded-full bg-indigo-500" />
-              GRADUATED
-            </span>
-          </Tooltip>
+          <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-mono font-medium bg-indigo-500/10 text-indigo-700 dark:text-indigo-400 border border-indigo-500/20">
+            <span className="w-1.5 h-1.5 rounded-full bg-indigo-500" />
+            GRADUATED
+          </span>
         );
       default:
         return (
-          <Tooltip content="Inactive Registration" subContent="Candidate not registered for active term" side="top">
-            <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-mono font-medium bg-zinc-500/10 text-zinc-700 dark:text-zinc-300 border border-zinc-500/20 cursor-help">
-              <span className="w-1.5 h-1.5 rounded-full bg-zinc-400" />
-              INACTIVE
-            </span>
-          </Tooltip>
+          <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-mono font-medium bg-zinc-500/10 text-zinc-700 dark:text-zinc-300 border border-zinc-500/20">
+            <span className="w-1.5 h-1.5 rounded-full bg-zinc-400" />
+            INACTIVE
+          </span>
         );
     }
   };
 
-  const getGpaColor = (gpa: number | null | undefined) => {
-    if (gpa === null || gpa === undefined) return "text-zinc-400";
-    if (gpa >= 3.5) return "text-emerald-600 dark:text-emerald-400 font-semibold";
-    if (gpa >= 3.0) return "text-blue-600 dark:text-blue-400 font-medium";
-    if (gpa >= 2.0) return "text-amber-600 dark:text-amber-400";
-    return "text-rose-600 dark:text-rose-400 font-semibold";
+  const getGpaBadge = (gpa: number | null | undefined) => {
+    if (gpa === null || gpa === undefined) {
+      return <span className="text-zinc-400 font-mono text-[11px]">—</span>;
+    }
+
+    let colorClasses = "text-zinc-700 dark:text-zinc-300 bg-zinc-100 dark:bg-zinc-800/80 border-zinc-200/80 dark:border-white/10";
+    if (gpa >= 3.5) {
+      colorClasses = "text-emerald-700 dark:text-emerald-400 bg-emerald-500/10 border-emerald-500/20 font-semibold";
+    } else if (gpa >= 3.0) {
+      colorClasses = "text-blue-700 dark:text-blue-400 bg-blue-500/10 border-blue-500/20 font-medium";
+    } else if (gpa >= 2.0) {
+      colorClasses = "text-amber-700 dark:text-amber-400 bg-amber-500/10 border-amber-500/20";
+    } else {
+      colorClasses = "text-rose-700 dark:text-rose-400 bg-rose-500/10 border-rose-500/20 font-semibold";
+    }
+
+    return (
+      <span className={`inline-flex items-center px-1.5 py-0.2 rounded text-[11px] font-mono border tabular-nums ${colorClasses}`}>
+        {gpa.toFixed(2)}
+      </span>
+    );
   };
 
   if (isLoading) {
@@ -208,7 +213,7 @@ export function StudentTable({
                 <tr
                   key={student.id}
                   onClick={() => onViewStudent(student)}
-                  className={`group hover:bg-black/[0.02] dark:hover:bg-white/[0.03] transition-colors duration-150 cursor-pointer select-none ${
+                  className={`group hover:bg-black/[0.02] dark:hover:bg-white/[0.03] active:bg-black/[0.04] dark:active:bg-white/[0.05] transition-colors duration-150 cursor-pointer select-none ${
                     student.isArchived ? "opacity-65 bg-zinc-50/40 dark:bg-zinc-950/20" : ""
                   }`}
                 >
@@ -275,11 +280,7 @@ export function StudentTable({
 
                   {/* GPA */}
                   <td className="py-3 px-4 whitespace-nowrap font-mono">
-                    <span className={getGpaColor(student.gpa)}>
-                      {student.gpa !== null && student.gpa !== undefined
-                        ? student.gpa.toFixed(2)
-                        : "—"}
-                    </span>
+                    {getGpaBadge(student.gpa)}
                   </td>
 
                   {/* Status */}

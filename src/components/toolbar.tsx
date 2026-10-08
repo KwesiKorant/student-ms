@@ -145,8 +145,8 @@ export function Toolbar({
           ) : (
             <div className="absolute inset-y-0 right-0 pr-2.5 flex items-center">
               <kbd
-                title="Press / to search"
-                className="hidden sm:inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-mono font-medium text-zinc-400 bg-zinc-100 dark:bg-zinc-800 border border-zinc-200/60 dark:border-white/5 cursor-pointer"
+                title="Press / to focus search"
+                className="hidden sm:inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-mono font-medium text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 bg-zinc-100 hover:bg-zinc-200/80 dark:bg-zinc-800 dark:hover:bg-zinc-700/80 border border-zinc-200/60 dark:border-white/5 cursor-pointer transition-colors active:scale-95"
                 onClick={() => searchInputRef.current?.focus()}
               >
                 /
