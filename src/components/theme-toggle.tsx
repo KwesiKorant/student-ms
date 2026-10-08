@@ -3,8 +3,8 @@
 import * as React from "react";
 import { useTheme } from "next-themes";
 import { Sun, Moon, Monitor } from "lucide-react";
+import { Tooltip } from "@/components/ui/tooltip";
 
-// React 19 useSyncExternalStore pattern for zero-flicker hydration without cascading render
 const subscribe = () => () => {};
 const getSnapshot = () => true;
 const getServerSnapshot = () => false;
@@ -13,54 +13,91 @@ export function ThemeToggle() {
   const { theme, setTheme } = useTheme();
   const mounted = React.useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 
+  // Guarantee system theme synchronization when theme === "system"
+  React.useEffect(() => {
+    if (!mounted || theme !== "system") return;
+
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+
+    const syncSystemTheme = (e: MediaQueryListEvent | MediaQueryList) => {
+      if (e.matches) {
+        document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+      }
+    };
+
+    // Apply immediately upon selection or mount
+    syncSystemTheme(mediaQuery);
+
+    mediaQuery.addEventListener("change", syncSystemTheme);
+    return () => mediaQuery.removeEventListener("change", syncSystemTheme);
+  }, [mounted, theme]);
+
   if (!mounted) {
     return (
-      <div className="w-8 h-8 rounded-md bg-zinc-100 dark:bg-zinc-800 animate-pulse border border-zinc-200 dark:border-white/10" />
+      <div className="h-7 w-20 rounded-lg bg-zinc-100 dark:bg-zinc-800 animate-pulse border border-zinc-200/60 dark:border-white/5" />
     );
   }
 
-  const cycleTheme = () => {
-    if (theme === "system") {
-      setTheme("light");
-    } else if (theme === "light") {
-      setTheme("dark");
-    } else {
-      setTheme("system");
-    }
-  };
-
-  const getIcon = () => {
-    switch (theme) {
-      case "light":
-        return <Sun className="w-4 h-4 text-amber-500" />;
-      case "dark":
-        return <Moon className="w-4 h-4 text-indigo-400" />;
-      default:
-        return <Monitor className="w-4 h-4 text-zinc-400" />;
-    }
-  };
-
-  const getLabel = () => {
-    switch (theme) {
-      case "light":
-        return "Light mode";
-      case "dark":
-        return "Dark mode";
-      default:
-        return "System theme";
-    }
-  };
+  const currentTheme = theme ?? "system";
 
   return (
-    <button
-      type="button"
-      onClick={cycleTheme}
-      title={`Current: ${getLabel()} (Click to cycle)`}
-      aria-label={`Current: ${getLabel()} (Click to cycle)`}
-      className="tap-target relative inline-flex items-center justify-center gap-1.5 px-2.5 py-1.5 text-xs font-mono font-medium rounded-md border border-zinc-200 dark:border-white/10 bg-white/70 dark:bg-zinc-900/70 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer select-none"
+    <div
+      role="group"
+      aria-label="Display theme selection"
+      className="inline-flex items-center p-0.5 rounded-lg border border-zinc-200/80 dark:border-white/10 bg-zinc-100/70 dark:bg-zinc-900/80 text-zinc-500 dark:text-zinc-400"
     >
-      {getIcon()}
-      <span className="capitalize">{theme ?? "system"}</span>
-    </button>
+      {/* Light Theme Option */}
+      <Tooltip content="Light mode">
+        <button
+          type="button"
+          onClick={() => setTheme("light")}
+          aria-label="Switch to light mode"
+          aria-pressed={currentTheme === "light"}
+          className={`tap-target p-1.5 rounded-md transition-colors cursor-pointer ${
+            currentTheme === "light"
+              ? "bg-white text-amber-500 shadow-xs border border-zinc-200/60"
+              : "hover:text-zinc-900 dark:hover:text-zinc-200"
+          }`}
+        >
+          <Sun className="w-3.5 h-3.5" />
+        </button>
+      </Tooltip>
+
+      {/* Dark Theme Option */}
+      <Tooltip content="Dark mode">
+        <button
+          type="button"
+          onClick={() => setTheme("dark")}
+          aria-label="Switch to dark mode"
+          aria-pressed={currentTheme === "dark"}
+          className={`tap-target p-1.5 rounded-md transition-colors cursor-pointer ${
+            currentTheme === "dark"
+              ? "bg-zinc-800 text-indigo-400 shadow-xs border border-white/10"
+              : "hover:text-zinc-900 dark:hover:text-zinc-200"
+          }`}
+        >
+          <Moon className="w-3.5 h-3.5" />
+        </button>
+      </Tooltip>
+
+      {/* System Theme Option */}
+      <Tooltip content="System theme (Auto)">
+        <button
+          type="button"
+          onClick={() => setTheme("system")}
+          aria-label="Switch to system theme"
+          aria-pressed={currentTheme === "system"}
+          className={`tap-target p-1.5 rounded-md transition-colors cursor-pointer ${
+            currentTheme === "system"
+              ? "bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 shadow-xs border border-zinc-200/60 dark:border-white/10"
+              : "hover:text-zinc-900 dark:hover:text-zinc-200"
+          }`}
+        >
+          <Monitor className="w-3.5 h-3.5" />
+        </button>
+      </Tooltip>
+    </div>
   );
 }

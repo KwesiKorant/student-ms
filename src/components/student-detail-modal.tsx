@@ -95,11 +95,11 @@ export function StudentDetailModal({
       {/* Backdrop - strictly zero blur for compositor efficiency */}
       <div
         onClick={onClose}
-        className="fixed inset-0 bg-black/65 animate-backdrop-enter"
+        className="fixed inset-0 bg-black/75 animate-backdrop-enter"
       />
 
-      {/* Modal Dialog Card */}
-      <div className="relative w-full max-w-2xl rounded-2xl glass-card shadow-2xl p-6 z-10 animate-modal-enter text-zinc-900 dark:text-zinc-100 isolated-card my-8">
+      {/* Modal Dialog Card - fully opaque in light and dark mode to prevent any text bleed */}
+      <div className="relative w-full max-w-2xl rounded-2xl bg-white dark:bg-[#111114] border border-zinc-200/90 dark:border-white/10 shadow-2xl p-6 z-10 animate-modal-enter text-zinc-900 dark:text-zinc-100 isolated-card my-8">
         {/* Header Profile Bar */}
         <div className="flex items-start justify-between pb-5 border-b border-zinc-100 dark:border-white/5">
           <div className="flex items-center gap-3.5">

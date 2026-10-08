@@ -85,11 +85,11 @@ export function ArchiveConfirmDialog({
       {/* Backdrop - strictly zero blur for compositor efficiency */}
       <div
         onClick={onClose}
-        className="fixed inset-0 bg-black/65 animate-backdrop-enter"
+        className="fixed inset-0 bg-black/75 animate-backdrop-enter"
       />
 
-      {/* Dialog Card */}
-      <div className="relative w-full max-w-md rounded-2xl glass-card shadow-2xl p-6 z-10 animate-modal-enter text-zinc-900 dark:text-zinc-100 isolated-card my-8">
+      {/* Dialog Card - fully opaque in light and dark mode to prevent any text bleed */}
+      <div className="relative w-full max-w-md rounded-2xl bg-white dark:bg-[#111114] border border-zinc-200/90 dark:border-white/10 shadow-2xl p-6 z-10 animate-modal-enter text-zinc-900 dark:text-zinc-100 isolated-card my-8">
         {/* Header */}
         <div className="flex items-start justify-between pb-3">
           <div className="flex items-center gap-3">
