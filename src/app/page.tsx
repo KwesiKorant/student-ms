@@ -12,6 +12,20 @@ import { EditStudentModal } from "@/components/edit-student-modal";
 import { ArchiveConfirmDialog } from "@/components/archive-confirm-dialog";
 import { useToast } from "@/components/ui/toast";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { useSearchParams } from "next/navigation";
+
+function EnrollUrlWatcher({ onOpen }: { onOpen: () => void }) {
+  const searchParams = useSearchParams();
+  const enroll = searchParams?.get("enroll");
+
+  React.useEffect(() => {
+    if (enroll === "true") {
+      onOpen();
+    }
+  }, [enroll, onOpen]);
+
+  return null;
+}
 
 export default function StudentManagementPortal() {
   const { toast } = useToast();
@@ -46,15 +60,43 @@ export default function StudentManagementPortal() {
   });
 
   // Modal States
-  const [isEnrollModalOpen, setIsEnrollModalOpen] = React.useState(() => {
-    if (typeof window !== "undefined") {
-      return new URLSearchParams(window.location.search).get("enroll") === "true";
-    }
-    return false;
-  });
+  const [isEnrollModalOpen, setIsEnrollModalOpen] = React.useState(false);
   const [detailStudent, setDetailStudent] = React.useState<Student | null>(null);
   const [editStudent, setEditStudent] = React.useState<Student | null>(null);
   const [archiveStudent, setArchiveStudent] = React.useState<Student | null>(null);
+
+  const handleOpenEnrollModal = React.useCallback(() => {
+    setIsEnrollModalOpen(true);
+  }, []);
+
+  const handleCloseEnrollModal = React.useCallback(() => {
+    setIsEnrollModalOpen(false);
+    if (typeof window !== "undefined" && window.location.search.includes("enroll=")) {
+      const url = new URL(window.location.href);
+      url.searchParams.delete("enroll");
+      window.history.replaceState(null, "", url.pathname + (url.search ? url.search : ""));
+    }
+  }, []);
+
+  // Automatically open enrollment modal if ?enroll=true or backup session flag is present
+  React.useEffect(() => {
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    let autoEnroll = params.get("enroll") === "true";
+    try {
+      if (sessionStorage.getItem("arcfield_auto_enroll") === "true") {
+        sessionStorage.removeItem("arcfield_auto_enroll");
+        autoEnroll = true;
+      }
+    } catch {}
+
+    if (autoEnroll) {
+      const timer = setTimeout(() => {
+        setIsEnrollModalOpen(true);
+      }, 20);
+      return () => clearTimeout(timer);
+    }
+  }, []);
 
   // Fetch Departments on Mount
   React.useEffect(() => {
@@ -304,10 +346,13 @@ export default function StudentManagementPortal() {
 
   return (
     <TooltipProvider>
+      <React.Suspense fallback={null}>
+        <EnrollUrlWatcher onOpen={handleOpenEnrollModal} />
+      </React.Suspense>
       <div className="min-h-screen flex flex-col bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 transition-colors">
         {/* Institutional Top Navigation Header */}
         <Header
-          onOpenEnrollModal={() => setIsEnrollModalOpen(true)}
+          onOpenEnrollModal={handleOpenEnrollModal}
           totalStudents={pagination.totalRecords}
           activeStudents={pagination.totalRecords}
           archivedStudents={metrics.archived}
@@ -376,7 +421,7 @@ export default function StudentManagementPortal() {
               onEditStudent={(student) => setEditStudent(student)}
               onArchiveStudent={(student) => setArchiveStudent(student)}
               onRestoreStudent={handleRestoreStudent}
-              onOpenEnrollModal={() => setIsEnrollModalOpen(true)}
+              onOpenEnrollModal={handleOpenEnrollModal}
             />
 
             {/* Pagination Controls */}
@@ -407,7 +452,7 @@ export default function StudentManagementPortal() {
       {isEnrollModalOpen && (
         <EnrollStudentModal
           isOpen={true}
-          onClose={() => setIsEnrollModalOpen(false)}
+          onClose={handleCloseEnrollModal}
           departments={departments}
           onStudentCreated={handleStudentCreated}
         />

@@ -7,6 +7,12 @@ import { AnimatedTitleFM } from "@/components/ui/glow-horizon-utils/animated-tit
 import { ThemeToggle } from "@/components/theme-toggle";
 
 export default function LandingPage() {
+  const handleEnrollClick = React.useCallback(() => {
+    try {
+      sessionStorage.setItem("arcfield_auto_enroll", "true");
+    } catch {}
+  }, []);
+
   return (
     <div className="h-screen max-h-screen overflow-hidden flex flex-col justify-between bg-zinc-50 dark:bg-[#050507] text-zinc-900 dark:text-zinc-100 transition-colors duration-200 relative select-none">
       {/* Top Institutional Bar - Bare without dividing horizontal line */}
@@ -40,7 +46,7 @@ export default function LandingPage() {
 
         {/* Central Titles & Functional Action Triggers */}
         <div className="relative z-10 w-full flex flex-col items-center justify-center py-6">
-          <AnimatedTitleFM open={true} />
+          <AnimatedTitleFM open={true} onEnrollClick={handleEnrollClick} />
         </div>
       </main>
 

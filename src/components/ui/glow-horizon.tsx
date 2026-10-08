@@ -48,7 +48,7 @@ export default function GlowHorizonFM({
 
   const { axis, scaleAxis, enterPct, restPct } = VARIANTS[variant];
 
-  // Professional monochrome palette (Rich celestial depth in dark mode, substantial full canopy in light mode)
+  // Professional celestial monochrome palette (brilliant glowing white rim with deep black body)
   const arcConfigs = isDark
     ? {
         crest: "#FFFFFF",
@@ -60,22 +60,25 @@ export default function GlowHorizonFM({
         glow: "rgba(113, 113, 122, 0.30)", // zinc-500 platinum sheen
         glowSize: "124%",
         glowBlur: 21,
-        base: "#09090b", // zinc-950 deep void
-        baseBlur: 51,
+        base: "#000000", // pure deep void
+        baseSize: "122%",
+        baseBlur: 45,
       }
     : {
-        // Substantial, weighted, rich canopy for light mode so it never looks thin
-        crest: "#18181b", // zinc-900 defined horizon rim
-        crestShadow: "0px 8px 36px 0px rgba(0, 0, 0, 0.38), 0px 2px 14px 0px rgba(0, 0, 0, 0.22)",
-        crestSize: "134%",
-        aura: "rgba(24, 24, 27, 0.25)", // deep graphite canopy aura
+        // Light mode: Preserve exact design language (brilliant white glowing crest & atmospheric halo).
+        // Calibrated deep black body with substantial fullness (size 128%, blur 24px) so it never looks thin against the white canvas.
+        crest: "#FFFFFF",
+        crestShadow: "0px -3px 30px 0px rgba(255, 255, 255, 0.95), 0px 6px 24px 0px rgba(0, 0, 0, 0.14)",
+        crestSize: "132%",
+        aura: "rgba(255, 255, 255, 0.45)", // luminous silver halo
         auraSize: "122%",
-        auraBlur: 36,
-        glow: "rgba(82, 82, 91, 0.22)", // zinc-600 rich atmospheric body
+        auraBlur: 28,
+        glow: "rgba(212, 212, 216, 0.35)", // zinc-300 diffuse sheen
         glowSize: "126%",
-        glowBlur: 26,
-        base: "rgba(113, 113, 122, 0.15)", // feathered base grounding
-        baseBlur: 56,
+        glowBlur: 20,
+        base: "#000000", // rich substantial black canopy (not eroded by white)
+        baseSize: "128%",
+        baseBlur: 24,
       };
 
   return (
@@ -123,7 +126,7 @@ export default function GlowHorizonFM({
       <Arc
         variant={variant}
         color={arcConfigs.base}
-        size="120%"
+        size={arcConfigs.baseSize}
         initialOffset="10%"
         blur={arcConfigs.baseBlur}
         delay={0}

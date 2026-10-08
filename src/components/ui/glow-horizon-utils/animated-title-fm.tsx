@@ -33,37 +33,37 @@ export function AnimatedTitleFM({
         transition={{ duration: 0.8, ease: EASE, delay: 0.25 }}
         className="space-y-3"
       >
-        <h1 className="text-7xl sm:text-8xl md:text-9xl lg:text-[10.5rem] font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-zinc-950 via-zinc-800 to-zinc-500 dark:from-white dark:via-zinc-200 dark:to-zinc-500 font-sans select-none leading-none">
+        <h1 className="text-7xl sm:text-8xl md:text-9xl lg:text-[10.5rem] font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white via-zinc-200 to-zinc-400 font-sans select-none leading-none drop-shadow-sm">
           SMS
         </h1>
-        <p className="text-base sm:text-lg md:text-xl font-medium tracking-tight text-zinc-600 dark:text-zinc-400 select-none">
+        <p className="text-base sm:text-lg md:text-xl font-medium tracking-tight text-zinc-300 dark:text-zinc-400 select-none">
           Student Management System
         </p>
       </motion.div>
 
-      {/* The 2 Primary Action Buttons - pushed down to give generous room for the horizon animation */}
+      {/* The 2 Primary Action Buttons - placed comfortably below the middle horizon line */}
       <motion.div
         initial={{ opacity: 0, y: 14 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: EASE, delay: 0.5 }}
-        className="flex flex-wrap items-center justify-center gap-3.5 mt-12 sm:mt-16"
+        className="flex flex-wrap items-center justify-center gap-3.5 mt-24 sm:mt-28 md:mt-32"
       >
         <Link
           href="/"
           onClick={onExploreClick}
-          className="tap-target group inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-white dark:bg-white dark:hover:bg-zinc-100 dark:text-zinc-950 font-medium text-xs sm:text-sm shadow-xl shadow-black/10 dark:shadow-white/5 cursor-pointer transition-all active:scale-[0.98]"
+          className="tap-target group inline-flex items-center gap-2 px-6 py-2.5 sm:py-3 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-white dark:bg-white dark:hover:bg-zinc-100 dark:text-zinc-950 font-medium text-xs sm:text-sm shadow-xl shadow-black/15 dark:shadow-white/10 cursor-pointer transition-all active:scale-[0.98]"
         >
-          <span>Access Student Directory</span>
+          <span>Directory</span>
           <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
         </Link>
 
         <Link
           href="/?enroll=true"
           onClick={onEnrollClick}
-          className="tap-target inline-flex items-center gap-2 px-6 py-3 rounded-xl border border-zinc-300 dark:border-white/15 bg-white dark:bg-white/5 text-zinc-800 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-white/10 font-medium text-xs sm:text-sm shadow-sm cursor-pointer transition-all active:scale-[0.98]"
+          className="tap-target inline-flex items-center gap-2 px-6 py-2.5 sm:py-3 rounded-xl border border-zinc-300 dark:border-white/20 bg-white/90 dark:bg-white/10 text-zinc-900 dark:text-white hover:bg-zinc-100 dark:hover:bg-white/15 font-medium text-xs sm:text-sm shadow-sm cursor-pointer transition-all active:scale-[0.98]"
         >
-          <GraduationCap className="w-4 h-4 text-zinc-500 dark:text-zinc-400" />
-          <span>Enroll Candidate</span>
+          <GraduationCap className="w-4 h-4 text-zinc-600 dark:text-zinc-300" />
+          <span>Enroll</span>
         </Link>
       </motion.div>
     </div>
