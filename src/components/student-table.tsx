@@ -54,41 +54,51 @@ export function StudentTable({
   const getStatusBadge = (status: string, isArchived: boolean) => {
     if (isArchived) {
       return (
-        <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-mono font-medium bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20">
-          <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
-          ARCHIVED
-        </span>
+        <Tooltip content="Archived Record" subContent="Preserved in soft-archival tier" side="top">
+          <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-mono font-medium bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20 cursor-help">
+            <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+            ARCHIVED
+          </span>
+        </Tooltip>
       );
     }
 
     switch (status) {
       case "ACTIVE":
         return (
-          <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-mono font-medium bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-            ACTIVE
-          </span>
+          <Tooltip content="Active Enrollment" subContent="Student enrolled in good standing" side="top">
+            <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-mono font-medium bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20 cursor-help">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+              ACTIVE
+            </span>
+          </Tooltip>
         );
       case "SUSPENDED":
         return (
-          <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-mono font-medium bg-rose-500/10 text-rose-700 dark:text-rose-400 border border-rose-500/20">
-            <span className="w-1.5 h-1.5 rounded-full bg-rose-500" />
-            SUSPENDED
-          </span>
+          <Tooltip content="Disciplinary Suspension" subContent="Academic registration hold active" side="top">
+            <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-mono font-medium bg-rose-500/10 text-rose-700 dark:text-rose-400 border border-rose-500/20 cursor-help">
+              <span className="w-1.5 h-1.5 rounded-full bg-rose-500" />
+              SUSPENDED
+            </span>
+          </Tooltip>
         );
       case "GRADUATED":
         return (
-          <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-mono font-medium bg-indigo-500/10 text-indigo-700 dark:text-indigo-400 border border-indigo-500/20">
-            <span className="w-1.5 h-1.5 rounded-full bg-indigo-500" />
-            GRADUATED
-          </span>
+          <Tooltip content="Program Graduate" subContent="Degree conferred successfully" side="top">
+            <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-mono font-medium bg-indigo-500/10 text-indigo-700 dark:text-indigo-400 border border-indigo-500/20 cursor-help">
+              <span className="w-1.5 h-1.5 rounded-full bg-indigo-500" />
+              GRADUATED
+            </span>
+          </Tooltip>
         );
       default:
         return (
-          <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-mono font-medium bg-zinc-500/10 text-zinc-700 dark:text-zinc-300 border border-zinc-500/20">
-            <span className="w-1.5 h-1.5 rounded-full bg-zinc-400" />
-            INACTIVE
-          </span>
+          <Tooltip content="Inactive Registration" subContent="Candidate not registered for active term" side="top">
+            <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-mono font-medium bg-zinc-500/10 text-zinc-700 dark:text-zinc-300 border border-zinc-500/20 cursor-help">
+              <span className="w-1.5 h-1.5 rounded-full bg-zinc-400" />
+              INACTIVE
+            </span>
+          </Tooltip>
         );
     }
   };
@@ -139,14 +149,16 @@ export function StudentTable({
         <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1 max-w-sm mx-auto">
           No student profiles match your search or filter configuration. Reset filters or enroll a new candidate.
         </p>
-        <button
-          type="button"
-          onClick={onOpenEnrollModal}
-          className="tap-target mt-4 inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg bg-zinc-900 hover:bg-zinc-800 dark:bg-zinc-100 dark:hover:bg-zinc-200 text-white dark:text-zinc-900 transition-colors cursor-pointer"
-        >
-          <GraduationCap className="w-3.5 h-3.5" />
-          Enroll New Student
-        </button>
+        <Tooltip content="Enroll Student" subContent="Open candidate enrollment form" side="top">
+          <button
+            type="button"
+            onClick={onOpenEnrollModal}
+            className="tap-target mt-4 inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg bg-zinc-900 hover:bg-zinc-800 dark:bg-zinc-100 dark:hover:bg-zinc-200 text-white dark:text-zinc-900 transition-colors cursor-pointer"
+          >
+            <GraduationCap className="w-3.5 h-3.5" />
+            Enroll New Student
+          </button>
+        </Tooltip>
       </div>
     );
   }
@@ -159,18 +171,24 @@ export function StudentTable({
         onClick={() => onSort?.(field)}
         aria-sort={isCurrent ? (sortOrder === "asc" ? "ascending" : "descending") : undefined}
       >
-        <div className="inline-flex items-center gap-1.5">
-          <span>{label}</span>
-          {isCurrent ? (
-            sortOrder === "asc" ? (
-              <ArrowUp className="w-3 h-3 text-zinc-900 dark:text-zinc-100" />
-            ) : (
-              <ArrowDown className="w-3 h-3 text-zinc-900 dark:text-zinc-100" />
-            )
-          ) : onSort ? (
-            <ArrowUpDown className="w-2.5 h-2.5 opacity-30 hover:opacity-100 transition-opacity" />
-          ) : null}
-        </div>
+        <Tooltip
+          content={`Sort by ${label}`}
+          subContent={isCurrent ? `Active: ${(sortOrder || "asc").toUpperCase()} (Click to toggle)` : "Click to sort table"}
+          side="top"
+        >
+          <div className="inline-flex items-center gap-1.5 cursor-pointer">
+            <span>{label}</span>
+            {isCurrent ? (
+              sortOrder === "asc" ? (
+                <ArrowUp className="w-3 h-3 text-zinc-900 dark:text-zinc-100" />
+              ) : (
+                <ArrowDown className="w-3 h-3 text-zinc-900 dark:text-zinc-100" />
+              )
+            ) : onSort ? (
+              <ArrowUpDown className="w-2.5 h-2.5 opacity-30 hover:opacity-100 transition-opacity" />
+            ) : null}
+          </div>
+        </Tooltip>
       </th>
     );
   };
@@ -208,7 +226,11 @@ export function StudentTable({
                       <span className="font-semibold text-zinc-800 dark:text-zinc-200">
                         {student.studentId}
                       </span>
-                      <Tooltip content={copiedId === student.studentId ? "Copied!" : "Copy ID"}>
+                      <Tooltip
+                        content={copiedId === student.studentId ? "Copied!" : "Copy Student ID"}
+                        subContent={copiedId === student.studentId ? "Copied to clipboard" : "Click to copy STU-ID"}
+                        side="top"
+                      >
                         <button
                           type="button"
                           onClick={(e) => copyToClipboard(student.studentId, e)}
@@ -244,28 +266,64 @@ export function StudentTable({
 
                   {/* Department */}
                   <td className="py-3 px-4 hidden md:table-cell whitespace-nowrap">
-                    <div className="flex items-center gap-1.5">
-                      <span className="px-1.5 py-0.2 rounded text-[10px] font-mono font-bold bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-200/80 dark:border-white/10">
-                        {student.department?.code || "GEN"}
-                      </span>
-                      <span className="text-zinc-600 dark:text-zinc-300 text-xs truncate max-w-[150px]">
-                        {student.department?.name || "General"}
-                      </span>
-                    </div>
+                    <Tooltip
+                      content={student.department?.name || "General Studies"}
+                      subContent={`Department Code: ${student.department?.code || "GEN"}`}
+                      side="top"
+                    >
+                      <div className="inline-flex items-center gap-1.5 cursor-help">
+                        <span className="px-1.5 py-0.2 rounded text-[10px] font-mono font-bold bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-200/80 dark:border-white/10">
+                          {student.department?.code || "GEN"}
+                        </span>
+                        <span className="text-zinc-600 dark:text-zinc-300 text-xs truncate max-w-[150px]">
+                          {student.department?.name || "General"}
+                        </span>
+                      </div>
+                    </Tooltip>
                   </td>
 
                   {/* Academic Year */}
                   <td className="py-3 px-4 hidden sm:table-cell whitespace-nowrap font-mono text-zinc-600 dark:text-zinc-300">
-                    Year {student.academicYear}
+                    <Tooltip
+                      content={`Academic Year ${student.academicYear}`}
+                      subContent={
+                        student.academicYear === 1
+                          ? "Freshman Level"
+                          : student.academicYear === 2
+                          ? "Sophomore Level"
+                          : student.academicYear === 3
+                          ? "Junior Level"
+                          : "Senior / Final Year"
+                      }
+                      side="top"
+                    >
+                      <span className="cursor-help">Year {student.academicYear}</span>
+                    </Tooltip>
                   </td>
 
                   {/* GPA */}
                   <td className="py-3 px-4 whitespace-nowrap font-mono">
-                    <span className={getGpaColor(student.gpa)}>
-                      {student.gpa !== null && student.gpa !== undefined
-                        ? student.gpa.toFixed(2)
-                        : "—"}
-                    </span>
+                    <Tooltip
+                      content="Cumulative GPA"
+                      subContent={
+                        student.gpa === null || student.gpa === undefined
+                          ? "GPA not evaluated yet"
+                          : student.gpa >= 3.5
+                          ? "First Class / High Distinction"
+                          : student.gpa >= 3.0
+                          ? "Good Academic Standing"
+                          : student.gpa >= 2.0
+                          ? "Satisfactory Progress"
+                          : "Academic Probation Risk"
+                      }
+                      side="top"
+                    >
+                      <span className={`${getGpaColor(student.gpa)} cursor-help`}>
+                        {student.gpa !== null && student.gpa !== undefined
+                          ? student.gpa.toFixed(2)
+                          : "—"}
+                      </span>
+                    </Tooltip>
                   </td>
 
                   {/* Status */}
@@ -279,7 +337,7 @@ export function StudentTable({
                       className="inline-flex items-center gap-0.5"
                       onClick={(e) => e.stopPropagation()}
                     >
-                      <Tooltip content="View student profile">
+                      <Tooltip content="Inspect Candidate" subContent="View record details & audit logs" side="left">
                         <button
                           type="button"
                           onClick={() => onViewStudent(student)}
@@ -290,7 +348,7 @@ export function StudentTable({
                         </button>
                       </Tooltip>
 
-                      <Tooltip content="Edit record">
+                      <Tooltip content="Edit Record" subContent="Modify student information" side="left">
                         <button
                           type="button"
                           onClick={() => onEditStudent(student)}
@@ -302,7 +360,7 @@ export function StudentTable({
                       </Tooltip>
 
                       {student.isArchived ? (
-                        <Tooltip content="Restore record">
+                        <Tooltip content="Restore Record" subContent="Re-activate student profile" side="left">
                           <button
                             type="button"
                             onClick={() => onRestoreStudent(student)}
@@ -313,7 +371,7 @@ export function StudentTable({
                           </button>
                         </Tooltip>
                       ) : (
-                        <Tooltip content="Archive record">
+                        <Tooltip content="Archive Record" subContent="Preserve in soft-archival tier" side="left">
                           <button
                             type="button"
                             onClick={() => onArchiveStudent(student)}

@@ -103,10 +103,12 @@ export function Toolbar({
               <X className="w-3.5 h-3.5" />
             </button>
           ) : (
-            <div className="absolute inset-y-0 right-0 pr-2.5 flex items-center pointer-events-none">
-              <kbd className="hidden sm:inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-mono font-medium text-zinc-400 bg-zinc-100 dark:bg-zinc-800 border border-zinc-200/60 dark:border-white/5">
-                /
-              </kbd>
+            <div className="absolute inset-y-0 right-0 pr-2.5 flex items-center">
+              <Tooltip content="Quick Focus" subContent="Press / to search" side="top">
+                <kbd className="hidden sm:inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-mono font-medium text-zinc-400 bg-zinc-100 dark:bg-zinc-800 border border-zinc-200/60 dark:border-white/5 cursor-help">
+                  /
+                </kbd>
+              </Tooltip>
             </div>
           )}
         </div>
@@ -158,7 +160,11 @@ export function Toolbar({
           </select>
 
           {/* Sort Order Toggle */}
-          <Tooltip content={`Toggle order (currently ${sortOrder.toUpperCase()})`}>
+          <Tooltip
+            content={`Sort Direction: ${sortOrder.toUpperCase()}`}
+            subContent={sortOrder === "asc" ? "Ascending order (A→Z, 0→9)" : "Descending order (Z→A, 9→0)"}
+            side="top"
+          >
             <button
               type="button"
               onClick={() => onSortOrderChange(sortOrder === "asc" ? "desc" : "asc")}
@@ -171,7 +177,11 @@ export function Toolbar({
           </Tooltip>
 
           {/* Include Archived Toggle */}
-          <Tooltip content="Show archived records alongside active registry">
+          <Tooltip
+            content="Archived Records Tier"
+            subContent="Include soft-archived profiles alongside active students"
+            side="top"
+          >
             <label className="tap-target inline-flex items-center gap-1.5 px-2.5 py-1.5 text-xs rounded-lg border border-zinc-200/80 dark:border-white/10 bg-white/70 dark:bg-zinc-900/70 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100/80 dark:hover:bg-zinc-800/80 cursor-pointer select-none transition-colors">
               <input
                 type="checkbox"
@@ -185,7 +195,11 @@ export function Toolbar({
           </Tooltip>
 
           {/* Refresh Action */}
-          <Tooltip content="Refresh directory">
+          <Tooltip
+            content="Synchronize Registry"
+            subContent="Re-query fresh candidate data from database"
+            side="top"
+          >
             <button
               type="button"
               onClick={onRefresh}
@@ -254,13 +268,15 @@ export function Toolbar({
             </span>
           )}
 
-          <button
-            type="button"
-            onClick={onResetFilters}
-            className="text-[11px] font-medium text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 underline underline-offset-2 ml-1 cursor-pointer transition-colors"
-          >
-            Reset all
-          </button>
+          <Tooltip content="Reset All Filters" subContent="Clear search query and restore full registry" side="top">
+            <button
+              type="button"
+              onClick={onResetFilters}
+              className="text-[11px] font-medium text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 underline underline-offset-2 ml-1 cursor-pointer transition-colors"
+            >
+              Reset all
+            </button>
+          </Tooltip>
         </div>
       )}
     </div>

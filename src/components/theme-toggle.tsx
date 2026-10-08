@@ -49,7 +49,7 @@ export function ThemeToggle() {
       className="inline-flex items-center p-0.5 rounded-lg border border-zinc-200/80 dark:border-white/10 bg-zinc-100/70 dark:bg-zinc-900/80 text-zinc-500 dark:text-zinc-400"
     >
       {/* Light Theme Option */}
-      <Tooltip content="Light mode">
+      <Tooltip content="Light Theme" subContent="Clean crisp white canvas" side="bottom">
         <button
           type="button"
           onClick={() => setTheme("light")}
@@ -66,7 +66,7 @@ export function ThemeToggle() {
       </Tooltip>
 
       {/* Dark Theme Option */}
-      <Tooltip content="Dark mode">
+      <Tooltip content="Dark Theme" subContent="Deep void cosmic canvas" side="bottom">
         <button
           type="button"
           onClick={() => setTheme("dark")}
@@ -83,7 +83,7 @@ export function ThemeToggle() {
       </Tooltip>
 
       {/* System Theme Option */}
-      <Tooltip content="System theme (Auto)">
+      <Tooltip content="System Preference" subContent="Auto-synchronize with OS theme" side="bottom">
         <button
           type="button"
           onClick={() => setTheme("system")}

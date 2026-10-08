@@ -5,6 +5,7 @@ import { Department, EnrollmentStatus, Student } from "@/types/student";
 import { CreateStudentSchema } from "@/lib/validations/student";
 import { useToast } from "@/components/ui/toast";
 import { X, UserPlus, AlertCircle, Loader2 } from "lucide-react";
+import { Tooltip } from "@/components/ui/tooltip";
 
 interface EnrollStudentModalProps {
   isOpen: boolean;
@@ -158,14 +159,16 @@ export function EnrollStudentModal({
               </p>
             </div>
           </div>
-          <button
-            type="button"
-            onClick={onClose}
-            className="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 p-1.5 rounded-lg transition-colors cursor-pointer"
-            aria-label="Close dialog"
-          >
-            <X className="w-4 h-4" />
-          </button>
+          <Tooltip content="Close Modal" subContent="Dismiss form (Esc)" side="left">
+            <button
+              type="button"
+              onClick={onClose}
+              className="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 p-1.5 rounded-lg transition-colors cursor-pointer"
+              aria-label="Close dialog"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </Tooltip>
         </div>
 
         {/* Server Error Alert Banner */}

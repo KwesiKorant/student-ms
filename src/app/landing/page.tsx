@@ -5,6 +5,7 @@ import Link from "next/link";
 import GlowHorizonFM from "@/components/ui/glow-horizon";
 import { AnimatedTitleFM } from "@/components/ui/glow-horizon-utils/animated-title-fm";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { Tooltip } from "@/components/ui/tooltip";
 
 export default function LandingPage() {
   const handleEnrollClick = React.useCallback(() => {
@@ -19,18 +20,24 @@ export default function LandingPage() {
       <header className="sticky top-0 z-40 w-full bg-transparent">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           {/* Left: Only ARCFIELD */}
-          <Link
-            href="/"
-            className="flex items-center gap-2.5 group hover:opacity-85 transition-opacity"
-            title="Arcfield"
+          <Tooltip
+            content="Arcfield Systems"
+            subContent="Academic Registry Portal"
+            side="bottom"
           >
-            <div className="w-7 h-7 rounded-md bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-950 font-mono font-bold text-xs flex items-center justify-center shadow-xs">
-              A
-            </div>
-            <span className="font-semibold text-xs tracking-tight text-zinc-900 dark:text-white uppercase">
-              ARCFIELD
-            </span>
-          </Link>
+            <Link
+              href="/"
+              className="flex items-center gap-2.5 group hover:opacity-85 transition-opacity"
+              title="Arcfield"
+            >
+              <div className="w-7 h-7 rounded-md bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-950 font-mono font-bold text-xs flex items-center justify-center shadow-xs">
+                A
+              </div>
+              <span className="font-semibold text-xs tracking-tight text-zinc-900 dark:text-white uppercase">
+                ARCFIELD
+              </span>
+            </Link>
+          </Tooltip>
 
           {/* Right: Only the Theme Buttons */}
           <div className="flex items-center">

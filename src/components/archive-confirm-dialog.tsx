@@ -10,6 +10,7 @@ import {
   X,
   Loader2,
 } from "lucide-react";
+import { Tooltip } from "@/components/ui/tooltip";
 
 interface ArchiveConfirmDialogProps {
   student: Student | null;
@@ -115,14 +116,16 @@ export function ArchiveConfirmDialog({
               </p>
             </div>
           </div>
-          <button
-            type="button"
-            onClick={onClose}
-            className="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 p-1.5 rounded-lg transition-colors cursor-pointer"
-            aria-label="Close dialog"
-          >
-            <X className="w-4 h-4" />
-          </button>
+          <Tooltip content="Close Modal" subContent="Dismiss prompt (Esc)" side="left">
+            <button
+              type="button"
+              onClick={onClose}
+              className="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 p-1.5 rounded-lg transition-colors cursor-pointer"
+              aria-label="Close dialog"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </Tooltip>
         </div>
 
         {/* Student Summary Callout */}
