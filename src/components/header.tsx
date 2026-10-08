@@ -57,11 +57,18 @@ export function Header({
               <span className="flex items-center gap-1">
                 <Database className="w-3.5 h-3.5 text-zinc-400" />
                 <span>
-                  Active:{" "}
+                  Total:{" "}
                   <strong className="text-zinc-800 dark:text-zinc-200">
-                    {activeStudents ?? "—"}
+                    {totalStudents ?? "—"}
                   </strong>
                 </span>
+              </span>
+              <span>·</span>
+              <span>
+                Active:{" "}
+                <strong className="text-zinc-800 dark:text-zinc-200">
+                  {activeStudents ?? "—"}
+                </strong>
               </span>
               <span>·</span>
               <span>

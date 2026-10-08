@@ -13,7 +13,6 @@ import {
   GraduationCap,
   History,
   Clock,
-  CheckCircle2,
   AlertTriangle,
   FileText,
 } from "lucide-react";

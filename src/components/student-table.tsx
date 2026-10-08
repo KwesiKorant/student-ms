@@ -3,7 +3,6 @@
 import * as React from "react";
 import { Student } from "@/types/student";
 import {
-  MoreVertical,
   Eye,
   Edit2,
   Archive,
@@ -34,7 +33,6 @@ export function StudentTable({
   onOpenEnrollModal,
 }: StudentTableProps) {
   const [copiedId, setCopiedId] = React.useState<string | null>(null);
-  const [activeMenuId, setActiveMenuId] = React.useState<string | null>(null);
 
   const copyToClipboard = (text: string, e: React.MouseEvent) => {
     e.stopPropagation();

@@ -30,12 +30,6 @@ export function ArchiveConfirmDialog({
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
 
-  React.useEffect(() => {
-    setIsHardDelete(false);
-    setConfirmInput("");
-    setErrorMessage(null);
-  }, [student, isOpen]);
-
   if (!isOpen || !student) return null;
 
   const canHardDelete = confirmInput.trim() === student.studentId;

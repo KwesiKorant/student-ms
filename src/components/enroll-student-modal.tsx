@@ -25,7 +25,7 @@ export function EnrollStudentModal({
     firstName: "",
     lastName: "",
     email: "",
-    departmentId: departments[0]?.id || "",
+    departmentId: "",
     academicYear: 1,
     gpa: "",
     dateOfBirth: "",
@@ -37,17 +37,14 @@ export function EnrollStudentModal({
   const [serverError, setServerError] = React.useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
 
-  React.useEffect(() => {
-    if (departments.length > 0 && !formData.departmentId) {
-      setFormData((prev) => ({ ...prev, departmentId: departments[0].id }));
-    }
-  }, [departments, formData.departmentId]);
-
   if (!isOpen) return null;
+
+  const currentDepartmentId = formData.departmentId || departments[0]?.id || "";
 
   const validate = () => {
     const result = CreateStudentSchema.safeParse({
       ...formData,
+      departmentId: currentDepartmentId,
       academicYear: Number(formData.academicYear),
       gpa: formData.gpa === "" ? null : Number(formData.gpa),
     });
@@ -81,7 +78,7 @@ export function EnrollStudentModal({
         firstName: formData.firstName.trim(),
         lastName: formData.lastName.trim(),
         email: formData.email.trim().toLowerCase(),
-        departmentId: formData.departmentId,
+        departmentId: currentDepartmentId,
         academicYear: Number(formData.academicYear),
         gpa: formData.gpa === "" ? null : Number(formData.gpa),
         dateOfBirth: formData.dateOfBirth || undefined,
@@ -250,7 +247,7 @@ export function EnrollStudentModal({
               </label>
               <select
                 required
-                value={formData.departmentId}
+                value={currentDepartmentId}
                 onChange={(e) =>
                   setFormData({ ...formData, departmentId: e.target.value })
                 }

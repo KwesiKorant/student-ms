@@ -12,8 +12,6 @@ import { EditStudentModal } from "@/components/edit-student-modal";
 import { ArchiveConfirmDialog } from "@/components/archive-confirm-dialog";
 import { useToast } from "@/components/ui/toast";
 import {
-  Users,
-  GraduationCap,
   ShieldCheck,
   Building2,
   FileCheck2,
@@ -40,6 +38,9 @@ export default function StudentManagementPortal() {
   const [includeArchived, setIncludeArchived] = React.useState(false);
   const [sortBy, setSortBy] = React.useState("createdAt");
   const [sortOrder, setSortOrder] = React.useState<"asc" | "desc">("desc");
+  const [currentPage, setCurrentPage] = React.useState(1);
+  const [pageSize, setPageSize] = React.useState(10);
+  const [refreshKey, setRefreshKey] = React.useState(0);
 
   // Summary Metrics
   const [metrics, setMetrics] = React.useState({
@@ -71,9 +72,10 @@ export default function StudentManagementPortal() {
   }, []);
 
   // Fetch Students Query
-  const fetchStudents = React.useCallback(
-    async (targetPage = pagination.page, targetLimit = pagination.limit) => {
-      setIsLoading(true);
+  React.useEffect(() => {
+    let ignore = false;
+
+    async function loadStudents() {
       try {
         const params = new URLSearchParams();
         if (search.trim()) params.set("search", search.trim());
@@ -82,46 +84,32 @@ export default function StudentManagementPortal() {
         if (includeArchived) params.set("includeArchived", "true");
         params.set("sortBy", sortBy);
         params.set("sortOrder", sortOrder);
-        params.set("page", String(targetPage));
-        params.set("limit", String(targetLimit));
+        params.set("page", String(currentPage));
+        params.set("limit", String(pageSize));
 
         const res = await fetch(`/api/v1/students?${params.toString()}`);
         const json = await res.json();
 
-        if (res.ok && json.success) {
+        if (!ignore && res.ok && json.success) {
           setStudents(json.data);
           if (json.pagination) {
             setPagination(json.pagination);
           }
-        } else if (res.status === 429) {
-          toast({
-            type: "error",
-            title: "Rate Limit Exceeded",
-            description: "Too many requests. Please wait a few seconds before refreshing.",
-          });
         }
       } catch (err) {
         console.error("Failed to fetch students:", err);
       } finally {
-        setIsLoading(false);
+        if (!ignore) {
+          setIsLoading(false);
+        }
       }
-    },
-    [
-      search,
-      departmentId,
-      status,
-      includeArchived,
-      sortBy,
-      sortOrder,
-      pagination.page,
-      pagination.limit,
-      toast,
-    ]
-  );
+    }
 
-  // Re-fetch when filters or sorting change
-  React.useEffect(() => {
-    fetchStudents(1, pagination.limit);
+    loadStudents();
+
+    return () => {
+      ignore = true;
+    };
   }, [
     search,
     departmentId,
@@ -129,10 +117,40 @@ export default function StudentManagementPortal() {
     includeArchived,
     sortBy,
     sortOrder,
-    pagination.limit,
+    currentPage,
+    pageSize,
+    refreshKey,
   ]);
 
-  // Load High-Level Metrics (counts)
+  // Load High-Level Metrics (counts) on mount
+  React.useEffect(() => {
+    let isSubscribed = true;
+    async function loadMetrics() {
+      try {
+        const [allRes, archivedRes] = await Promise.all([
+          fetch("/api/v1/students?includeArchived=true&limit=1"),
+          fetch("/api/v1/students?includeArchived=true&status=INACTIVE&limit=1"),
+        ]);
+        const allJson = await allRes.json();
+        const archJson = await archivedRes.json();
+
+        if (isSubscribed && allJson.pagination) {
+          setMetrics({
+            total: allJson.pagination.totalRecords,
+            active: allJson.pagination.totalRecords,
+            archived: archJson.pagination?.totalRecords ?? 0,
+          });
+        }
+      } catch {
+        // Quiet fail for metrics
+      }
+    }
+    loadMetrics();
+    return () => {
+      isSubscribed = false;
+    };
+  }, []);
+
   const refreshMetrics = React.useCallback(async () => {
     try {
       const [allRes, archivedRes] = await Promise.all([
@@ -143,19 +161,47 @@ export default function StudentManagementPortal() {
       const archJson = await archivedRes.json();
 
       if (allJson.pagination) {
-        setMetrics((prev) => ({
-          ...prev,
+        setMetrics({
           total: allJson.pagination.totalRecords,
-        }));
+          active: allJson.pagination.totalRecords,
+          archived: archJson.pagination?.totalRecords ?? 0,
+        });
       }
     } catch {
       // Quiet fail for metrics
     }
   }, []);
 
-  React.useEffect(() => {
-    refreshMetrics();
-  }, [refreshMetrics, students.length]);
+  // Filter handlers with page reset
+  const handleSearchChange = (val: string) => {
+    setSearch(val);
+    setCurrentPage(1);
+  };
+
+  const handleDepartmentChange = (val: string) => {
+    setDepartmentId(val);
+    setCurrentPage(1);
+  };
+
+  const handleStatusChange = (val: string) => {
+    setStatus(val);
+    setCurrentPage(1);
+  };
+
+  const handleIncludeArchivedChange = (val: boolean) => {
+    setIncludeArchived(val);
+    setCurrentPage(1);
+  };
+
+  const handleSortByChange = (val: string) => {
+    setSortBy(val);
+    setCurrentPage(1);
+  };
+
+  const handleSortOrderChange = (val: "asc" | "desc") => {
+    setSortOrder(val);
+    setCurrentPage(1);
+  };
 
   // Modal Handlers
   const handleStudentCreated = (newStudent: Student) => {
@@ -242,6 +288,7 @@ export default function StudentManagementPortal() {
     setDepartmentId("");
     setStatus("");
     setIncludeArchived(false);
+    setCurrentPage(1);
   };
 
   return (
@@ -293,19 +340,22 @@ export default function StudentManagementPortal() {
         <section aria-label="Directory Filters">
           <Toolbar
             search={search}
-            onSearchChange={setSearch}
+            onSearchChange={handleSearchChange}
             departmentId={departmentId}
-            onDepartmentChange={setDepartmentId}
+            onDepartmentChange={handleDepartmentChange}
             status={status}
-            onStatusChange={setStatus}
+            onStatusChange={handleStatusChange}
             includeArchived={includeArchived}
-            onIncludeArchivedChange={setIncludeArchived}
+            onIncludeArchivedChange={handleIncludeArchivedChange}
             sortBy={sortBy}
-            onSortByChange={setSortBy}
+            onSortByChange={handleSortByChange}
             sortOrder={sortOrder}
-            onSortOrderChange={setSortOrder}
+            onSortOrderChange={handleSortOrderChange}
             departments={departments}
-            onRefresh={() => fetchStudents(pagination.page, pagination.limit)}
+            onRefresh={() => {
+              setIsLoading(true);
+              setRefreshKey((k) => k + 1);
+            }}
             isLoading={isLoading}
             onResetFilters={handleResetFilters}
           />
@@ -327,10 +377,14 @@ export default function StudentManagementPortal() {
           {students.length > 0 && (
             <Pagination
               pagination={pagination}
-              onPageChange={(p) => fetchStudents(p, pagination.limit)}
+              onPageChange={(p) => {
+                setIsLoading(true);
+                setCurrentPage(p);
+              }}
               onLimitChange={(l) => {
-                setPagination((prev) => ({ ...prev, limit: l, page: 1 }));
-                fetchStudents(1, l);
+                setIsLoading(true);
+                setPageSize(l);
+                setCurrentPage(1);
               }}
             />
           )}
@@ -372,43 +426,54 @@ export default function StudentManagementPortal() {
         </section>
       </main>
 
-      {/* Modals & Dialogs */}
-      <EnrollStudentModal
-        isOpen={isEnrollModalOpen}
-        onClose={() => setIsEnrollModalOpen(false)}
-        departments={departments}
-        onStudentCreated={handleStudentCreated}
-      />
+      {/* Modals & Dialogs (Mounted conditionally for clean lifecycle and zero state loops) */}
+      {isEnrollModalOpen && (
+        <EnrollStudentModal
+          isOpen={true}
+          onClose={() => setIsEnrollModalOpen(false)}
+          departments={departments}
+          onStudentCreated={handleStudentCreated}
+        />
+      )}
 
-      <StudentDetailModal
-        student={detailStudent}
-        isOpen={detailStudent !== null}
-        onClose={() => setDetailStudent(null)}
-        onEdit={(student) => {
-          setDetailStudent(null);
-          setEditStudent(student);
-        }}
-        onArchive={(student) => {
-          setDetailStudent(null);
-          setArchiveStudent(student);
-        }}
-        onRestore={handleRestoreStudent}
-      />
+      {detailStudent && (
+        <StudentDetailModal
+          key={detailStudent.id}
+          student={detailStudent}
+          isOpen={true}
+          onClose={() => setDetailStudent(null)}
+          onEdit={(student) => {
+            setDetailStudent(null);
+            setEditStudent(student);
+          }}
+          onArchive={(student) => {
+            setDetailStudent(null);
+            setArchiveStudent(student);
+          }}
+          onRestore={handleRestoreStudent}
+        />
+      )}
 
-      <EditStudentModal
-        student={editStudent}
-        isOpen={editStudent !== null}
-        onClose={() => setEditStudent(null)}
-        departments={departments}
-        onStudentUpdated={handleStudentUpdated}
-      />
+      {editStudent && (
+        <EditStudentModal
+          key={editStudent.id}
+          student={editStudent}
+          isOpen={true}
+          onClose={() => setEditStudent(null)}
+          departments={departments}
+          onStudentUpdated={handleStudentUpdated}
+        />
+      )}
 
-      <ArchiveConfirmDialog
-        student={archiveStudent}
-        isOpen={archiveStudent !== null}
-        onClose={() => setArchiveStudent(null)}
-        onArchived={handleStudentArchived}
-      />
+      {archiveStudent && (
+        <ArchiveConfirmDialog
+          key={archiveStudent.id}
+          student={archiveStudent}
+          isOpen={true}
+          onClose={() => setArchiveStudent(null)}
+          onArchived={handleStudentArchived}
+        />
+      )}
     </div>
   );
 }

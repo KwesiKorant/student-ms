@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Department, EnrollmentStatus } from "@/types/student";
+import { Department } from "@/types/student";
 import {
   Search,
   X,
@@ -48,12 +48,14 @@ export function Toolbar({
   isLoading,
   onResetFilters,
 }: ToolbarProps) {
-  // Local input state for 250ms debounced search
+  // Sync prop changes during render without cascading useEffect renders
+  const [prevSearch, setPrevSearch] = React.useState(search);
   const [localSearch, setLocalSearch] = React.useState(search);
 
-  React.useEffect(() => {
+  if (search !== prevSearch) {
+    setPrevSearch(search);
     setLocalSearch(search);
-  }, [search]);
+  }
 
   React.useEffect(() => {
     const handler = setTimeout(() => {

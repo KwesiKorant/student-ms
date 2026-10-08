@@ -24,38 +24,20 @@ export function EditStudentModal({
   const { toast } = useToast();
 
   const [formData, setFormData] = React.useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    departmentId: "",
-    academicYear: 1,
-    gpa: "",
-    dateOfBirth: "",
-    phone: "",
-    status: "ACTIVE" as EnrollmentStatus,
+    firstName: student?.firstName ?? "",
+    lastName: student?.lastName ?? "",
+    email: student?.email ?? "",
+    departmentId: student?.departmentId ?? "",
+    academicYear: student?.academicYear ?? 1,
+    gpa: student?.gpa !== null && student?.gpa !== undefined ? String(student.gpa) : "",
+    dateOfBirth: student?.dateOfBirth ?? "",
+    phone: student?.phone ?? "",
+    status: (student?.status ?? "ACTIVE") as EnrollmentStatus,
   });
 
   const [errors, setErrors] = React.useState<Record<string, string>>({});
   const [serverError, setServerError] = React.useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
-
-  React.useEffect(() => {
-    if (student) {
-      setFormData({
-        firstName: student.firstName,
-        lastName: student.lastName,
-        email: student.email,
-        departmentId: student.departmentId,
-        academicYear: student.academicYear,
-        gpa: student.gpa !== null && student.gpa !== undefined ? String(student.gpa) : "",
-        dateOfBirth: student.dateOfBirth || "",
-        phone: student.phone || "",
-        status: student.status,
-      });
-      setErrors({});
-      setServerError(null);
-    }
-  }, [student]);
 
   if (!isOpen || !student) return null;
 

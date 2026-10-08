@@ -4,13 +4,14 @@ import * as React from "react";
 import { useTheme } from "next-themes";
 import { Sun, Moon, Monitor } from "lucide-react";
 
+// React 19 useSyncExternalStore pattern for zero-flicker hydration without cascading render
+const subscribe = () => () => {};
+const getSnapshot = () => true;
+const getServerSnapshot = () => false;
+
 export function ThemeToggle() {
   const { theme, setTheme } = useTheme();
-  const [mounted, setMounted] = React.useState(false);
-
-  React.useEffect(() => {
-    setMounted(true);
-  }, []);
+  const mounted = React.useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 
   if (!mounted) {
     return (
