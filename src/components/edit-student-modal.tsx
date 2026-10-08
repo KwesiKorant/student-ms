@@ -132,18 +132,18 @@ export function EditStudentModal({
       aria-labelledby="edit-modal-title"
       className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto"
     >
-      {/* Backdrop */}
+      {/* Backdrop - strictly zero blur for compositor efficiency */}
       <div
         onClick={onClose}
-        className="fixed inset-0 bg-black/60 backdrop-blur-xs animate-backdrop-enter"
+        className="fixed inset-0 bg-black/65 animate-backdrop-enter"
       />
 
       {/* Modal Dialog Card */}
-      <div className="relative w-full max-w-lg rounded-xl border border-zinc-200 dark:border-white/10 bg-white dark:bg-zinc-900 shadow-2xl p-6 z-10 animate-modal-enter text-zinc-900 dark:text-zinc-100 isolated-card my-8">
+      <div className="relative w-full max-w-lg rounded-2xl glass-card shadow-2xl p-6 z-10 animate-modal-enter text-zinc-900 dark:text-zinc-100 isolated-card my-8">
         {/* Header */}
         <div className="flex items-center justify-between pb-4 border-b border-zinc-100 dark:border-white/5">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-800 dark:text-zinc-200">
+            <div className="w-8 h-8 rounded-lg bg-zinc-100 dark:bg-zinc-800 border border-zinc-200/60 dark:border-white/10 flex items-center justify-center text-zinc-800 dark:text-zinc-200">
               <Edit2 className="w-4 h-4" />
             </div>
             <div>
@@ -158,7 +158,7 @@ export function EditStudentModal({
           <button
             type="button"
             onClick={onClose}
-            className="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 p-1 rounded-md transition-colors cursor-pointer"
+            className="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 p-1.5 rounded-lg transition-colors cursor-pointer"
             aria-label="Close dialog"
           >
             <X className="w-4 h-4" />

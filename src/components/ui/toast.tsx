@@ -49,7 +49,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
           <div
             key={t.id}
             role="status"
-            className="pointer-events-auto flex items-start gap-3 p-3.5 rounded-lg border border-zinc-200 dark:border-white/10 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md shadow-lg shadow-zinc-950/5 dark:shadow-black/40 text-zinc-900 dark:text-zinc-100 animate-modal-enter transition-all"
+            className="pointer-events-auto flex items-start gap-3 p-3.5 rounded-xl glass-card shadow-xl shadow-zinc-950/5 dark:shadow-black/40 text-zinc-900 dark:text-zinc-100 animate-modal-enter transition-all"
           >
             <div className="shrink-0 mt-0.5">
               {t.type === "success" && (

@@ -92,18 +92,18 @@ export function StudentDetailModal({
       aria-labelledby="detail-modal-title"
       className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto"
     >
-      {/* Backdrop */}
+      {/* Backdrop - strictly zero blur for compositor efficiency */}
       <div
         onClick={onClose}
-        className="fixed inset-0 bg-black/60 backdrop-blur-xs animate-backdrop-enter"
+        className="fixed inset-0 bg-black/65 animate-backdrop-enter"
       />
 
       {/* Modal Dialog Card */}
-      <div className="relative w-full max-w-2xl rounded-xl border border-zinc-200 dark:border-white/10 bg-white dark:bg-zinc-900 shadow-2xl p-6 z-10 animate-modal-enter text-zinc-900 dark:text-zinc-100 isolated-card my-8">
+      <div className="relative w-full max-w-2xl rounded-2xl glass-card shadow-2xl p-6 z-10 animate-modal-enter text-zinc-900 dark:text-zinc-100 isolated-card my-8">
         {/* Header Profile Bar */}
         <div className="flex items-start justify-between pb-5 border-b border-zinc-100 dark:border-white/5">
           <div className="flex items-center gap-3.5">
-            <div className="w-12 h-12 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-white/10 flex items-center justify-center font-mono text-base font-bold text-zinc-800 dark:text-zinc-200 shrink-0 shadow-xs">
+            <div className="w-12 h-12 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-zinc-200/80 dark:border-white/10 flex items-center justify-center font-mono text-base font-bold text-zinc-800 dark:text-zinc-200 shrink-0 shadow-xs">
               {initials}
             </div>
             <div>
@@ -126,7 +126,7 @@ export function StudentDetailModal({
           <button
             type="button"
             onClick={onClose}
-            className="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 p-1.5 rounded-md transition-colors cursor-pointer"
+            className="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 p-1.5 rounded-lg transition-colors cursor-pointer"
             aria-label="Close dialog"
           >
             <X className="w-4 h-4" />

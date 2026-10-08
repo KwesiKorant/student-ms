@@ -82,22 +82,22 @@ export function ArchiveConfirmDialog({
       aria-labelledby="archive-dialog-title"
       className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto"
     >
-      {/* Backdrop */}
+      {/* Backdrop - strictly zero blur for compositor efficiency */}
       <div
         onClick={onClose}
-        className="fixed inset-0 bg-black/60 backdrop-blur-xs animate-backdrop-enter"
+        className="fixed inset-0 bg-black/65 animate-backdrop-enter"
       />
 
       {/* Dialog Card */}
-      <div className="relative w-full max-w-md rounded-xl border border-zinc-200 dark:border-white/10 bg-white dark:bg-zinc-900 shadow-2xl p-6 z-10 animate-modal-enter text-zinc-900 dark:text-zinc-100 isolated-card my-8">
+      <div className="relative w-full max-w-md rounded-2xl glass-card shadow-2xl p-6 z-10 animate-modal-enter text-zinc-900 dark:text-zinc-100 isolated-card my-8">
         {/* Header */}
         <div className="flex items-start justify-between pb-3">
           <div className="flex items-center gap-3">
             <div
               className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
                 isHardDelete
-                  ? "bg-rose-100 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400"
-                  : "bg-amber-100 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400"
+                  ? "bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20"
+                  : "bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20"
               }`}
             >
               {isHardDelete ? (
@@ -108,17 +108,17 @@ export function ArchiveConfirmDialog({
             </div>
             <div>
               <h2 id="archive-dialog-title" className="text-sm font-semibold tracking-tight">
-                {isHardDelete ? "Confirm Hard Deletion" : "Archive Student Record"}
+                {isHardDelete ? "Confirm Permanent Deletion" : "Archive Student Record"}
               </h2>
               <p className="text-xs text-zinc-500 dark:text-zinc-400">
-                Institutional Lifecycle Protection
+                Institutional Lifecycle Management
               </p>
             </div>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 p-1 rounded-md transition-colors cursor-pointer"
+            className="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 p-1.5 rounded-lg transition-colors cursor-pointer"
             aria-label="Close dialog"
           >
             <X className="w-4 h-4" />

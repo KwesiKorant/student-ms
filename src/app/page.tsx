@@ -11,11 +11,7 @@ import { StudentDetailModal } from "@/components/student-detail-modal";
 import { EditStudentModal } from "@/components/edit-student-modal";
 import { ArchiveConfirmDialog } from "@/components/archive-confirm-dialog";
 import { useToast } from "@/components/ui/toast";
-import {
-  ShieldCheck,
-  Building2,
-  FileCheck2,
-} from "lucide-react";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 export default function StudentManagementPortal() {
   const { toast } = useToast();
@@ -302,142 +298,105 @@ export default function StudentManagementPortal() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 transition-colors">
-      {/* Institutional Top Navigation Header */}
-      <Header
-        onOpenEnrollModal={() => setIsEnrollModalOpen(true)}
-        totalStudents={pagination.totalRecords}
-        activeStudents={pagination.totalRecords}
-        archivedStudents={metrics.archived}
-      />
+    <TooltipProvider>
+      <div className="min-h-screen flex flex-col bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 transition-colors">
+        {/* Institutional Top Navigation Header */}
+        <Header
+          onOpenEnrollModal={() => setIsEnrollModalOpen(true)}
+          totalStudents={pagination.totalRecords}
+          activeStudents={pagination.totalRecords}
+          archivedStudents={metrics.archived}
+        />
 
-      {/* Main Content Area */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
-        {/* Title & Executive Metrics Strip */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-2">
-          <div>
-            <div className="flex items-center gap-2 mb-1">
-              <span className="px-2 py-0.5 text-[10px] font-mono tracking-widest uppercase rounded bg-zinc-200/70 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 font-semibold border border-zinc-300/50 dark:border-white/10">
-                AUSPIFY TASK 2 · ZERO-TRUST ARCHITECTURE
-              </span>
+        {/* Main Content Area */}
+        <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-5">
+          {/* Minimalist Hero Section */}
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-1 animate-text-reveal">
+            <div>
+              <h1 className="text-xl sm:text-2xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
+                Student Directory
+              </h1>
+              <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5 max-w-xl leading-relaxed">
+                Institutional academic records, departmental divisions, and lifecycle registry.
+              </p>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
-              Student Directory & Academic Registry
-            </h1>
-            <p className="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400 mt-1 max-w-2xl leading-relaxed">
-              Institutional records registry for enrollment governance, academic standing metrics, and lifecycle archival auditing.
-            </p>
-          </div>
 
-          {/* Quick Metrics Badges */}
-          <div className="flex items-center gap-3 shrink-0">
-            <div className="px-3 py-2 rounded-lg border border-zinc-200 dark:border-white/10 bg-white/70 dark:bg-zinc-900/60 backdrop-blur-xs text-xs font-mono shadow-xs">
-              <span className="text-zinc-400 text-[10px] block">TOTAL ENROLLED</span>
-              <span className="text-base font-bold text-zinc-900 dark:text-zinc-100">
-                {pagination.totalRecords}
-              </span>
-            </div>
-            <div className="px-3 py-2 rounded-lg border border-zinc-200 dark:border-white/10 bg-white/70 dark:bg-zinc-900/60 backdrop-blur-xs text-xs font-mono shadow-xs">
-              <span className="text-zinc-400 text-[10px] block">DEPARTMENTS</span>
-              <span className="text-base font-bold text-zinc-900 dark:text-zinc-100">
-                {departments.length}
-              </span>
+            {/* Subtle Inline Census Strip */}
+            <div className="flex items-center gap-2.5 text-xs font-mono text-zinc-500 dark:text-zinc-400 shrink-0">
+              <div className="px-2.5 py-1 rounded-md glass-card-subtle flex items-center gap-2">
+                <span className="text-zinc-400 text-[10px]">TOTAL</span>
+                <span className="font-semibold text-zinc-900 dark:text-zinc-100">{pagination.totalRecords}</span>
+              </div>
+              <div className="px-2.5 py-1 rounded-md glass-card-subtle flex items-center gap-2">
+                <span className="text-zinc-400 text-[10px]">DIVISIONS</span>
+                <span className="font-semibold text-zinc-900 dark:text-zinc-100">{departments.length}</span>
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* Toolbar & Filter Engine */}
-        <section aria-label="Directory Filters">
-          <Toolbar
-            search={search}
-            onSearchChange={handleSearchChange}
-            departmentId={departmentId}
-            onDepartmentChange={handleDepartmentChange}
-            status={status}
-            onStatusChange={handleStatusChange}
-            includeArchived={includeArchived}
-            onIncludeArchivedChange={handleIncludeArchivedChange}
-            sortBy={sortBy}
-            onSortByChange={handleSortByChange}
-            sortOrder={sortOrder}
-            onSortOrderChange={handleSortOrderChange}
-            departments={departments}
-            onRefresh={() => {
-              setIsLoading(true);
-              setRefreshKey((k) => k + 1);
-            }}
-            isLoading={isLoading}
-            onResetFilters={handleResetFilters}
-          />
-        </section>
-
-        {/* Student Records Data Table */}
-        <section aria-label="Student Records Table" className="space-y-3">
-          <StudentTable
-            students={students}
-            isLoading={isLoading}
-            sortBy={sortBy}
-            sortOrder={sortOrder}
-            onSort={handleSort}
-            onViewStudent={(student) => setDetailStudent(student)}
-            onEditStudent={(student) => setEditStudent(student)}
-            onArchiveStudent={(student) => setArchiveStudent(student)}
-            onRestoreStudent={handleRestoreStudent}
-            onOpenEnrollModal={() => setIsEnrollModalOpen(true)}
-          />
-
-          {/* Pagination Controls */}
-          {students.length > 0 && (
-            <Pagination
-              pagination={pagination}
-              onPageChange={(p) => {
+          {/* Toolbar & Filter Engine */}
+          <section aria-label="Directory Filters">
+            <Toolbar
+              search={search}
+              onSearchChange={handleSearchChange}
+              departmentId={departmentId}
+              onDepartmentChange={handleDepartmentChange}
+              status={status}
+              onStatusChange={handleStatusChange}
+              includeArchived={includeArchived}
+              onIncludeArchivedChange={handleIncludeArchivedChange}
+              sortBy={sortBy}
+              onSortByChange={handleSortByChange}
+              sortOrder={sortOrder}
+              onSortOrderChange={handleSortOrderChange}
+              departments={departments}
+              onRefresh={() => {
                 setIsLoading(true);
-                setCurrentPage(p);
+                setRefreshKey((k) => k + 1);
               }}
-              onLimitChange={(l) => {
-                setIsLoading(true);
-                setPageSize(l);
-                setCurrentPage(1);
-              }}
+              isLoading={isLoading}
+              onResetFilters={handleResetFilters}
             />
-          )}
-        </section>
+          </section>
 
-        {/* System Capabilities & Compliance Footer Card */}
-        <section className="pt-6 border-t border-zinc-200 dark:border-white/10 text-xs text-zinc-500 dark:text-zinc-400">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="p-3.5 rounded-lg border border-zinc-200/80 dark:border-white/5 bg-white/40 dark:bg-zinc-900/40">
-              <div className="flex items-center gap-2 font-mono text-[11px] font-semibold text-zinc-800 dark:text-zinc-200">
-                <ShieldCheck className="w-4 h-4 text-emerald-500" />
-                <span>Zero-Trust Validation</span>
-              </div>
-              <p className="mt-1 text-[11px] text-zinc-500 leading-relaxed">
-                Zod boundary sanitization with strict stripping, parameterized Prisma queries, and in-memory IP sliding-window rate limiting.
-              </p>
-            </div>
+          {/* Student Records Data Table */}
+          <section aria-label="Student Records Table" className="space-y-3">
+            <StudentTable
+              students={students}
+              isLoading={isLoading}
+              sortBy={sortBy}
+              sortOrder={sortOrder}
+              onSort={handleSort}
+              onViewStudent={(student) => setDetailStudent(student)}
+              onEditStudent={(student) => setEditStudent(student)}
+              onArchiveStudent={(student) => setArchiveStudent(student)}
+              onRestoreStudent={handleRestoreStudent}
+              onOpenEnrollModal={() => setIsEnrollModalOpen(true)}
+            />
 
-            <div className="p-3.5 rounded-lg border border-zinc-200/80 dark:border-white/5 bg-white/40 dark:bg-zinc-900/40">
-              <div className="flex items-center gap-2 font-mono text-[11px] font-semibold text-zinc-800 dark:text-zinc-200">
-                <FileCheck2 className="w-4 h-4 text-blue-500" />
-                <span>Immutable Audit Trail</span>
-              </div>
-              <p className="mt-1 text-[11px] text-zinc-500 leading-relaxed">
-                Every creation, modification, archival, and restoration action writes chronological JSON differential records to the database.
-              </p>
-            </div>
+            {/* Pagination Controls */}
+            {students.length > 0 && (
+              <Pagination
+                pagination={pagination}
+                onPageChange={(p) => {
+                  setIsLoading(true);
+                  setCurrentPage(p);
+                }}
+                onLimitChange={(l) => {
+                  setIsLoading(true);
+                  setPageSize(l);
+                  setCurrentPage(1);
+                }}
+              />
+            )}
+          </section>
 
-            <div className="p-3.5 rounded-lg border border-zinc-200/80 dark:border-white/5 bg-white/40 dark:bg-zinc-900/40">
-              <div className="flex items-center gap-2 font-mono text-[11px] font-semibold text-zinc-800 dark:text-zinc-200">
-                <Building2 className="w-4 h-4 text-purple-500" />
-                <span>Dual-Engine Persistence</span>
-              </div>
-              <p className="mt-1 text-[11px] text-zinc-500 leading-relaxed">
-                Seamless local SQLite zero-config evaluation ready for instant migration to enterprise PostgreSQL in production.
-              </p>
-            </div>
-          </div>
-        </section>
-      </main>
+          {/* Minimalist Institutional Footer */}
+          <footer className="pt-8 pb-4 border-t border-zinc-200/60 dark:border-white/5 flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] font-mono text-zinc-400 dark:text-zinc-500">
+            <span>ARCFIELD SYSTEMS · ACADEMIC REGISTRY</span>
+            <span>SYSTEM ENCRYPTED · PARALLEL PERSISTENCE</span>
+          </footer>
+        </main>
 
       {/* Modals & Dialogs (Mounted conditionally for clean lifecycle and zero state loops) */}
       {isEnrollModalOpen && (
@@ -487,6 +446,7 @@ export default function StudentManagementPortal() {
           onArchived={handleStudentArchived}
         />
       )}
-    </div>
+      </div>
+    </TooltipProvider>
   );
 }

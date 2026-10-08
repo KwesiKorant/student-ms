@@ -10,6 +10,7 @@ import {
   ArrowUpDown,
   Filter,
 } from "lucide-react";
+import { Tooltip } from "@/components/ui/tooltip";
 
 interface ToolbarProps {
   search: string;
@@ -74,44 +75,50 @@ export function Toolbar({
     includeArchived;
 
   return (
-    <div className="w-full space-y-3">
-      <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
+    <div className="w-full space-y-2.5">
+      <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-2.5 p-2 rounded-xl glass-card">
         {/* Search Bar */}
         <div className="relative flex-1 min-w-[260px]">
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-zinc-400">
-            <Search className="w-4 h-4" />
+            <Search className="w-3.5 h-3.5" />
           </div>
           <input
             type="text"
             value={localSearch}
             onChange={(e) => setLocalSearch(e.target.value)}
             placeholder="Search students by name, email, or ID (e.g. STU-2026)..."
-            className="w-full pl-9 pr-9 py-2 text-xs md:text-sm rounded-lg border border-zinc-200 dark:border-white/10 bg-white dark:bg-zinc-900/90 text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-400 dark:focus:ring-zinc-600 transition-all shadow-xs"
+            className="w-full pl-8.5 pr-14 py-1.5 text-xs rounded-lg border border-zinc-200/80 dark:border-white/10 bg-white/70 dark:bg-zinc-900/70 text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-400 dark:focus:ring-zinc-600 transition-all font-sans"
           />
-          {localSearch && (
+          {localSearch ? (
             <button
               type="button"
               onClick={() => {
                 setLocalSearch("");
                 onSearchChange("");
               }}
-              className="absolute inset-y-0 right-0 pr-3 flex items-center text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 cursor-pointer"
+              className="absolute inset-y-0 right-0 pr-2.5 flex items-center text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 cursor-pointer"
               title="Clear search query"
               aria-label="Clear search query"
             >
               <X className="w-3.5 h-3.5" />
             </button>
+          ) : (
+            <div className="absolute inset-y-0 right-0 pr-2.5 flex items-center pointer-events-none">
+              <kbd className="hidden sm:inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-mono font-medium text-zinc-400 bg-zinc-100 dark:bg-zinc-800 border border-zinc-200/60 dark:border-white/5">
+                /
+              </kbd>
+            </div>
           )}
         </div>
 
         {/* Filter Controls Group */}
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex flex-wrap items-center gap-1.5">
           {/* Department Filter */}
           <select
             value={departmentId}
             onChange={(e) => onDepartmentChange(e.target.value)}
             aria-label="Filter by department"
-            className="px-2.5 py-2 text-xs rounded-lg border border-zinc-200 dark:border-white/10 bg-white dark:bg-zinc-900 text-zinc-800 dark:text-zinc-200 focus:outline-none focus:ring-1 focus:ring-zinc-400 cursor-pointer shadow-xs"
+            className="px-2.5 py-1.5 text-xs rounded-lg border border-zinc-200/80 dark:border-white/10 bg-white/70 dark:bg-zinc-900/70 text-zinc-800 dark:text-zinc-200 focus:outline-none focus:ring-1 focus:ring-zinc-400 cursor-pointer transition-colors"
           >
             <option value="">All Departments</option>
             {departments.map((dept) => (
@@ -126,7 +133,7 @@ export function Toolbar({
             value={status}
             onChange={(e) => onStatusChange(e.target.value)}
             aria-label="Filter by enrollment status"
-            className="px-2.5 py-2 text-xs rounded-lg border border-zinc-200 dark:border-white/10 bg-white dark:bg-zinc-900 text-zinc-800 dark:text-zinc-200 focus:outline-none focus:ring-1 focus:ring-zinc-400 cursor-pointer shadow-xs"
+            className="px-2.5 py-1.5 text-xs rounded-lg border border-zinc-200/80 dark:border-white/10 bg-white/70 dark:bg-zinc-900/70 text-zinc-800 dark:text-zinc-200 focus:outline-none focus:ring-1 focus:ring-zinc-400 cursor-pointer transition-colors"
           >
             <option value="">All Statuses</option>
             <option value="ACTIVE">Active</option>
@@ -140,7 +147,7 @@ export function Toolbar({
             value={sortBy}
             onChange={(e) => onSortByChange(e.target.value)}
             aria-label="Sort records by"
-            className="hidden sm:inline-block px-2.5 py-2 text-xs rounded-lg border border-zinc-200 dark:border-white/10 bg-white dark:bg-zinc-900 text-zinc-800 dark:text-zinc-200 focus:outline-none focus:ring-1 focus:ring-zinc-400 cursor-pointer shadow-xs"
+            className="hidden sm:inline-block px-2.5 py-1.5 text-xs rounded-lg border border-zinc-200/80 dark:border-white/10 bg-white/70 dark:bg-zinc-900/70 text-zinc-800 dark:text-zinc-200 focus:outline-none focus:ring-1 focus:ring-zinc-400 cursor-pointer transition-colors"
           >
             <option value="createdAt">Date Enrolled</option>
             <option value="name">Full Name</option>
@@ -151,56 +158,60 @@ export function Toolbar({
           </select>
 
           {/* Sort Order Toggle */}
-          <button
-            type="button"
-            onClick={() => onSortOrderChange(sortOrder === "asc" ? "desc" : "asc")}
-            title={`Sort order: ${sortOrder.toUpperCase()} (Click to toggle)`}
-            aria-label={`Toggle sort direction, currently ${sortOrder.toUpperCase()}`}
-            className="tap-target inline-flex items-center gap-1 px-2.5 py-2 text-xs rounded-lg border border-zinc-200 dark:border-white/10 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800 cursor-pointer shadow-xs"
-          >
-            <ArrowUpDown className="w-3.5 h-3.5" />
-            <span className="font-mono text-[11px] uppercase">{sortOrder}</span>
-          </button>
+          <Tooltip content={`Toggle order (currently ${sortOrder.toUpperCase()})`}>
+            <button
+              type="button"
+              onClick={() => onSortOrderChange(sortOrder === "asc" ? "desc" : "asc")}
+              aria-label={`Toggle sort direction, currently ${sortOrder.toUpperCase()}`}
+              className="tap-target inline-flex items-center gap-1 px-2.5 py-1.5 text-xs rounded-lg border border-zinc-200/80 dark:border-white/10 bg-white/70 dark:bg-zinc-900/70 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100/80 dark:hover:bg-zinc-800/80 cursor-pointer transition-colors"
+            >
+              <ArrowUpDown className="w-3.5 h-3.5 text-zinc-500" />
+              <span className="font-mono text-[11px] uppercase tracking-wider">{sortOrder}</span>
+            </button>
+          </Tooltip>
 
           {/* Include Archived Toggle */}
-          <label className="tap-target inline-flex items-center gap-1.5 px-2.5 py-2 text-xs rounded-lg border border-zinc-200 dark:border-white/10 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800 cursor-pointer select-none shadow-xs">
-            <input
-              type="checkbox"
-              checked={includeArchived}
-              onChange={(e) => onIncludeArchivedChange(e.target.checked)}
-              className="rounded border-zinc-300 dark:border-zinc-700 text-zinc-900 focus:ring-zinc-500 cursor-pointer"
-            />
-            <Archive className="w-3.5 h-3.5 text-zinc-400" />
-            <span className="text-[11px]">Archived</span>
-          </label>
+          <Tooltip content="Show archived records alongside active registry">
+            <label className="tap-target inline-flex items-center gap-1.5 px-2.5 py-1.5 text-xs rounded-lg border border-zinc-200/80 dark:border-white/10 bg-white/70 dark:bg-zinc-900/70 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100/80 dark:hover:bg-zinc-800/80 cursor-pointer select-none transition-colors">
+              <input
+                type="checkbox"
+                checked={includeArchived}
+                onChange={(e) => onIncludeArchivedChange(e.target.checked)}
+                className="rounded border-zinc-300 dark:border-zinc-700 text-zinc-900 focus:ring-zinc-500 cursor-pointer"
+              />
+              <Archive className="w-3.5 h-3.5 text-zinc-400" />
+              <span className="text-[11px]">Archived</span>
+            </label>
+          </Tooltip>
 
           {/* Refresh Action */}
-          <button
-            type="button"
-            onClick={onRefresh}
-            disabled={isLoading}
-            title="Refresh student records"
-            aria-label="Refresh student records"
-            className="tap-target p-2 rounded-lg border border-zinc-200 dark:border-white/10 bg-white dark:bg-zinc-900 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-zinc-50 dark:hover:bg-zinc-800 disabled:opacity-50 cursor-pointer shadow-xs"
-          >
-            <RotateCw className={`w-3.5 h-3.5 ${isLoading ? "animate-spin" : ""}`} />
-          </button>
+          <Tooltip content="Refresh directory">
+            <button
+              type="button"
+              onClick={onRefresh}
+              disabled={isLoading}
+              aria-label="Refresh student records"
+              className="tap-target p-1.5 rounded-lg border border-zinc-200/80 dark:border-white/10 bg-white/70 dark:bg-zinc-900/70 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-zinc-100/80 dark:hover:bg-zinc-800/80 disabled:opacity-50 cursor-pointer transition-colors"
+            >
+              <RotateCw className={`w-3.5 h-3.5 ${isLoading ? "animate-spin" : ""}`} />
+            </button>
+          </Tooltip>
         </div>
       </div>
 
       {/* Active Filter Badges & Reset Bar */}
       {hasActiveFilters && (
-        <div className="flex flex-wrap items-center gap-1.5 pt-1 text-xs">
+        <div className="flex flex-wrap items-center gap-1.5 px-1 text-xs">
           <span className="text-zinc-400 text-[11px] font-mono flex items-center gap-1 mr-1">
             <Filter className="w-3 h-3" /> Filters:
           </span>
 
           {search.trim() !== "" && (
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 text-[11px] border border-zinc-200 dark:border-white/10">
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-zinc-100 dark:bg-zinc-800/80 text-zinc-700 dark:text-zinc-300 text-[11px] border border-zinc-200 dark:border-white/10">
               Query: &quot;{search}&quot;
               <button
                 onClick={() => onSearchChange("")}
-                className="hover:text-zinc-900 dark:hover:text-white cursor-pointer"
+                className="hover:text-zinc-900 dark:hover:text-white cursor-pointer ml-0.5"
               >
                 <X className="w-3 h-3" />
               </button>
@@ -208,11 +219,11 @@ export function Toolbar({
           )}
 
           {departmentId !== "" && (
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 text-[11px] border border-zinc-200 dark:border-white/10">
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-zinc-100 dark:bg-zinc-800/80 text-zinc-700 dark:text-zinc-300 text-[11px] border border-zinc-200 dark:border-white/10">
               Dept: {departments.find((d) => d.id === departmentId)?.code || departmentId}
               <button
                 onClick={() => onDepartmentChange("")}
-                className="hover:text-zinc-900 dark:hover:text-white cursor-pointer"
+                className="hover:text-zinc-900 dark:hover:text-white cursor-pointer ml-0.5"
               >
                 <X className="w-3 h-3" />
               </button>
@@ -220,11 +231,11 @@ export function Toolbar({
           )}
 
           {status !== "" && (
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 text-[11px] border border-zinc-200 dark:border-white/10">
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-zinc-100 dark:bg-zinc-800/80 text-zinc-700 dark:text-zinc-300 text-[11px] border border-zinc-200 dark:border-white/10">
               Status: {status}
               <button
                 onClick={() => onStatusChange("")}
-                className="hover:text-zinc-900 dark:hover:text-white cursor-pointer"
+                className="hover:text-zinc-900 dark:hover:text-white cursor-pointer ml-0.5"
               >
                 <X className="w-3 h-3" />
               </button>
@@ -232,11 +243,11 @@ export function Toolbar({
           )}
 
           {includeArchived && (
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 text-[11px] border border-amber-200 dark:border-amber-800/40">
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-700 dark:text-amber-400 text-[11px] border border-amber-500/20">
               Showing Archived
               <button
                 onClick={() => onIncludeArchivedChange(false)}
-                className="hover:text-amber-900 dark:hover:text-amber-200 cursor-pointer"
+                className="hover:text-amber-900 dark:hover:text-amber-200 cursor-pointer ml-0.5"
               >
                 <X className="w-3 h-3" />
               </button>
@@ -246,7 +257,7 @@ export function Toolbar({
           <button
             type="button"
             onClick={onResetFilters}
-            className="text-[11px] font-medium text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 underline underline-offset-2 ml-1 cursor-pointer"
+            className="text-[11px] font-medium text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 underline underline-offset-2 ml-1 cursor-pointer transition-colors"
           >
             Reset all
           </button>
