@@ -65,20 +65,21 @@ export default function GlowHorizonFM({
         baseBlur: 45,
       }
     : {
-        // Light mode vice-versa: Canvas (both top and bottom) is clean white (#fafafa),
-        // while the horizon arc itself takes the substantial deep black tones.
+        // Light mode vice-versa: Wide, expansive atmospheric spread and soft multi-tier feathering
+        // across the clean white canvas (#fafafa).
         crest: "#09090b", // deep black defined horizon rim
-        crestShadow: "0px 10px 42px 0px rgba(0, 0, 0, 0.45), 0px 3px 14px 0px rgba(0, 0, 0, 0.28)",
-        crestSize: "134%",
-        aura: "rgba(9, 9, 11, 0.38)", // substantial dark atmospheric body
-        auraSize: "124%",
-        auraBlur: 32,
-        glow: "rgba(24, 24, 27, 0.28)", // velvety charcoal feathering
-        glowSize: "128%",
-        glowBlur: 22,
-        base: "#fafafa", // canvas matching inner body (keeps top clean white)
-        baseSize: "118%",
-        baseBlur: 20,
+        crestShadow:
+          "0px 20px 72px 0px rgba(0, 0, 0, 0.36), 0px 8px 36px 0px rgba(0, 0, 0, 0.20), 0px 2px 12px 0px rgba(0, 0, 0, 0.14)",
+        crestSize: "135%",
+        aura: "rgba(9, 9, 11, 0.28)", // expansive atmospheric diffusion
+        auraSize: "122%",
+        auraBlur: 54,
+        glow: "rgba(24, 24, 27, 0.22)", // wide velvety ambient haze
+        glowSize: "130%",
+        glowBlur: 40,
+        base: "#fafafa", // canvas matching inner body with wide soft feathering
+        baseSize: "114%",
+        baseBlur: 46,
       };
 
   return (
