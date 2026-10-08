@@ -65,20 +65,20 @@ export default function GlowHorizonFM({
         baseBlur: 45,
       }
     : {
-        // Light mode: Preserve exact design language (brilliant white glowing crest & atmospheric halo).
-        // Calibrated deep black body with substantial fullness (size 128%, blur 24px) so it never looks thin against the white canvas.
-        crest: "#FFFFFF",
-        crestShadow: "0px -3px 30px 0px rgba(255, 255, 255, 0.95), 0px 6px 24px 0px rgba(0, 0, 0, 0.14)",
-        crestSize: "132%",
-        aura: "rgba(255, 255, 255, 0.45)", // luminous silver halo
-        auraSize: "122%",
-        auraBlur: 28,
-        glow: "rgba(212, 212, 216, 0.35)", // zinc-300 diffuse sheen
-        glowSize: "126%",
-        glowBlur: 20,
-        base: "#000000", // rich substantial black canopy (not eroded by white)
-        baseSize: "128%",
-        baseBlur: 24,
+        // Light mode vice-versa: Canvas (both top and bottom) is clean white (#fafafa),
+        // while the horizon arc itself takes the substantial deep black tones.
+        crest: "#09090b", // deep black defined horizon rim
+        crestShadow: "0px 10px 42px 0px rgba(0, 0, 0, 0.45), 0px 3px 14px 0px rgba(0, 0, 0, 0.28)",
+        crestSize: "134%",
+        aura: "rgba(9, 9, 11, 0.38)", // substantial dark atmospheric body
+        auraSize: "124%",
+        auraBlur: 32,
+        glow: "rgba(24, 24, 27, 0.28)", // velvety charcoal feathering
+        glowSize: "128%",
+        glowBlur: 22,
+        base: "#fafafa", // canvas matching inner body (keeps top clean white)
+        baseSize: "118%",
+        baseBlur: 20,
       };
 
   return (

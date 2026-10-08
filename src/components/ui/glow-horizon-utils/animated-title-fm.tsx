@@ -33,10 +33,10 @@ export function AnimatedTitleFM({
         transition={{ duration: 0.8, ease: EASE, delay: 0.25 }}
         className="space-y-3"
       >
-        <h1 className="text-7xl sm:text-8xl md:text-9xl lg:text-[10.5rem] font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white via-zinc-200 to-zinc-400 font-sans select-none leading-none drop-shadow-sm">
+        <h1 className="text-7xl sm:text-8xl md:text-9xl lg:text-[10.5rem] font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-zinc-950 via-zinc-800 to-zinc-500 dark:from-white dark:via-zinc-200 dark:to-zinc-400 font-sans select-none leading-none drop-shadow-sm">
           SMS
         </h1>
-        <p className="text-base sm:text-lg md:text-xl font-medium tracking-tight text-zinc-300 dark:text-zinc-400 select-none">
+        <p className="text-base sm:text-lg md:text-xl font-medium tracking-tight text-zinc-600 dark:text-zinc-400 select-none">
           Student Management System
         </p>
       </motion.div>
