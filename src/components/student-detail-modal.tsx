@@ -16,7 +16,6 @@ import {
   AlertTriangle,
   FileText,
 } from "lucide-react";
-import { Tooltip } from "@/components/ui/tooltip";
 
 interface StudentDetailModalProps {
   student: Student | null;
@@ -124,16 +123,14 @@ export function StudentDetailModal({
             </div>
           </div>
 
-          <Tooltip content="Close Modal" subContent="Dismiss view (Esc)" side="left">
-            <button
-              type="button"
-              onClick={onClose}
-              className="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 p-1.5 rounded-lg transition-colors cursor-pointer"
-              aria-label="Close dialog"
-            >
-              <X className="w-4 h-4" />
-            </button>
-          </Tooltip>
+          <button
+            type="button"
+            onClick={onClose}
+            className="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 p-1.5 rounded-lg transition-colors cursor-pointer"
+            aria-label="Close dialog"
+          >
+            <X className="w-4 h-4" />
+          </button>
         </div>
 
         {/* Archival Alert Notice (if archived) */}
@@ -365,33 +362,29 @@ export function StudentDetailModal({
         <div className="flex items-center justify-between gap-3 pt-5 mt-4 border-t border-zinc-100 dark:border-white/5 text-xs">
           <div>
             {student.isArchived ? (
-              <Tooltip content="Restore Student" subContent="Move record back to active roster" side="top">
-                <button
-                  type="button"
-                  onClick={() => {
-                    onClose();
-                    onRestore(student);
-                  }}
-                  className="tap-target inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-amber-300 dark:border-amber-800 text-amber-700 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-950/40 cursor-pointer font-medium"
-                >
-                  <RotateCcw className="w-3.5 h-3.5" />
-                  <span>Restore Student</span>
-                </button>
-              </Tooltip>
+              <button
+                type="button"
+                onClick={() => {
+                  onClose();
+                  onRestore(student);
+                }}
+                className="tap-target inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-amber-300 dark:border-amber-800 text-amber-700 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-950/40 cursor-pointer font-medium"
+              >
+                <RotateCcw className="w-3.5 h-3.5" />
+                <span>Restore Student</span>
+              </button>
             ) : (
-              <Tooltip content="Archive Student" subContent="Soft-archive candidate from active view" side="top">
-                <button
-                  type="button"
-                  onClick={() => {
-                    onClose();
-                    onArchive(student);
-                  }}
-                  className="tap-target inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-zinc-200 dark:border-white/10 text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 cursor-pointer font-medium"
-                >
-                  <Archive className="w-3.5 h-3.5" />
-                  <span>Archive Student</span>
-                </button>
-              </Tooltip>
+              <button
+                type="button"
+                onClick={() => {
+                  onClose();
+                  onArchive(student);
+                }}
+                className="tap-target inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-zinc-200 dark:border-white/10 text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 cursor-pointer font-medium"
+              >
+                <Archive className="w-3.5 h-3.5" />
+                <span>Archive Student</span>
+              </button>
             )}
           </div>
 
@@ -403,19 +396,17 @@ export function StudentDetailModal({
             >
               Close
             </button>
-            <Tooltip content="Edit Record" subContent="Modify biographical & academic details" side="top">
-              <button
-                type="button"
-                onClick={() => {
-                  onClose();
-                  onEdit(student);
-                }}
-                className="tap-target inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-zinc-900 hover:bg-zinc-800 dark:bg-zinc-100 dark:hover:bg-zinc-200 text-white dark:text-zinc-900 font-medium cursor-pointer"
-              >
-                <Edit2 className="w-3.5 h-3.5" />
-                <span>Edit Details</span>
-              </button>
-            </Tooltip>
+            <button
+              type="button"
+              onClick={() => {
+                onClose();
+                onEdit(student);
+              }}
+              className="tap-target inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-zinc-900 hover:bg-zinc-800 dark:bg-zinc-100 dark:hover:bg-zinc-200 text-white dark:text-zinc-900 font-medium cursor-pointer"
+            >
+              <Edit2 className="w-3.5 h-3.5" />
+              <span>Edit Details</span>
+            </button>
           </div>
         </div>
       </div>

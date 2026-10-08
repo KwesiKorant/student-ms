@@ -149,16 +149,14 @@ export function StudentTable({
         <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1 max-w-sm mx-auto">
           No student profiles match your search or filter configuration. Reset filters or enroll a new candidate.
         </p>
-        <Tooltip content="Enroll Student" subContent="Open candidate enrollment form" side="top">
-          <button
-            type="button"
-            onClick={onOpenEnrollModal}
-            className="tap-target mt-4 inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg bg-zinc-900 hover:bg-zinc-800 dark:bg-zinc-100 dark:hover:bg-zinc-200 text-white dark:text-zinc-900 transition-colors cursor-pointer"
-          >
-            <GraduationCap className="w-3.5 h-3.5" />
-            Enroll New Student
-          </button>
-        </Tooltip>
+        <button
+          type="button"
+          onClick={onOpenEnrollModal}
+          className="tap-target mt-4 inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg bg-zinc-900 hover:bg-zinc-800 dark:bg-zinc-100 dark:hover:bg-zinc-200 text-white dark:text-zinc-900 transition-colors cursor-pointer"
+        >
+          <GraduationCap className="w-3.5 h-3.5" />
+          Enroll New Student
+        </button>
       </div>
     );
   }
@@ -171,24 +169,18 @@ export function StudentTable({
         onClick={() => onSort?.(field)}
         aria-sort={isCurrent ? (sortOrder === "asc" ? "ascending" : "descending") : undefined}
       >
-        <Tooltip
-          content={`Sort by ${label}`}
-          subContent={isCurrent ? `Active: ${(sortOrder || "asc").toUpperCase()} (Click to toggle)` : "Click to sort table"}
-          side="top"
-        >
-          <div className="inline-flex items-center gap-1.5 cursor-pointer">
-            <span>{label}</span>
-            {isCurrent ? (
-              sortOrder === "asc" ? (
-                <ArrowUp className="w-3 h-3 text-zinc-900 dark:text-zinc-100" />
-              ) : (
-                <ArrowDown className="w-3 h-3 text-zinc-900 dark:text-zinc-100" />
-              )
-            ) : onSort ? (
-              <ArrowUpDown className="w-2.5 h-2.5 opacity-30 hover:opacity-100 transition-opacity" />
-            ) : null}
-          </div>
-        </Tooltip>
+        <div className="inline-flex items-center gap-1.5 cursor-pointer">
+          <span>{label}</span>
+          {isCurrent ? (
+            sortOrder === "asc" ? (
+              <ArrowUp className="w-3 h-3 text-zinc-900 dark:text-zinc-100" />
+            ) : (
+              <ArrowDown className="w-3 h-3 text-zinc-900 dark:text-zinc-100" />
+            )
+          ) : onSort ? (
+            <ArrowUpDown className="w-2.5 h-2.5 opacity-30 hover:opacity-100 transition-opacity" />
+          ) : null}
+        </div>
       </th>
     );
   };
@@ -266,64 +258,28 @@ export function StudentTable({
 
                   {/* Department */}
                   <td className="py-3 px-4 hidden md:table-cell whitespace-nowrap">
-                    <Tooltip
-                      content={student.department?.name || "General Studies"}
-                      subContent={`Department Code: ${student.department?.code || "GEN"}`}
-                      side="top"
-                    >
-                      <div className="inline-flex items-center gap-1.5 cursor-help">
-                        <span className="px-1.5 py-0.2 rounded text-[10px] font-mono font-bold bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-200/80 dark:border-white/10">
-                          {student.department?.code || "GEN"}
-                        </span>
-                        <span className="text-zinc-600 dark:text-zinc-300 text-xs truncate max-w-[150px]">
-                          {student.department?.name || "General"}
-                        </span>
-                      </div>
-                    </Tooltip>
+                    <div className="inline-flex items-center gap-1.5">
+                      <span className="px-1.5 py-0.2 rounded text-[10px] font-mono font-bold bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-200/80 dark:border-white/10">
+                        {student.department?.code || "GEN"}
+                      </span>
+                      <span className="text-zinc-600 dark:text-zinc-300 text-xs truncate max-w-[150px]">
+                        {student.department?.name || "General"}
+                      </span>
+                    </div>
                   </td>
 
                   {/* Academic Year */}
                   <td className="py-3 px-4 hidden sm:table-cell whitespace-nowrap font-mono text-zinc-600 dark:text-zinc-300">
-                    <Tooltip
-                      content={`Academic Year ${student.academicYear}`}
-                      subContent={
-                        student.academicYear === 1
-                          ? "Freshman Level"
-                          : student.academicYear === 2
-                          ? "Sophomore Level"
-                          : student.academicYear === 3
-                          ? "Junior Level"
-                          : "Senior / Final Year"
-                      }
-                      side="top"
-                    >
-                      <span className="cursor-help">Year {student.academicYear}</span>
-                    </Tooltip>
+                    Year {student.academicYear}
                   </td>
 
                   {/* GPA */}
                   <td className="py-3 px-4 whitespace-nowrap font-mono">
-                    <Tooltip
-                      content="Cumulative GPA"
-                      subContent={
-                        student.gpa === null || student.gpa === undefined
-                          ? "GPA not evaluated yet"
-                          : student.gpa >= 3.5
-                          ? "First Class / High Distinction"
-                          : student.gpa >= 3.0
-                          ? "Good Academic Standing"
-                          : student.gpa >= 2.0
-                          ? "Satisfactory Progress"
-                          : "Academic Probation Risk"
-                      }
-                      side="top"
-                    >
-                      <span className={`${getGpaColor(student.gpa)} cursor-help`}>
-                        {student.gpa !== null && student.gpa !== undefined
-                          ? student.gpa.toFixed(2)
-                          : "—"}
-                      </span>
-                    </Tooltip>
+                    <span className={getGpaColor(student.gpa)}>
+                      {student.gpa !== null && student.gpa !== undefined
+                        ? student.gpa.toFixed(2)
+                        : "—"}
+                    </span>
                   </td>
 
                   {/* Status */}

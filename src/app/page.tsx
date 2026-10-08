@@ -11,7 +11,6 @@ import { StudentDetailModal } from "@/components/student-detail-modal";
 import { EditStudentModal } from "@/components/edit-student-modal";
 import { ArchiveConfirmDialog } from "@/components/archive-confirm-dialog";
 import { useToast } from "@/components/ui/toast";
-import { Tooltip } from "@/components/ui/tooltip";
 import { useSearchParams } from "next/navigation";
 
 function EnrollUrlWatcher({ onOpen }: { onOpen: () => void }) {
@@ -373,18 +372,14 @@ export default function StudentManagementPortal() {
 
             {/* Subtle Inline Census Strip */}
             <div className="flex items-center gap-2.5 text-xs font-mono text-zinc-500 dark:text-zinc-400 shrink-0">
-              <Tooltip content="Registry Population" subContent="Total student records matching active filters" side="bottom">
-                <div className="px-2.5 py-1 rounded-md glass-card-subtle flex items-center gap-2 cursor-help">
-                  <span className="text-zinc-400 text-[10px]">TOTAL</span>
-                  <span className="font-semibold text-zinc-900 dark:text-zinc-100">{pagination.totalRecords}</span>
-                </div>
-              </Tooltip>
-              <Tooltip content="Academic Divisions" subContent="Active faculties & departmental divisions" side="bottom">
-                <div className="px-2.5 py-1 rounded-md glass-card-subtle flex items-center gap-2 cursor-help">
-                  <span className="text-zinc-400 text-[10px]">DIVISIONS</span>
-                  <span className="font-semibold text-zinc-900 dark:text-zinc-100">{departments.length}</span>
-                </div>
-              </Tooltip>
+              <div className="px-2.5 py-1 rounded-md glass-card-subtle flex items-center gap-2">
+                <span className="text-zinc-400 text-[10px]">TOTAL</span>
+                <span className="font-semibold text-zinc-900 dark:text-zinc-100">{pagination.totalRecords}</span>
+              </div>
+              <div className="px-2.5 py-1 rounded-md glass-card-subtle flex items-center gap-2">
+                <span className="text-zinc-400 text-[10px]">DIVISIONS</span>
+                <span className="font-semibold text-zinc-900 dark:text-zinc-100">{departments.length}</span>
+              </div>
             </div>
           </div>
 

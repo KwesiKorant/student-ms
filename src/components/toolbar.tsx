@@ -104,11 +104,12 @@ export function Toolbar({
             </button>
           ) : (
             <div className="absolute inset-y-0 right-0 pr-2.5 flex items-center">
-              <Tooltip content="Quick Focus" subContent="Press / to search" side="top">
-                <kbd className="hidden sm:inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-mono font-medium text-zinc-400 bg-zinc-100 dark:bg-zinc-800 border border-zinc-200/60 dark:border-white/5 cursor-help">
-                  /
-                </kbd>
-              </Tooltip>
+              <kbd
+                title="Press / to search"
+                className="hidden sm:inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-mono font-medium text-zinc-400 bg-zinc-100 dark:bg-zinc-800 border border-zinc-200/60 dark:border-white/5"
+              >
+                /
+              </kbd>
             </div>
           )}
         </div>
@@ -160,21 +161,15 @@ export function Toolbar({
           </select>
 
           {/* Sort Order Toggle */}
-          <Tooltip
-            content={`Sort Direction: ${sortOrder.toUpperCase()}`}
-            subContent={sortOrder === "asc" ? "Ascending order (A→Z, 0→9)" : "Descending order (Z→A, 9→0)"}
-            side="top"
+          <button
+            type="button"
+            onClick={() => onSortOrderChange(sortOrder === "asc" ? "desc" : "asc")}
+            aria-label={`Toggle sort direction, currently ${sortOrder.toUpperCase()}`}
+            className="tap-target inline-flex items-center gap-1 px-2.5 py-1.5 text-xs rounded-lg border border-zinc-200/80 dark:border-white/10 bg-white/70 dark:bg-zinc-900/70 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100/80 dark:hover:bg-zinc-800/80 cursor-pointer transition-colors"
           >
-            <button
-              type="button"
-              onClick={() => onSortOrderChange(sortOrder === "asc" ? "desc" : "asc")}
-              aria-label={`Toggle sort direction, currently ${sortOrder.toUpperCase()}`}
-              className="tap-target inline-flex items-center gap-1 px-2.5 py-1.5 text-xs rounded-lg border border-zinc-200/80 dark:border-white/10 bg-white/70 dark:bg-zinc-900/70 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100/80 dark:hover:bg-zinc-800/80 cursor-pointer transition-colors"
-            >
-              <ArrowUpDown className="w-3.5 h-3.5 text-zinc-500" />
-              <span className="font-mono text-[11px] uppercase tracking-wider">{sortOrder}</span>
-            </button>
-          </Tooltip>
+            <ArrowUpDown className="w-3.5 h-3.5 text-zinc-500" />
+            <span className="font-mono text-[11px] uppercase tracking-wider">{sortOrder}</span>
+          </button>
 
           {/* Include Archived Toggle */}
           <Tooltip
