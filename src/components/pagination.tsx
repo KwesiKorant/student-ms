@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { PaginationMeta } from "@/types/student";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, ChevronDown } from "lucide-react";
 
 interface PaginationProps {
   pagination: PaginationMeta;
@@ -39,16 +39,19 @@ export function Pagination({
         {/* Page size dropdown */}
         <div className="flex items-center gap-1.5 font-mono">
           <span>Rows:</span>
-          <select
-            value={limit}
-            onChange={(e) => onLimitChange(Number(e.target.value))}
-            aria-label="Records per page"
-            className="px-2 py-1 text-xs rounded border border-zinc-200 dark:border-white/10 bg-white dark:bg-zinc-900 text-zinc-800 dark:text-zinc-200 focus:outline-none focus:ring-1 focus:ring-zinc-400 cursor-pointer"
-          >
-            <option value={10}>10</option>
-            <option value={25}>25</option>
-            <option value={50}>50</option>
-          </select>
+          <div className="relative inline-flex items-center">
+            <select
+              value={limit}
+              onChange={(e) => onLimitChange(Number(e.target.value))}
+              aria-label="Records per page"
+              className="appearance-none pl-2 pr-6 py-1 text-xs rounded border border-zinc-200 dark:border-white/10 bg-white dark:bg-zinc-900 text-zinc-800 dark:text-zinc-200 focus:outline-none focus:ring-1 focus:ring-zinc-400 cursor-pointer"
+            >
+              <option value={10} className="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">10</option>
+              <option value={25} className="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">25</option>
+              <option value={50} className="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">50</option>
+            </select>
+            <ChevronDown className="w-3 h-3 text-zinc-400 pointer-events-none absolute right-1.5" />
+          </div>
         </div>
 
         {/* Page Controls */}
