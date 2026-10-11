@@ -8,7 +8,9 @@
     "start": "next start",
     "lint": "eslint",
     "test": "node tests/api.test.mjs",
-    "db:setup": "prisma db push && prisma db seed"
+    "db:setup": "prisma db push && prisma db seed",
+    "db:seed": "prisma db seed",
+    "db:reset": "prisma db push --force-reset && prisma db seed"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
