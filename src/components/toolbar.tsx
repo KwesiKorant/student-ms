@@ -10,6 +10,7 @@ import {
   ArrowUpDown,
   Filter,
   Download,
+  ChevronDown,
 } from "lucide-react";
 import { Tooltip } from "@/components/ui/tooltip";
 
@@ -117,7 +118,7 @@ export function Toolbar({
     <div className="w-full space-y-2.5">
       <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-2.5 p-2 rounded-xl glass-card">
         {/* Search Bar */}
-        <div className="relative flex-1 min-w-[260px]">
+        <div className="relative flex-1 min-w-[240px]">
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-zinc-400">
             <Search className="w-3.5 h-3.5" />
           </div>
@@ -126,7 +127,7 @@ export function Toolbar({
             type="text"
             value={localSearch}
             onChange={(e) => setLocalSearch(e.target.value)}
-            placeholder="Search students by name, email, or ID (e.g. STU-2026)..."
+            placeholder="Search registry (name, ID, email)..."
             className="w-full pl-8.5 pr-14 py-1.5 text-xs rounded-lg border border-zinc-200/80 dark:border-white/10 bg-white/70 dark:bg-zinc-900/70 text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-400 dark:focus:ring-zinc-600 transition-all font-sans"
           />
           {localSearch ? (
@@ -157,80 +158,108 @@ export function Toolbar({
 
         {/* Filter Controls Group */}
         <div className="flex flex-wrap items-center gap-1.5">
-          {/* Department Filter */}
-          <select
-            value={departmentId}
-            onChange={(e) => onDepartmentChange(e.target.value)}
-            aria-label="Filter by department"
-            className="px-2.5 py-1.5 text-xs rounded-lg border border-zinc-200/80 dark:border-white/10 bg-white/70 dark:bg-zinc-900/70 text-zinc-800 dark:text-zinc-200 focus:outline-none focus:ring-1 focus:ring-zinc-400 cursor-pointer transition-colors"
-          >
-            <option value="">All Departments</option>
-            {departments.map((dept) => (
-              <option key={dept.id} value={dept.id}>
-                {dept.name} ({dept.code})
-              </option>
-            ))}
-          </select>
+          {/* Section 1: Entity Filters (Dept, Status, Archived) */}
+          <div className="relative inline-flex items-center">
+            <select
+              value={departmentId}
+              onChange={(e) => onDepartmentChange(e.target.value)}
+              aria-label="Filter by department"
+              className="appearance-none pl-2.5 pr-7 py-1.5 text-xs rounded-lg border border-zinc-200/80 dark:border-white/10 bg-white/70 dark:bg-zinc-900/70 text-zinc-800 dark:text-zinc-200 focus:outline-none focus:ring-1 focus:ring-zinc-400 cursor-pointer transition-colors"
+            >
+              <option value="" className="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">All Departments</option>
+              {departments.map((dept) => (
+                <option key={dept.id} value={dept.id} className="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">
+                  {dept.name} ({dept.code})
+                </option>
+              ))}
+            </select>
+            <ChevronDown className="w-3 h-3 text-zinc-400 pointer-events-none absolute right-2" />
+          </div>
 
-          {/* Status Filter */}
-          <select
-            value={status}
-            onChange={(e) => onStatusChange(e.target.value)}
-            aria-label="Filter by enrollment status"
-            className="px-2.5 py-1.5 text-xs rounded-lg border border-zinc-200/80 dark:border-white/10 bg-white/70 dark:bg-zinc-900/70 text-zinc-800 dark:text-zinc-200 focus:outline-none focus:ring-1 focus:ring-zinc-400 cursor-pointer transition-colors"
-          >
-            <option value="">All Statuses</option>
-            <option value="ACTIVE">Active</option>
-            <option value="INACTIVE">Inactive</option>
-            <option value="SUSPENDED">Suspended</option>
-            <option value="GRADUATED">Graduated</option>
-          </select>
+          <div className="relative inline-flex items-center">
+            <select
+              value={status}
+              onChange={(e) => onStatusChange(e.target.value)}
+              aria-label="Filter by enrollment status"
+              className="appearance-none pl-2.5 pr-7 py-1.5 text-xs rounded-lg border border-zinc-200/80 dark:border-white/10 bg-white/70 dark:bg-zinc-900/70 text-zinc-800 dark:text-zinc-200 focus:outline-none focus:ring-1 focus:ring-zinc-400 cursor-pointer transition-colors"
+            >
+              <option value="" className="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">All Statuses</option>
+              <option value="ACTIVE" className="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">Active</option>
+              <option value="INACTIVE" className="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">Inactive</option>
+              <option value="SUSPENDED" className="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">Suspended</option>
+              <option value="GRADUATED" className="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">Graduated</option>
+            </select>
+            <ChevronDown className="w-3 h-3 text-zinc-400 pointer-events-none absolute right-2" />
+          </div>
 
-          {/* Sort By Dropdown */}
-          <select
-            value={sortBy}
-            onChange={(e) => onSortByChange(e.target.value)}
-            aria-label="Sort records by"
-            className="hidden sm:inline-block px-2.5 py-1.5 text-xs rounded-lg border border-zinc-200/80 dark:border-white/10 bg-white/70 dark:bg-zinc-900/70 text-zinc-800 dark:text-zinc-200 focus:outline-none focus:ring-1 focus:ring-zinc-400 cursor-pointer transition-colors"
-          >
-            <option value="createdAt">Date Enrolled</option>
-            <option value="name">Full Name</option>
-            <option value="studentId">Student ID</option>
-            <option value="department">Department</option>
-            <option value="gpa">GPA Score</option>
-            <option value="academicYear">Academic Year</option>
-          </select>
-
-          {/* Sort Order Toggle */}
-          <button
-            type="button"
-            onClick={() => onSortOrderChange(sortOrder === "asc" ? "desc" : "asc")}
-            aria-label={`Toggle sort direction, currently ${sortOrder.toUpperCase()}`}
-            className="tap-target inline-flex items-center gap-1 px-2.5 py-1.5 text-xs rounded-lg border border-zinc-200/80 dark:border-white/10 bg-white/70 dark:bg-zinc-900/70 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100/80 dark:hover:bg-zinc-800/80 cursor-pointer transition-colors"
-          >
-            <ArrowUpDown className="w-3.5 h-3.5 text-zinc-500" />
-            <span className="font-mono text-[11px] uppercase tracking-wider">{sortOrder}</span>
-          </button>
-
-          {/* Include Archived Toggle */}
+          {/* Include Archived Toggle Chip */}
           <Tooltip
             content="Archived Records Tier"
             subContent="Include soft-archived profiles alongside active students"
             side="top"
           >
-            <label className="tap-target inline-flex items-center gap-1.5 px-2.5 py-1.5 text-xs rounded-lg border border-zinc-200/80 dark:border-white/10 bg-white/70 dark:bg-zinc-900/70 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100/80 dark:hover:bg-zinc-800/80 cursor-pointer select-none transition-colors">
-              <input
-                type="checkbox"
-                checked={includeArchived}
-                onChange={(e) => onIncludeArchivedChange(e.target.checked)}
-                className="rounded border-zinc-300 dark:border-zinc-700 text-zinc-900 focus:ring-zinc-500 cursor-pointer"
-              />
-              <Archive className="w-3.5 h-3.5 text-zinc-400" />
+            <button
+              type="button"
+              role="switch"
+              aria-checked={includeArchived}
+              onClick={() => onIncludeArchivedChange(!includeArchived)}
+              className={`tap-target inline-flex items-center gap-1.5 px-2.5 py-1.5 text-xs rounded-lg border cursor-pointer select-none transition-colors ${
+                includeArchived
+                  ? "bg-amber-500/15 border-amber-500/30 text-amber-700 dark:text-amber-300 font-medium"
+                  : "bg-white/70 dark:bg-zinc-900/70 border-zinc-200/80 dark:border-white/10 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200 hover:bg-zinc-100/80 dark:hover:bg-zinc-800/80"
+              }`}
+            >
+              <Archive className={`w-3.5 h-3.5 ${includeArchived ? "text-amber-600 dark:text-amber-400" : "text-zinc-400"}`} />
               <span className="text-[11px]">Archived</span>
-            </label>
+              {includeArchived && (
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
+              )}
+            </button>
           </Tooltip>
 
-          {/* Refresh Action */}
+          {/* Section Divider 1 */}
+          <div className="hidden sm:block h-4 w-px bg-zinc-200/80 dark:bg-white/10" aria-hidden="true" />
+
+          {/* Section 2: Unified Sort Control */}
+          <div className="hidden sm:inline-flex items-center rounded-lg border border-zinc-200/80 dark:border-white/10 bg-white/70 dark:bg-zinc-900/70 divide-x divide-zinc-200/80 dark:divide-white/10 overflow-hidden">
+            <div className="relative inline-flex items-center">
+              <select
+                value={sortBy}
+                onChange={(e) => onSortByChange(e.target.value)}
+                aria-label="Sort records by"
+                className="appearance-none pl-2.5 pr-6 py-1.5 text-xs bg-transparent text-zinc-800 dark:text-zinc-200 focus:outline-none cursor-pointer transition-colors"
+              >
+                <option value="createdAt" className="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">Date Enrolled</option>
+                <option value="name" className="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">Full Name</option>
+                <option value="studentId" className="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">Student ID</option>
+                <option value="department" className="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">Department</option>
+                <option value="gpa" className="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">GPA Score</option>
+                <option value="academicYear" className="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">Academic Year</option>
+              </select>
+              <ChevronDown className="w-3 h-3 text-zinc-400 pointer-events-none absolute right-1.5" />
+            </div>
+
+            <Tooltip
+              content={`Sort: ${sortOrder.toUpperCase()}`}
+              subContent={`Switch to ${sortOrder === "asc" ? "descending (newest/highest first)" : "ascending (oldest/lowest first)"}`}
+              side="top"
+            >
+              <button
+                type="button"
+                onClick={() => onSortOrderChange(sortOrder === "asc" ? "desc" : "asc")}
+                aria-label={`Toggle sort direction, currently ${sortOrder.toUpperCase()}`}
+                className="inline-flex items-center gap-1 px-2 py-1.5 text-xs text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100/80 dark:hover:bg-zinc-800/80 cursor-pointer transition-colors"
+              >
+                <ArrowUpDown className="w-3 h-3 text-zinc-400" />
+                <span className="font-mono text-[10px] uppercase font-semibold">{sortOrder}</span>
+              </button>
+            </Tooltip>
+          </div>
+
+          {/* Section Divider 2 */}
+          <div className="hidden sm:block h-4 w-px bg-zinc-200/80 dark:bg-white/10" aria-hidden="true" />
+
+          {/* Section 3: Data Actions (Refresh, Export) */}
           <Tooltip
             content="Synchronize Registry"
             subContent="Re-query fresh candidate data from database"
