@@ -2,8 +2,10 @@
 
 import * as React from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { Plus } from "lucide-react";
+import { Plus, LogOut, User, LogIn } from "lucide-react";
+import { createClient } from "@/lib/supabase/client";
 
 interface HeaderProps {
   onOpenEnrollModal: () => void;
@@ -18,6 +20,54 @@ export function Header({
   activeStudents = 0,
   archivedStudents = 0,
 }: HeaderProps) {
+  const router = useRouter();
+  const [userEmail, setUserEmail] = React.useState<string | null>(null);
+  const [userRole, setUserRole] = React.useState<string | null>(null);
+
+  React.useEffect(() => {
+    const supabase = createClient();
+
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (user) {
+        setUserEmail(user.email ?? null);
+        const role =
+          (user.app_metadata?.role as string) ||
+          (user.user_metadata?.role as string) ||
+          "Staff";
+        setUserRole(role);
+      }
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session?.user) {
+        setUserEmail(session.user.email ?? null);
+        const role =
+          (session.user.app_metadata?.role as string) ||
+          (session.user.user_metadata?.role as string) ||
+          "Staff";
+        setUserRole(role);
+      } else {
+        setUserEmail(null);
+        setUserRole(null);
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
+
+  const handleSignOut = async () => {
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    setUserEmail(null);
+    setUserRole(null);
+    router.push("/login");
+    router.refresh();
+  };
+
   return (
     <header className="sticky top-0 z-30 w-full glass-nav transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -60,9 +110,45 @@ export function Header({
             )}
           </div>
 
-          {/* Right: Actions & Theme Toggle */}
+          {/* Right: Actions, Auth Profile & Theme Toggle */}
           <div className="flex items-center gap-2 shrink-0">
             <ThemeToggle />
+
+            {/* Auth Session State */}
+            {userEmail ? (
+              <div className="flex items-center gap-1.5 pl-1.5 border-l border-zinc-200 dark:border-zinc-800">
+                <div
+                  className="hidden sm:flex items-center gap-1.5 px-2 py-1 rounded-md bg-zinc-100 dark:bg-zinc-800/80 text-[11px] font-mono text-zinc-600 dark:text-zinc-300 max-w-[170px]"
+                  title={userEmail}
+                >
+                  <User className="w-3 h-3 text-emerald-500 shrink-0" />
+                  <span className="truncate">{userEmail.split("@")[0]}</span>
+                  {userRole && (
+                    <span className="text-[9px] uppercase px-1 py-0.2 rounded bg-zinc-200 dark:bg-zinc-700 font-semibold text-zinc-700 dark:text-zinc-200">
+                      {userRole}
+                    </span>
+                  )}
+                </div>
+
+                <button
+                  type="button"
+                  onClick={handleSignOut}
+                  title="Sign out"
+                  className="tap-target p-1.5 rounded-lg text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer transition-colors"
+                >
+                  <LogOut className="w-3.5 h-3.5" />
+                  <span className="sr-only">Sign out</span>
+                </button>
+              </div>
+            ) : (
+              <Link
+                href="/login"
+                className="tap-target inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium rounded-lg text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+              >
+                <LogIn className="w-3.5 h-3.5" />
+                <span>Sign In</span>
+              </Link>
+            )}
 
             <button
               type="button"

@@ -273,17 +273,30 @@ async function runTests() {
     assert(got429, "Flooding mutation endpoint triggered 429 Too Many Requests");
 
     // ----------------------------------------------------
-    // Test 12: Root UI Render & Security Headers
+    // Test 12: Root UI, Auth Gateway & Registry Render
     // ----------------------------------------------------
-    console.log("\n--> Testing Root Landing Page & Registry Render");
+    console.log("\n--> Testing Root Landing Page, Auth Gateway & Registry Render");
     const pageRes = await fetch(`${BASE_URL}/`);
     const pageHtml = await pageRes.text();
     assert(pageRes.status === 200, "Landing page returns status 200");
     assert(pageHtml.includes("ARCFIELD"), "Landing page contains 'ARCFIELD' brand");
 
-    const registryRes = await fetch(`${BASE_URL}/registry`);
+    // Login screen render
+    const loginRes = await fetch(`${BASE_URL}/login`);
+    const loginHtml = await loginRes.text();
+    assert(loginRes.status === 200, "Login page returns status 200");
+    assert(loginHtml.includes("Institutional Authentication"), "Login page contains 'Institutional Authentication'");
+
+    // Unauthenticated registry access redirects to /login
+    const unauthRegistryRes = await fetch(`${BASE_URL}/registry`, { redirect: "manual" });
+    assert(unauthRegistryRes.status === 307, "Unauthenticated registry access redirects with 307");
+
+    // Authenticated / bypass test
+    const registryRes = await fetch(`${BASE_URL}/registry`, {
+      headers: { "x-test-bypass": "true" },
+    });
     const registryHtml = await registryRes.text();
-    assert(registryRes.status === 200, "Registry directory portal returns status 200");
+    assert(registryRes.status === 200, "Registry directory portal returns status 200 with session");
     assert(registryHtml.includes("Student Directory"), "Registry contains 'Student Directory'");
 
     // Security Headers & Info Leakage

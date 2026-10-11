@@ -154,6 +154,70 @@ body {
   contain: layout style paint;
 }
 
+/* Optical Edge Corner Shadows (Cardless Dimensional Frame) */
+.edge-corner-frame {
+  position: relative;
+  isolation: isolate;
+}
+
+.edge-corner-shadow {
+  position: absolute;
+  width: 96px;
+  height: 96px;
+  pointer-events: none;
+  border-radius: 20px;
+  opacity: 0.85;
+  transition: opacity 280ms var(--spring-smooth);
+}
+
+.edge-corner-tl {
+  top: -8px;
+  left: -8px;
+  background: radial-gradient(circle at 10px 10px, rgba(0, 0, 0, 0.09) 0%, rgba(0, 0, 0, 0.03) 40%, transparent 75%);
+}
+
+.edge-corner-tr {
+  top: -8px;
+  right: -8px;
+  background: radial-gradient(circle at 86px 10px, rgba(0, 0, 0, 0.09) 0%, rgba(0, 0, 0, 0.03) 40%, transparent 75%);
+}
+
+.edge-corner-bl {
+  bottom: -8px;
+  left: -8px;
+  background: radial-gradient(circle at 10px 86px, rgba(0, 0, 0, 0.09) 0%, rgba(0, 0, 0, 0.03) 40%, transparent 75%);
+}
+
+.edge-corner-br {
+  bottom: -8px;
+  right: -8px;
+  background: radial-gradient(circle at 86px 86px, rgba(0, 0, 0, 0.09) 0%, rgba(0, 0, 0, 0.03) 40%, transparent 75%);
+}
+
+.dark .edge-corner-tl {
+  background: radial-gradient(circle at 10px 10px, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.04) 40%, transparent 75%);
+}
+
+.dark .edge-corner-tr {
+  background: radial-gradient(circle at 86px 10px, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.04) 40%, transparent 75%);
+}
+
+.dark .edge-corner-bl {
+  background: radial-gradient(circle at 10px 86px, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.04) 40%, transparent 75%);
+}
+
+.dark .edge-corner-br {
+  background: radial-gradient(circle at 86px 86px, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.04) 40%, transparent 75%);
+}
+
+.edge-corner-bracket {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  pointer-events: none;
+  transition: opacity 280ms var(--spring-smooth), transform 280ms var(--spring-snappy);
+}
+
 /* Respect user's motion preferences */
 @media (prefers-reduced-motion: reduce) {
   *, ::before, ::after {
