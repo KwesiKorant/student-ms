@@ -160,61 +160,73 @@ body {
   isolation: isolate;
 }
 
+/* Base corner shadow layer: 128px x 128px with hardware-accelerated transforms */
 .edge-corner-shadow {
   position: absolute;
-  width: 96px;
-  height: 96px;
+  width: 128px;
+  height: 128px;
   pointer-events: none;
-  border-radius: 20px;
-  opacity: 0.85;
-  transition: opacity 280ms var(--spring-smooth);
+  z-index: 0;
+  transition: opacity 280ms var(--spring-smooth), transform 280ms var(--spring-snappy);
 }
 
+/* Light Mode: Rich Graphite Ambient Drop-Shadows radiating from the 4 corners */
 .edge-corner-tl {
-  top: -8px;
-  left: -8px;
-  background: radial-gradient(circle at 10px 10px, rgba(0, 0, 0, 0.09) 0%, rgba(0, 0, 0, 0.03) 40%, transparent 75%);
+  top: -16px;
+  left: -16px;
+  background: radial-gradient(circle at 16px 16px, rgba(0, 0, 0, 0.18) 0%, rgba(0, 0, 0, 0.08) 35%, rgba(0, 0, 0, 0.02) 65%, transparent 75%);
+  filter: drop-shadow(-8px -8px 20px rgba(0, 0, 0, 0.14));
 }
 
 .edge-corner-tr {
-  top: -8px;
-  right: -8px;
-  background: radial-gradient(circle at 86px 10px, rgba(0, 0, 0, 0.09) 0%, rgba(0, 0, 0, 0.03) 40%, transparent 75%);
+  top: -16px;
+  right: -16px;
+  background: radial-gradient(circle at 112px 16px, rgba(0, 0, 0, 0.18) 0%, rgba(0, 0, 0, 0.08) 35%, rgba(0, 0, 0, 0.02) 65%, transparent 75%);
+  filter: drop-shadow(8px -8px 20px rgba(0, 0, 0, 0.14));
 }
 
 .edge-corner-bl {
-  bottom: -8px;
-  left: -8px;
-  background: radial-gradient(circle at 10px 86px, rgba(0, 0, 0, 0.09) 0%, rgba(0, 0, 0, 0.03) 40%, transparent 75%);
+  bottom: -16px;
+  left: -16px;
+  background: radial-gradient(circle at 16px 112px, rgba(0, 0, 0, 0.18) 0%, rgba(0, 0, 0, 0.08) 35%, rgba(0, 0, 0, 0.02) 65%, transparent 75%);
+  filter: drop-shadow(-8px 8px 20px rgba(0, 0, 0, 0.14));
 }
 
 .edge-corner-br {
-  bottom: -8px;
-  right: -8px;
-  background: radial-gradient(circle at 86px 86px, rgba(0, 0, 0, 0.09) 0%, rgba(0, 0, 0, 0.03) 40%, transparent 75%);
+  bottom: -16px;
+  right: -16px;
+  background: radial-gradient(circle at 112px 112px, rgba(0, 0, 0, 0.18) 0%, rgba(0, 0, 0, 0.08) 35%, rgba(0, 0, 0, 0.02) 65%, transparent 75%);
+  filter: drop-shadow(8px 8px 20px rgba(0, 0, 0, 0.14));
 }
 
+/* Dark Mode: Dual-layer Corner Luminescence & Deep Obsidian Occlusion */
 .dark .edge-corner-tl {
-  background: radial-gradient(circle at 10px 10px, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.04) 40%, transparent 75%);
+  background: radial-gradient(circle at 16px 16px, rgba(255, 255, 255, 0.26) 0%, rgba(161, 161, 170, 0.10) 35%, rgba(99, 102, 241, 0.05) 60%, transparent 75%);
+  filter: drop-shadow(-6px -6px 18px rgba(255, 255, 255, 0.16)) drop-shadow(-12px -12px 32px rgba(0, 0, 0, 0.95));
 }
 
 .dark .edge-corner-tr {
-  background: radial-gradient(circle at 86px 10px, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.04) 40%, transparent 75%);
+  background: radial-gradient(circle at 112px 16px, rgba(255, 255, 255, 0.26) 0%, rgba(161, 161, 170, 0.10) 35%, rgba(99, 102, 241, 0.05) 60%, transparent 75%);
+  filter: drop-shadow(6px -6px 18px rgba(255, 255, 255, 0.16)) drop-shadow(12px -12px 32px rgba(0, 0, 0, 0.95));
 }
 
 .dark .edge-corner-bl {
-  background: radial-gradient(circle at 10px 86px, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.04) 40%, transparent 75%);
+  background: radial-gradient(circle at 16px 112px, rgba(255, 255, 255, 0.26) 0%, rgba(161, 161, 170, 0.10) 35%, rgba(99, 102, 241, 0.05) 60%, transparent 75%);
+  filter: drop-shadow(-6px 6px 18px rgba(255, 255, 255, 0.16)) drop-shadow(-12px 12px 32px rgba(0, 0, 0, 0.95));
 }
 
 .dark .edge-corner-br {
-  background: radial-gradient(circle at 86px 86px, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.04) 40%, transparent 75%);
+  background: radial-gradient(circle at 112px 112px, rgba(255, 255, 255, 0.26) 0%, rgba(161, 161, 170, 0.10) 35%, rgba(99, 102, 241, 0.05) 60%, transparent 75%);
+  filter: drop-shadow(6px 6px 18px rgba(255, 255, 255, 0.16)) drop-shadow(12px 12px 32px rgba(0, 0, 0, 0.95));
 }
 
+/* Precision optical corner tick marks */
 .edge-corner-bracket {
   position: absolute;
-  width: 14px;
-  height: 14px;
+  width: 24px;
+  height: 24px;
   pointer-events: none;
+  z-index: 10;
   transition: opacity 280ms var(--spring-smooth), transform 280ms var(--spring-snappy);
 }
 
