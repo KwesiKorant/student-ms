@@ -5,6 +5,7 @@ import { Department, EnrollmentStatus, Student } from "@/types/student";
 import { CreateStudentSchema } from "@/lib/validations/student";
 import { useToast } from "@/components/ui/toast";
 import { X, UserPlus, AlertCircle, Loader2 } from "lucide-react";
+import { useModalDismiss } from "@/hooks/use-modal-dismiss";
 
 interface EnrollStudentModalProps {
   isOpen: boolean;
@@ -36,6 +37,8 @@ export function EnrollStudentModal({
   const [errors, setErrors] = React.useState<Record<string, string>>({});
   const [serverError, setServerError] = React.useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
+
+  useModalDismiss(isOpen, onClose);
 
   if (!isOpen) return null;
 

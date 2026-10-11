@@ -28,6 +28,8 @@ interface StudentTableProps {
   onArchiveStudent: (student: Student) => void;
   onRestoreStudent: (student: Student) => void;
   onOpenEnrollModal: () => void;
+  onResetFilters?: () => void;
+  hasActiveFilters?: boolean;
 }
 
 export function StudentTable({
@@ -41,6 +43,8 @@ export function StudentTable({
   onArchiveStudent,
   onRestoreStudent,
   onOpenEnrollModal,
+  onResetFilters,
+  hasActiveFilters = false,
 }: StudentTableProps) {
   const [copiedId, setCopiedId] = React.useState<string | null>(null);
 
@@ -154,14 +158,25 @@ export function StudentTable({
         <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1 max-w-sm mx-auto">
           No student profiles match your search or filter configuration. Reset filters or enroll a new candidate.
         </p>
-        <button
-          type="button"
-          onClick={onOpenEnrollModal}
-          className="tap-target mt-4 inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg bg-zinc-900 hover:bg-zinc-800 dark:bg-zinc-100 dark:hover:bg-zinc-200 text-white dark:text-zinc-900 transition-colors cursor-pointer"
-        >
-          <GraduationCap className="w-3.5 h-3.5" />
-          Enroll New Student
-        </button>
+        <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
+          {hasActiveFilters && onResetFilters && (
+            <button
+              type="button"
+              onClick={onResetFilters}
+              className="tap-target inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg border border-zinc-200 dark:border-white/10 bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-700 transition-colors cursor-pointer"
+            >
+              Clear All Filters
+            </button>
+          )}
+          <button
+            type="button"
+            onClick={onOpenEnrollModal}
+            className="tap-target inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg bg-zinc-900 hover:bg-zinc-800 dark:bg-zinc-100 dark:hover:bg-zinc-200 text-white dark:text-zinc-900 transition-colors cursor-pointer"
+          >
+            <GraduationCap className="w-3.5 h-3.5" />
+            Enroll New Student
+          </button>
+        </div>
       </div>
     );
   }
@@ -212,8 +227,16 @@ export function StudentTable({
               return (
                 <tr
                   key={student.id}
+                  tabIndex={0}
+                  role="row"
                   onClick={() => onViewStudent(student)}
-                  className={`group hover:bg-black/[0.02] dark:hover:bg-white/[0.03] active:bg-black/[0.04] dark:active:bg-white/[0.05] transition-colors duration-150 cursor-pointer select-none ${
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      onViewStudent(student);
+                    }
+                  }}
+                  className={`group hover:bg-black/[0.02] dark:hover:bg-white/[0.03] active:bg-black/[0.04] dark:active:bg-white/[0.05] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-400 dark:focus-visible:ring-zinc-500 focus-visible:bg-black/[0.02] dark:focus-visible:bg-white/[0.03] transition-colors duration-150 cursor-pointer select-none ${
                     student.isArchived ? "opacity-65 bg-zinc-50/40 dark:bg-zinc-950/20" : ""
                   }`}
                 >

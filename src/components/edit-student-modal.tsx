@@ -5,6 +5,7 @@ import { Department, EnrollmentStatus, Student } from "@/types/student";
 import { UpdateStudentSchema } from "@/lib/validations/student";
 import { useToast } from "@/components/ui/toast";
 import { X, Edit2, AlertCircle, Loader2 } from "lucide-react";
+import { useModalDismiss } from "@/hooks/use-modal-dismiss";
 
 interface EditStudentModalProps {
   student: Student | null;
@@ -38,6 +39,8 @@ export function EditStudentModal({
   const [errors, setErrors] = React.useState<Record<string, string>>({});
   const [serverError, setServerError] = React.useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
+
+  useModalDismiss(isOpen && !!student, onClose);
 
   if (!isOpen || !student) return null;
 

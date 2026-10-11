@@ -343,6 +343,12 @@ export default function StudentManagementPortal() {
     setCurrentPage(1);
   };
 
+  const hasActiveFilters =
+    search.trim() !== "" ||
+    departmentId !== "" ||
+    status !== "" ||
+    includeArchived;
+
   const [isExporting, setIsExporting] = React.useState(false);
 
   const handleExportCSV = React.useCallback(async () => {
@@ -540,6 +546,8 @@ export default function StudentManagementPortal() {
               onArchiveStudent={(student) => setArchiveStudent(student)}
               onRestoreStudent={handleRestoreStudent}
               onOpenEnrollModal={handleOpenEnrollModal}
+              onResetFilters={handleResetFilters}
+              hasActiveFilters={hasActiveFilters}
             />
 
             {/* Pagination Controls */}

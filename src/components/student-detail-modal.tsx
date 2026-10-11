@@ -15,7 +15,10 @@ import {
   Clock,
   AlertTriangle,
   FileText,
+  Copy,
+  Check,
 } from "lucide-react";
+import { useModalDismiss } from "@/hooks/use-modal-dismiss";
 
 interface StudentDetailModalProps {
   student: Student | null;
@@ -35,6 +38,15 @@ export function StudentDetailModal({
   onRestore,
 }: StudentDetailModalProps) {
   const [activeTab, setActiveTab] = React.useState<"profile" | "audit">("profile");
+  const [copiedField, setCopiedField] = React.useState<string | null>(null);
+
+  const copyText = (field: string, text: string) => {
+    navigator.clipboard.writeText(text);
+    setCopiedField(field);
+    setTimeout(() => setCopiedField(null), 2000);
+  };
+
+  useModalDismiss(isOpen && !!student, onClose);
 
   if (!isOpen || !student) return null;
 
@@ -114,8 +126,21 @@ export function StudentDetailModal({
                 {getStatusBadge(student.status, student.isArchived)}
               </div>
               <div className="flex items-center gap-2 mt-1 text-xs text-zinc-500 dark:text-zinc-400 font-mono">
-                <span className="font-semibold text-zinc-800 dark:text-zinc-200">
+                <span className="font-semibold text-zinc-800 dark:text-zinc-200 inline-flex items-center gap-1.5">
                   {student.studentId}
+                  <button
+                    type="button"
+                    onClick={() => copyText("studentId", student.studentId)}
+                    title="Copy Student ID"
+                    aria-label="Copy Student ID"
+                    className="p-0.5 text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 cursor-pointer transition-colors"
+                  >
+                    {copiedField === "studentId" ? (
+                      <Check className="w-3 h-3 text-emerald-500" />
+                    ) : (
+                      <Copy className="w-3 h-3" />
+                    )}
+                  </button>
                 </span>
                 <span>·</span>
                 <span>{student.department?.name || "Department"}</span>
@@ -235,10 +260,23 @@ export function StudentDetailModal({
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
                   <div className="flex items-center gap-2">
                     <Mail className="w-4 h-4 text-zinc-400 shrink-0" />
-                    <div>
+                    <div className="min-w-0">
                       <span className="text-[11px] text-zinc-400 block font-mono">Email Address</span>
-                      <span className="font-mono text-zinc-800 dark:text-zinc-200">
-                        {student.email}
+                      <span className="font-mono text-zinc-800 dark:text-zinc-200 inline-flex items-center gap-1.5 max-w-full">
+                        <span className="truncate">{student.email}</span>
+                        <button
+                          type="button"
+                          onClick={() => copyText("email", student.email)}
+                          title="Copy email address"
+                          aria-label="Copy email address"
+                          className="p-0.5 text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 cursor-pointer transition-colors shrink-0"
+                        >
+                          {copiedField === "email" ? (
+                            <Check className="w-3 h-3 text-emerald-500" />
+                          ) : (
+                            <Copy className="w-3 h-3" />
+                          )}
+                        </button>
                       </span>
                     </div>
                   </div>
@@ -323,6 +361,25 @@ export function StudentDetailModal({
                               {details.event}
                             </p>
                           )}
+                          {details.initialData && (
+                            <div className="mt-1 flex flex-wrap gap-1.5 text-[10px]">
+                              {details.initialData.status && (
+                                <span className="px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800/80 text-zinc-700 dark:text-zinc-300 border border-zinc-200/60 dark:border-white/5">
+                                  Status: <strong className="text-zinc-900 dark:text-zinc-100">{details.initialData.status}</strong>
+                                </span>
+                              )}
+                              {details.initialData.academicYear !== undefined && (
+                                <span className="px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800/80 text-zinc-700 dark:text-zinc-300 border border-zinc-200/60 dark:border-white/5">
+                                  Year: <strong className="text-zinc-900 dark:text-zinc-100">{details.initialData.academicYear}</strong>
+                                </span>
+                              )}
+                              {details.initialData.gpa !== undefined && details.initialData.gpa !== null && (
+                                <span className="px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800/80 text-zinc-700 dark:text-zinc-300 border border-zinc-200/60 dark:border-white/5">
+                                  GPA: <strong className="text-zinc-900 dark:text-zinc-100">{Number(details.initialData.gpa).toFixed(2)}</strong>
+                                </span>
+                              )}
+                            </div>
+                          )}
                           {details.modifiedFields && (
                             <div className="space-y-0.5">
                               {Object.entries(
@@ -343,7 +400,7 @@ export function StudentDetailModal({
                               ))}
                             </div>
                           )}
-                          {!details.modifiedFields && !details.event && (
+                          {!details.modifiedFields && !details.initialData && !details.event && (
                             <pre className="text-[10px]">
                               {JSON.stringify(details, null, 2)}
                             </pre>

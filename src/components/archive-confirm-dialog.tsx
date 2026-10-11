@@ -10,6 +10,7 @@ import {
   X,
   Loader2,
 } from "lucide-react";
+import { useModalDismiss } from "@/hooks/use-modal-dismiss";
 
 interface ArchiveConfirmDialogProps {
   student: Student | null;
@@ -29,6 +30,8 @@ export function ArchiveConfirmDialog({
   const [confirmInput, setConfirmInput] = React.useState("");
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
+
+  useModalDismiss(isOpen && !!student, onClose);
 
   if (!isOpen || !student) return null;
 
