@@ -275,12 +275,16 @@ async function runTests() {
     // ----------------------------------------------------
     // Test 12: Root UI Render & Security Headers
     // ----------------------------------------------------
-    console.log("\n--> Testing Root Portal Homepage Render & Security Headers");
+    console.log("\n--> Testing Root Landing Page & Registry Render");
     const pageRes = await fetch(`${BASE_URL}/`);
     const pageHtml = await pageRes.text();
-    assert(pageRes.status === 200, "Portal homepage returns status 200");
-    assert(pageHtml.includes("ARCFIELD SYSTEMS"), "Page contains 'ARCFIELD SYSTEMS' brand");
-    assert(pageHtml.includes("Student Directory"), "Page contains 'Student Directory'");
+    assert(pageRes.status === 200, "Landing page returns status 200");
+    assert(pageHtml.includes("ARCFIELD"), "Landing page contains 'ARCFIELD' brand");
+
+    const registryRes = await fetch(`${BASE_URL}/registry`);
+    const registryHtml = await registryRes.text();
+    assert(registryRes.status === 200, "Registry directory portal returns status 200");
+    assert(registryHtml.includes("Student Directory"), "Registry contains 'Student Directory'");
 
     // Security Headers & Info Leakage
     console.log("\n--> Testing Security Headers & Information Leakage Defense");

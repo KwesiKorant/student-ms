@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { Department, EnrollmentStatus, Student } from "@/types/student";
-import { CreateStudentSchema } from "@/lib/validations/student";
+import { CreateStudentSchema, MAX_STUDENT_DOB, MIN_STUDENT_DOB } from "@/lib/validations/student";
 import { useToast } from "@/components/ui/toast";
 import { X, UserPlus, AlertCircle, Loader2 } from "lucide-react";
 import { useModalDismiss } from "@/hooks/use-modal-dismiss";
@@ -23,6 +23,7 @@ export function EnrollStudentModal({
   const { toast } = useToast();
 
   const [formData, setFormData] = React.useState({
+    studentId: "",
     firstName: "",
     lastName: "",
     email: "",
@@ -34,11 +35,15 @@ export function EnrollStudentModal({
     status: "ACTIVE" as EnrollmentStatus,
   });
 
+  const [showManualId, setShowManualId] = React.useState(false);
   const [errors, setErrors] = React.useState<Record<string, string>>({});
   const [serverError, setServerError] = React.useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
 
   useModalDismiss(isOpen, onClose);
+
+  const maxDob = MAX_STUDENT_DOB;
+  const minDob = MIN_STUDENT_DOB;
 
   if (!isOpen) return null;
 
@@ -47,6 +52,7 @@ export function EnrollStudentModal({
   const validate = () => {
     const result = CreateStudentSchema.safeParse({
       ...formData,
+      studentId: formData.studentId.trim() || undefined,
       departmentId: currentDepartmentId,
       academicYear: Number(formData.academicYear),
       gpa: formData.gpa === "" ? null : Number(formData.gpa),
@@ -77,7 +83,7 @@ export function EnrollStudentModal({
     setIsSubmitting(true);
 
     try {
-      const payload = {
+      const payload: Record<string, unknown> = {
         firstName: formData.firstName.trim(),
         lastName: formData.lastName.trim(),
         email: formData.email.trim().toLowerCase(),
@@ -88,6 +94,10 @@ export function EnrollStudentModal({
         phone: formData.phone.trim() || undefined,
         status: formData.status,
       };
+
+      if (formData.studentId.trim()) {
+        payload.studentId = formData.studentId.trim().toUpperCase();
+      }
 
       const res = await fetch("/api/v1/students", {
         method: "POST",
@@ -191,6 +201,9 @@ export function EnrollStudentModal({
                 type="text"
                 required
                 autoComplete="given-name"
+                autoCapitalize="words"
+                spellCheck={false}
+                maxLength={50}
                 value={formData.firstName}
                 onChange={(e) =>
                   setFormData({ ...formData, firstName: e.target.value })
@@ -211,6 +224,9 @@ export function EnrollStudentModal({
                 type="text"
                 required
                 autoComplete="family-name"
+                autoCapitalize="words"
+                spellCheck={false}
+                maxLength={50}
                 value={formData.lastName}
                 onChange={(e) =>
                   setFormData({ ...formData, lastName: e.target.value })
@@ -231,9 +247,12 @@ export function EnrollStudentModal({
             </label>
             <input
               type="email"
+              inputMode="email"
               required
               autoComplete="email"
+              autoCapitalize="none"
               spellCheck={false}
+              maxLength={100}
               value={formData.email}
               onChange={(e) =>
                 setFormData({ ...formData, email: e.target.value })
@@ -304,9 +323,15 @@ export function EnrollStudentModal({
               </label>
               <input
                 type="number"
+                inputMode="decimal"
                 step="0.01"
                 min="0.00"
                 max="4.00"
+                onKeyDown={(e) => {
+                  if (["e", "E", "+", "-"].includes(e.key)) {
+                    e.preventDefault();
+                  }
+                }}
                 value={formData.gpa}
                 onChange={(e) =>
                   setFormData({ ...formData, gpa: e.target.value })
@@ -349,6 +374,8 @@ export function EnrollStudentModal({
               </label>
               <input
                 type="date"
+                min={minDob}
+                max={maxDob}
                 value={formData.dateOfBirth}
                 onChange={(e) =>
                   setFormData({ ...formData, dateOfBirth: e.target.value })
@@ -368,6 +395,9 @@ export function EnrollStudentModal({
               </label>
               <input
                 type="tel"
+                inputMode="tel"
+                autoComplete="tel"
+                maxLength={25}
                 value={formData.phone}
                 onChange={(e) =>
                   setFormData({ ...formData, phone: e.target.value })
@@ -379,6 +409,57 @@ export function EnrollStudentModal({
                 <p className="mt-1 text-[11px] text-rose-500">{errors.phone}</p>
               )}
             </div>
+          </div>
+
+          {/* Row 6: Student ID Management (Auto vs Manual) */}
+          <div className="pt-1">
+            <div className="flex items-center justify-between mb-1">
+              <label className="font-medium text-zinc-700 dark:text-zinc-300 text-[11px]">
+                Student Identifier (STU-ID)
+              </label>
+              <button
+                type="button"
+                onClick={() => {
+                  setShowManualId(!showManualId);
+                  if (showManualId) {
+                    setFormData({ ...formData, studentId: "" });
+                  }
+                }}
+                className="text-[11px] text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 underline underline-offset-2 cursor-pointer transition-colors"
+              >
+                {showManualId ? "Switch to Auto-Generated" : "Specify Custom ID"}
+              </button>
+            </div>
+            {showManualId ? (
+              <div>
+                <input
+                  type="text"
+                  maxLength={13}
+                  value={formData.studentId}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      studentId: e.target.value.toUpperCase(),
+                    })
+                  }
+                  placeholder="STU-2026-XXXX (Hex)"
+                  className="w-full px-3 py-2 rounded-lg border border-zinc-200/90 dark:border-white/10 bg-zinc-50/80 dark:bg-zinc-900/60 text-zinc-900 dark:text-zinc-100 font-mono text-xs focus:outline-none focus:ring-1 focus:ring-zinc-400 dark:focus:ring-zinc-500 shadow-xs uppercase tracking-wider transition-colors"
+                />
+                {errors.studentId && (
+                  <p className="mt-1 text-[11px] text-rose-500">{errors.studentId}</p>
+                )}
+                <p className="mt-0.5 text-[10px] text-zinc-400 font-mono">
+                  Standard format: STU-YYYY-[HEX4] (e.g. STU-2026-4F1A)
+                </p>
+              </div>
+            ) : (
+              <div className="px-3 py-2 rounded-lg border border-dashed border-zinc-200 dark:border-white/10 bg-zinc-50/40 dark:bg-zinc-900/40 text-zinc-500 text-[11px] font-mono flex items-center justify-between">
+                <span>Auto-generated institutional format: STU-2026-[HEX]</span>
+                <span className="text-[10px] px-1.5 py-0.5 rounded bg-zinc-200/60 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300">
+                  AUTO
+                </span>
+              </div>
+            )}
           </div>
 
           {/* Footer Actions */}

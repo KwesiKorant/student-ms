@@ -2,6 +2,31 @@ import { z } from "zod";
 
 const nameRegex = /^[a-zA-Z\s'-]+$/;
 const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+const emailDomainRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+// Semantic date boundaries for student date of birth (14 to 100 years old)
+export const MAX_STUDENT_DOB = new Date(Date.now() - 14 * 365.25 * 24 * 60 * 60 * 1000).toISOString().split("T")[0];
+export const MIN_STUDENT_DOB = new Date(Date.now() - 100 * 365.25 * 24 * 60 * 60 * 1000).toISOString().split("T")[0];
+
+const validateDateOfBirth = (val: string | undefined | null) => {
+  if (!val || val === "") return true;
+  if (!dateRegex.test(val)) return false;
+  const d = new Date(val);
+  if (isNaN(d.getTime())) return false;
+  const now = new Date();
+  const ageInYears = (now.getTime() - d.getTime()) / (365.25 * 24 * 60 * 60 * 1000);
+  return d < now && ageInYears >= 14 && ageInYears <= 100;
+};
+
+const validatePhone = (val: string | undefined | null) => {
+  if (!val || val.trim() === "") return true;
+  const digits = val.replace(/\D/g, "");
+  return (
+    digits.length >= 7 &&
+    digits.length <= 15 &&
+    /^[+]?[(]?[0-9]{1,4}[)]?[-\s./0-9]*$/.test(val)
+  );
+};
 
 export const EnrollmentStatusEnum = z.enum([
   "ACTIVE",
@@ -15,36 +40,52 @@ export const CreateStudentSchema = z
     studentId: z
       .string()
       .trim()
-      .regex(/^STU-\d{4}-[A-Fa-f0-9]{4}$/, "Student ID must follow format STU-YYYY-XXXX (hex)")
+      .transform((val) => val.toUpperCase())
+      .refine(
+        (val) => /^STU-\d{4}-[A-F0-9]{4}$/.test(val),
+        "Student ID must follow format STU-YYYY-XXXX (hex)"
+      )
       .optional(),
     firstName: z
       .string()
       .trim()
       .min(2, "First name must be at least 2 characters")
       .max(50, "First name must not exceed 50 characters")
-      .regex(nameRegex, "First name can only contain letters, spaces, and hyphens"),
+      .regex(nameRegex, "First name can only contain letters, spaces, hyphens, and apostrophes"),
     lastName: z
       .string()
       .trim()
       .min(2, "Last name must be at least 2 characters")
       .max(50, "Last name must not exceed 50 characters")
-      .regex(nameRegex, "Last name can only contain letters, spaces, and hyphens"),
+      .regex(nameRegex, "Last name can only contain letters, spaces, hyphens, and apostrophes"),
     email: z
       .string()
       .trim()
       .toLowerCase()
-      .email("Invalid institutional email address format"),
+      .email("Invalid institutional email address format")
+      .max(100, "Email must not exceed 100 characters")
+      .refine(
+        (val) => emailDomainRegex.test(val),
+        "Institutional email must include a valid domain suffix (e.g. .edu, .com)"
+      ),
     dateOfBirth: z
       .string()
-      .regex(dateRegex, "Date of birth must be in YYYY-MM-DD format")
       .optional()
-      .or(z.literal("")),
+      .or(z.literal(""))
+      .refine(
+        validateDateOfBirth,
+        "Date of birth must be a valid date for an enrolled student (between 14 and 100 years of age)"
+      ),
     phone: z
       .string()
       .trim()
-      .max(20, "Phone number must not exceed 20 characters")
+      .max(25, "Phone number must not exceed 25 characters")
       .optional()
-      .or(z.literal("")),
+      .or(z.literal(""))
+      .refine(
+        validatePhone,
+        "Please provide a valid phone number with 7-15 digits (e.g. +1-555-0142 or +233-24-123-4567)"
+      ),
     departmentId: z.string().min(1, "Department selection is required"),
     academicYear: z.coerce
       .number()
@@ -54,12 +95,17 @@ export const CreateStudentSchema = z
       .default(1),
     gpa: z
       .union([
-        z.coerce.number().min(0.0, "GPA cannot be less than 0.00").max(4.0, "GPA cannot exceed 4.00"),
+        z.coerce
+          .number()
+          .min(0.0, "GPA cannot be less than 0.00")
+          .max(4.0, "GPA cannot exceed 4.00"),
         z.literal(""),
         z.null(),
       ])
       .optional()
-      .transform((val) => (val === "" || val === null || val === undefined ? null : Number(val))),
+      .transform((val) =>
+        val === "" || val === null || val === undefined ? null : Number(val)
+      ),
     status: EnrollmentStatusEnum.default("ACTIVE"),
   })
   .strip();
@@ -71,32 +117,44 @@ export const UpdateStudentSchema = z
       .trim()
       .min(2, "First name must be at least 2 characters")
       .max(50, "First name must not exceed 50 characters")
-      .regex(nameRegex, "First name can only contain letters, spaces, and hyphens")
+      .regex(nameRegex, "First name can only contain letters, spaces, hyphens, and apostrophes")
       .optional(),
     lastName: z
       .string()
       .trim()
       .min(2, "Last name must be at least 2 characters")
       .max(50, "Last name must not exceed 50 characters")
-      .regex(nameRegex, "Last name can only contain letters, spaces, and hyphens")
+      .regex(nameRegex, "Last name can only contain letters, spaces, hyphens, and apostrophes")
       .optional(),
     email: z
       .string()
       .trim()
       .toLowerCase()
       .email("Invalid institutional email address format")
+      .max(100, "Email must not exceed 100 characters")
+      .refine(
+        (val) => emailDomainRegex.test(val),
+        "Institutional email must include a valid domain suffix (e.g. .edu, .com)"
+      )
       .optional(),
     dateOfBirth: z
       .string()
-      .regex(dateRegex, "Date of birth must be in YYYY-MM-DD format")
       .optional()
-      .or(z.literal("")),
+      .or(z.literal(""))
+      .refine(
+        validateDateOfBirth,
+        "Date of birth must be a valid date for an enrolled student (between 14 and 100 years of age)"
+      ),
     phone: z
       .string()
       .trim()
-      .max(20, "Phone number must not exceed 20 characters")
+      .max(25, "Phone number must not exceed 25 characters")
       .optional()
-      .or(z.literal("")),
+      .or(z.literal(""))
+      .refine(
+        validatePhone,
+        "Please provide a valid phone number with 7-15 digits (e.g. +1-555-0142 or +233-24-123-4567)"
+      ),
     departmentId: z.string().min(1, "Department selection is required").optional(),
     academicYear: z.coerce
       .number()
@@ -106,12 +164,17 @@ export const UpdateStudentSchema = z
       .optional(),
     gpa: z
       .union([
-        z.coerce.number().min(0.0, "GPA cannot be less than 0.00").max(4.0, "GPA cannot exceed 4.00"),
+        z.coerce
+          .number()
+          .min(0.0, "GPA cannot be less than 0.00")
+          .max(4.0, "GPA cannot exceed 4.00"),
         z.literal(""),
         z.null(),
       ])
       .optional()
-      .transform((val) => (val === "" || val === null || val === undefined ? null : Number(val))),
+      .transform((val) =>
+        val === "" || val === null || val === undefined ? null : Number(val)
+      ),
     status: EnrollmentStatusEnum.optional(),
   })
   .strip();

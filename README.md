@@ -43,13 +43,17 @@ npm run db:setup
 ```bash
 npm run dev
 ```
-Open **[http://localhost:3000](http://localhost:3000)** in your browser.
+Open **[http://localhost:3000](http://localhost:3000)** in your browser. The app launches directly into the **Glow Horizon Landing Page** (`/`). Access the institutional records management portal by clicking **"Explore Student Directory"** or visiting **[http://localhost:3000/registry](http://localhost:3000/registry)**.
 
 ---
 
 ## 📖 How to Use the Application
 
-### 1. Directory Navigation & Census Strip
+### 1. Application Routes & Entry
+- **`/` (Root Landing Page):** Institutional hero presentation featuring Arcfield Systems brand horizon, real-time feature overview, and rapid entry points to both the directory and direct student enrollment.
+- **`/registry` (Student Directory Portal):** Full academic records database, live census strip, search and filter toolbar, tabular registry, and modal inspector.
+
+### 2. Directory Navigation & Census Strip
 - **Header Live Census:** Real-time counters display **Active Students**, **Total Cohort Size**, and **Archived Count**.
 - **Hero Header:** Displays instant division metrics and total registered student counts.
 - **Table View:** Displays candidate records with initials avatars, STU-ID, full name, institutional email, department badge, academic year, tabular GPA badge, and enrollment status.

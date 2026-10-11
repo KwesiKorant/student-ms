@@ -124,7 +124,10 @@ export function Toolbar({
           </div>
           <input
             ref={searchInputRef}
-            type="text"
+            type="search"
+            autoComplete="off"
+            autoCorrect="off"
+            spellCheck={false}
             value={localSearch}
             onChange={(e) => setLocalSearch(e.target.value)}
             placeholder="Search registry (name, ID, email)..."

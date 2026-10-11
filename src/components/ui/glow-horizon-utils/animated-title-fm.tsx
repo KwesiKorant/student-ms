@@ -49,7 +49,7 @@ export function AnimatedTitleFM({
         className="flex flex-wrap items-center justify-center gap-3.5 mt-36 sm:mt-44 md:mt-52"
       >
         <Link
-          href="/"
+          href="/registry"
           onClick={onExploreClick}
           className="tap-target group inline-flex items-center gap-2 px-6 py-2.5 sm:py-3 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-white dark:bg-white dark:hover:bg-zinc-100 dark:text-zinc-950 font-medium text-xs sm:text-sm shadow-xl shadow-black/15 dark:shadow-white/10 cursor-pointer transition-all active:scale-[0.98]"
         >
@@ -58,7 +58,7 @@ export function AnimatedTitleFM({
         </Link>
 
         <Link
-          href="/?enroll=true"
+          href="/registry?enroll=true"
           onClick={onEnrollClick}
           className="tap-target inline-flex items-center gap-2 px-6 py-2.5 sm:py-3 rounded-xl border border-zinc-300 dark:border-white/20 bg-white/90 dark:bg-white/10 text-zinc-900 dark:text-white hover:bg-zinc-100 dark:hover:bg-white/15 font-medium text-xs sm:text-sm shadow-sm cursor-pointer transition-all active:scale-[0.98]"
         >

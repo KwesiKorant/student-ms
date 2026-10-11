@@ -24,7 +24,7 @@ export function Header({
         <div className="flex items-center justify-between h-14 gap-4">
           {/* Left: Brand Identity with Link to Landing */}
           <Link
-            href="/landing"
+            href="/"
             className="flex items-center gap-3 min-w-0 hover:opacity-85 transition-opacity"
           >
             <div className="w-7 h-7 rounded-md bg-zinc-900 dark:bg-zinc-100 flex items-center justify-center text-zinc-100 dark:text-zinc-900 font-mono font-bold text-xs shadow-xs tracking-tighter">

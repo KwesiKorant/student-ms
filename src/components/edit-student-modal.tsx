@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { Department, EnrollmentStatus, Student } from "@/types/student";
-import { UpdateStudentSchema } from "@/lib/validations/student";
+import { UpdateStudentSchema, MAX_STUDENT_DOB, MIN_STUDENT_DOB } from "@/lib/validations/student";
 import { useToast } from "@/components/ui/toast";
 import { X, Edit2, AlertCircle, Loader2 } from "lucide-react";
 import { useModalDismiss } from "@/hooks/use-modal-dismiss";
@@ -41,6 +41,9 @@ export function EditStudentModal({
   const [isSubmitting, setIsSubmitting] = React.useState(false);
 
   useModalDismiss(isOpen && !!student, onClose);
+
+  const maxDob = MAX_STUDENT_DOB;
+  const minDob = MIN_STUDENT_DOB;
 
   if (!isOpen || !student) return null;
 
@@ -188,6 +191,9 @@ export function EditStudentModal({
                 type="text"
                 required
                 autoComplete="given-name"
+                autoCapitalize="words"
+                spellCheck={false}
+                maxLength={50}
                 value={formData.firstName}
                 onChange={(e) =>
                   setFormData({ ...formData, firstName: e.target.value })
@@ -207,6 +213,9 @@ export function EditStudentModal({
                 type="text"
                 required
                 autoComplete="family-name"
+                autoCapitalize="words"
+                spellCheck={false}
+                maxLength={50}
                 value={formData.lastName}
                 onChange={(e) =>
                   setFormData({ ...formData, lastName: e.target.value })
@@ -226,9 +235,12 @@ export function EditStudentModal({
             </label>
             <input
               type="email"
+              inputMode="email"
               required
               autoComplete="email"
+              autoCapitalize="none"
               spellCheck={false}
+              maxLength={100}
               value={formData.email}
               onChange={(e) =>
                 setFormData({ ...formData, email: e.target.value })
@@ -293,9 +305,15 @@ export function EditStudentModal({
               </label>
               <input
                 type="number"
+                inputMode="decimal"
                 step="0.01"
                 min="0.00"
                 max="4.00"
+                onKeyDown={(e) => {
+                  if (["e", "E", "+", "-"].includes(e.key)) {
+                    e.preventDefault();
+                  }
+                }}
                 value={formData.gpa}
                 onChange={(e) =>
                   setFormData({ ...formData, gpa: e.target.value })
@@ -337,12 +355,17 @@ export function EditStudentModal({
               </label>
               <input
                 type="date"
+                min={minDob}
+                max={maxDob}
                 value={formData.dateOfBirth}
                 onChange={(e) =>
                   setFormData({ ...formData, dateOfBirth: e.target.value })
                 }
                 className="w-full px-3 py-2 rounded-lg border border-zinc-200/90 dark:border-white/10 bg-zinc-50/80 dark:bg-zinc-900/60 text-zinc-900 dark:text-zinc-100 text-xs focus:outline-none focus:ring-1 focus:ring-zinc-400 dark:focus:ring-zinc-500 shadow-xs transition-colors"
               />
+              {errors.dateOfBirth && (
+                <p className="mt-1 text-[11px] text-rose-500">{errors.dateOfBirth}</p>
+              )}
             </div>
 
             <div>
@@ -351,12 +374,19 @@ export function EditStudentModal({
               </label>
               <input
                 type="tel"
+                inputMode="tel"
+                autoComplete="tel"
+                maxLength={25}
+                placeholder="e.g. +1-555-0142"
                 value={formData.phone}
                 onChange={(e) =>
                   setFormData({ ...formData, phone: e.target.value })
                 }
                 className="w-full px-3 py-2 rounded-lg border border-zinc-200/90 dark:border-white/10 bg-zinc-50/80 dark:bg-zinc-900/60 text-zinc-900 dark:text-zinc-100 font-mono text-xs focus:outline-none focus:ring-1 focus:ring-zinc-400 dark:focus:ring-zinc-500 shadow-xs transition-colors"
               />
+              {errors.phone && (
+                <p className="mt-1 text-[11px] text-rose-500">{errors.phone}</p>
+              )}
             </div>
           </div>
 
