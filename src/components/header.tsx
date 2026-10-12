@@ -4,7 +4,7 @@ import * as React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { Plus, LogOut, LogIn, ChevronDown, ShieldCheck } from "lucide-react";
+import { Plus, LogOut, LogIn, ShieldCheck, User } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { AnimatePresence, motion } from "motion/react";
 import { Tooltip } from "@/components/ui/tooltip";
@@ -87,9 +87,6 @@ export function Header({ onOpenEnrollModal, showEnrollButton = false }: HeaderPr
     router.refresh();
   };
 
-  const userInitial = userEmail ? userEmail.charAt(0).toUpperCase() : "U";
-  const username = userEmail ? userEmail.split("@")[0] : "";
-
   return (
     <header className="sticky top-0 z-40 w-full glass-nav transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -136,24 +133,9 @@ export function Header({ onOpenEnrollModal, showEnrollButton = false }: HeaderPr
                     whileTap={{ scale: 0.96 }}
                     aria-expanded={isMenuOpen}
                     aria-label="User account menu"
-                    className="tap-target group flex items-center gap-2 h-9 pl-2 pr-2.5 rounded-full border border-zinc-200/90 dark:border-white/10 bg-white/80 dark:bg-zinc-900 backdrop-blur-md dark:backdrop-blur-none shadow-xs dark:shadow-[0_2px_12px_rgba(255,255,255,0.06)] hover:border-zinc-300 dark:hover:border-white/20 transition-colors cursor-pointer select-none"
+                    className="tap-target group flex items-center justify-center h-9 w-9 rounded-full border border-zinc-200/90 dark:border-white/10 bg-white/80 dark:bg-zinc-900 backdrop-blur-md dark:backdrop-blur-none shadow-xs dark:shadow-[0_6px_12px_-2px_rgba(255,255,255,0.06)] hover:border-zinc-300 dark:hover:border-white/20 transition-colors cursor-pointer select-none"
                   >
-                    {/* User Initials Avatar Capsule */}
-                    <div className="w-5 h-5 rounded-full bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-950 font-mono font-bold text-[10px] flex items-center justify-center shrink-0">
-                      {userInitial}
-                    </div>
-
-                    <span className="text-xs font-medium text-zinc-700 dark:text-zinc-200 max-w-[120px] truncate hidden sm:inline">
-                      {username}
-                    </span>
-
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-
-                    <ChevronDown
-                      className={`w-3 h-3 text-zinc-400 transition-transform duration-200 ${
-                        isMenuOpen ? "rotate-180" : ""
-                      }`}
-                    />
+                    <User className="w-4 h-4 text-zinc-700 dark:text-zinc-200 group-hover:text-zinc-900 dark:group-hover:text-white transition-colors" />
                   </motion.button>
                 </Tooltip>
 
@@ -170,7 +152,7 @@ export function Header({ onOpenEnrollModal, showEnrollButton = false }: HeaderPr
                         stiffness: 350,
                         damping: 28,
                       }}
-                      className="absolute right-0 top-full mt-2 w-64 z-50 rounded-2xl shadow-2xl dark:shadow-[0_16px_48px_rgba(255,255,255,0.08),0_4px_16px_rgba(0,0,0,0.8)] bg-white dark:bg-[#121215] border border-zinc-200/90 dark:border-white/15 p-3.5 space-y-3 text-xs"
+                      className="absolute right-0 top-full mt-2 w-64 z-50 rounded-2xl shadow-2xl dark:shadow-[0_18px_28px_-6px_rgba(255,255,255,0.08),0_6px_12px_-4px_rgba(255,255,255,0.04)] bg-white dark:bg-[#121215] border border-zinc-200/90 dark:border-white/15 p-3.5 space-y-3 text-xs"
                     >
                       {/* Identity Header */}
                       <div className="space-y-1">

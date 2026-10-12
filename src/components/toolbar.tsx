@@ -236,7 +236,7 @@ export function Toolbar({
   return (
     <div className="w-full space-y-2 relative z-20 overflow-visible">
       {/* Primary Toolbar Container (Harmonized with Search Dock Design Structure) */}
-      <div className="relative flex flex-col md:flex-row items-stretch md:items-center justify-between gap-2.5 p-1.5 sm:p-2 rounded-2xl border border-zinc-200/90 dark:border-white/10 hover:border-zinc-300/90 dark:hover:border-white/20 bg-white/80 dark:bg-zinc-900 backdrop-blur-md dark:backdrop-blur-none shadow-[0_4px_16px_-2px_rgba(0,0,0,0.08),0_2px_4px_-1px_rgba(0,0,0,0.04)] dark:shadow-[0_8px_32px_rgba(255,255,255,0.08),0_2px_8px_rgba(255,255,255,0.04)] transition-all overflow-visible min-h-10">
+      <div className="relative flex flex-col md:flex-row items-stretch md:items-center justify-between gap-2.5 p-1.5 sm:p-2 rounded-2xl border border-zinc-200/90 dark:border-white/10 hover:border-zinc-300/90 dark:hover:border-white/20 bg-white/80 dark:bg-zinc-900 backdrop-blur-md dark:backdrop-blur-none shadow-[0_4px_16px_-2px_rgba(0,0,0,0.08),0_2px_4px_-1px_rgba(0,0,0,0.04)] dark:shadow-[0_12px_24px_-4px_rgba(255,255,255,0.08),0_4px_8px_-2px_rgba(255,255,255,0.04)] transition-all overflow-visible min-h-10">
         {/* Left Section: Direct Parametric Filters */}
         <div className="flex flex-wrap items-center gap-2 flex-1 min-w-0 overflow-visible">
           {/* Primary Filter 1: Department */}
