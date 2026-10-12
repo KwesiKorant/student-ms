@@ -136,7 +136,7 @@ export function Header({ onOpenEnrollModal, showEnrollButton = false }: HeaderPr
                     whileTap={{ scale: 0.96 }}
                     aria-expanded={isMenuOpen}
                     aria-label="User account menu"
-                    className="tap-target group flex items-center gap-2 h-9 pl-2 pr-2.5 rounded-full border border-zinc-200/90 dark:border-white/10 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md shadow-xs hover:border-zinc-300 dark:hover:border-white/20 transition-colors cursor-pointer select-none"
+                    className="tap-target group flex items-center gap-2 h-9 pl-2 pr-2.5 rounded-full border border-zinc-200/90 dark:border-white/10 bg-white/80 dark:bg-zinc-900 backdrop-blur-md dark:backdrop-blur-none shadow-xs dark:shadow-[0_2px_12px_rgba(255,255,255,0.06)] hover:border-zinc-300 dark:hover:border-white/20 transition-colors cursor-pointer select-none"
                   >
                     {/* User Initials Avatar Capsule */}
                     <div className="w-5 h-5 rounded-full bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-950 font-mono font-bold text-[10px] flex items-center justify-center shrink-0">
@@ -170,7 +170,7 @@ export function Header({ onOpenEnrollModal, showEnrollButton = false }: HeaderPr
                         stiffness: 350,
                         damping: 28,
                       }}
-                      className="absolute right-0 top-full mt-2 w-64 z-50 rounded-2xl shadow-2xl bg-white dark:bg-[#121215] border border-zinc-200/90 dark:border-white/15 p-3.5 space-y-3 text-xs"
+                      className="absolute right-0 top-full mt-2 w-64 z-50 rounded-2xl shadow-2xl dark:shadow-[0_16px_48px_rgba(255,255,255,0.08),0_4px_16px_rgba(0,0,0,0.8)] bg-white dark:bg-[#121215] border border-zinc-200/90 dark:border-white/15 p-3.5 space-y-3 text-xs"
                     >
                       {/* Identity Header */}
                       <div className="space-y-1">

@@ -66,16 +66,6 @@ export function EdgeCornerFrame({
         aria-hidden="true"
       />
 
-      {/* Unified Perimeter Border with Soft Curve Edges (Giving the perception of a card container) */}
-      <div
-        className={`absolute inset-0 rounded-2xl border pointer-events-none transition-colors duration-200 ${
-          isFocused
-            ? "border-zinc-400 dark:border-white/25"
-            : "border-zinc-300/80 dark:border-white/10 group-hover:border-zinc-400/80 dark:group-hover:border-white/20"
-        }`}
-        aria-hidden="true"
-      />
-
       {/* Floating Interactive Canvas */}
       <div className="relative z-10 w-full">{children}</div>
     </div>

@@ -188,6 +188,7 @@ body {
 .edge-corner-tl {
   top: 0;
   left: 0;
+  border-top-left-radius: 1.5rem;
   background: conic-gradient(
     from 90deg at 0% 0%,
     rgba(0, 0, 0, 0.16) 0deg,
@@ -203,6 +204,7 @@ body {
 .edge-corner-tr {
   top: 0;
   right: 0;
+  border-top-right-radius: 1.5rem;
   background: conic-gradient(
     from 180deg at 100% 0%,
     rgba(0, 0, 0, 0.16) 0deg,
@@ -218,6 +220,7 @@ body {
 .edge-corner-bl {
   bottom: 0;
   left: 0;
+  border-bottom-left-radius: 1.5rem;
   background: conic-gradient(
     from 0deg at 0% 100%,
     rgba(0, 0, 0, 0.16) 0deg,
@@ -233,6 +236,7 @@ body {
 .edge-corner-br {
   bottom: 0;
   right: 0;
+  border-bottom-right-radius: 1.5rem;
   background: conic-gradient(
     from 270deg at 100% 100%,
     rgba(0, 0, 0, 0.16) 0deg,

@@ -4,6 +4,7 @@ import * as React from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { motion, AnimatePresence } from "motion/react";
 import { EdgeCornerFrame } from "@/components/ui/edge-corner-frame";
 import { TextReveal } from "@/components/ui/text-reveal";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -196,19 +197,26 @@ function LoginFormContent() {
 
             {/* Mode Switcher Pills (Fluid spring transition) */}
             <TextReveal delay={0.46}>
-              <div className="flex p-1 mb-6 rounded-lg bg-zinc-200/50 dark:bg-zinc-900/60 border border-zinc-300/40 dark:border-zinc-800">
+              <div className="relative flex p-1 mb-6 rounded-lg bg-zinc-200/50 dark:bg-zinc-900/60 border border-zinc-300/40 dark:border-zinc-800">
                 <button
                   type="button"
                   onClick={() => {
                     setMode("signin");
                     setErrorMessage(null);
                   }}
-                  className={`tap-target flex-1 py-1.5 text-xs font-medium rounded-md transition-all cursor-pointer ${
+                  className={`relative flex-1 py-1.5 text-xs font-medium rounded-md transition-colors cursor-pointer z-10 ${
                     mode === "signin"
-                      ? "bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 shadow-xs"
+                      ? "text-zinc-900 dark:text-zinc-100"
                       : "text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-300"
                   }`}
                 >
+                  {mode === "signin" && (
+                    <motion.div
+                      layoutId="auth-mode-pill"
+                      className="absolute inset-0 rounded-md bg-white dark:bg-zinc-800 shadow-xs -z-10"
+                      transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                    />
+                  )}
                   Sign In
                 </button>
                 <button
@@ -217,12 +225,19 @@ function LoginFormContent() {
                     setMode("signup");
                     setErrorMessage(null);
                   }}
-                  className={`tap-target flex-1 py-1.5 text-xs font-medium rounded-md transition-all cursor-pointer ${
+                  className={`relative flex-1 py-1.5 text-xs font-medium rounded-md transition-colors cursor-pointer z-10 ${
                     mode === "signup"
-                      ? "bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 shadow-xs"
+                      ? "text-zinc-900 dark:text-zinc-100"
                       : "text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-300"
                   }`}
                 >
+                  {mode === "signup" && (
+                    <motion.div
+                      layoutId="auth-mode-pill"
+                      className="absolute inset-0 rounded-md bg-white dark:bg-zinc-800 shadow-xs -z-10"
+                      transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                    />
+                  )}
                   Register Staff
                 </button>
               </div>
@@ -247,43 +262,54 @@ function LoginFormContent() {
             {/* Authentication Form */}
             <TextReveal delay={0.58}>
               <form onSubmit={handleSubmit} className="space-y-4">
-                {mode === "signup" && (
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="block text-[11px] font-medium text-zinc-600 dark:text-zinc-400 mb-1">
-                        First Name
-                      </label>
-                      <div className="relative">
-                        <input
-                          type="text"
-                          value={firstName}
-                          onChange={(e) => setFirstName(e.target.value)}
-                          placeholder="Lead"
-                          required
-                          className="w-full pl-8 pr-3 py-2 text-xs rounded-lg bg-zinc-100/60 dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800 focus:outline-none focus:border-zinc-500 dark:focus:border-zinc-400 transition-colors"
-                          onFocus={() => setIsFocused(true)}
-                          onBlur={() => setIsFocused(false)}
-                        />
-                        <User className="w-3.5 h-3.5 text-zinc-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
+                <AnimatePresence initial={false}>
+                  {mode === "signup" && (
+                    <motion.div
+                      key="signup-names"
+                      initial={{ opacity: 0, height: 0, y: -6 }}
+                      animate={{ opacity: 1, height: "auto", y: 0 }}
+                      exit={{ opacity: 0, height: 0, y: -6 }}
+                      transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+                      className="overflow-hidden"
+                    >
+                      <div className="grid grid-cols-2 gap-3 pb-1">
+                        <div>
+                          <label className="block text-[11px] font-medium text-zinc-600 dark:text-zinc-400 mb-1">
+                            First Name
+                          </label>
+                          <div className="relative">
+                            <input
+                              type="text"
+                              value={firstName}
+                              onChange={(e) => setFirstName(e.target.value)}
+                              placeholder="Lead"
+                              required
+                              className="w-full pl-8 pr-3 py-2 text-xs rounded-lg bg-zinc-100/60 dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800 focus:outline-none focus:border-zinc-500 dark:focus:border-zinc-400 transition-colors"
+                              onFocus={() => setIsFocused(true)}
+                              onBlur={() => setIsFocused(false)}
+                            />
+                            <User className="w-3.5 h-3.5 text-zinc-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
+                          </div>
+                        </div>
+                        <div>
+                          <label className="block text-[11px] font-medium text-zinc-600 dark:text-zinc-400 mb-1">
+                            Last Name
+                          </label>
+                          <input
+                            type="text"
+                            value={lastName}
+                            onChange={(e) => setLastName(e.target.value)}
+                            placeholder="Registrar"
+                            required
+                            className="w-full px-3 py-2 text-xs rounded-lg bg-zinc-100/60 dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800 focus:outline-none focus:border-zinc-500 dark:focus:border-zinc-400 transition-colors"
+                            onFocus={() => setIsFocused(true)}
+                            onBlur={() => setIsFocused(false)}
+                          />
+                        </div>
                       </div>
-                    </div>
-                    <div>
-                      <label className="block text-[11px] font-medium text-zinc-600 dark:text-zinc-400 mb-1">
-                        Last Name
-                      </label>
-                      <input
-                        type="text"
-                        value={lastName}
-                        onChange={(e) => setLastName(e.target.value)}
-                        placeholder="Registrar"
-                        required
-                        className="w-full px-3 py-2 text-xs rounded-lg bg-zinc-100/60 dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800 focus:outline-none focus:border-zinc-500 dark:focus:border-zinc-400 transition-colors"
-                        onFocus={() => setIsFocused(true)}
-                        onBlur={() => setIsFocused(false)}
-                      />
-                    </div>
-                  </div>
-                )}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
 
                 {/* Email Address */}
                 <div>
@@ -358,11 +384,19 @@ function LoginFormContent() {
                     </>
                   ) : (
                     <>
-                      <span>
-                        {mode === "signin"
-                          ? "Sign In to Registry"
-                          : "Create Institutional Account"}
-                      </span>
+                      <AnimatePresence mode="wait" initial={false}>
+                        <motion.span
+                          key={mode}
+                          initial={{ opacity: 0, y: 3 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -3 }}
+                          transition={{ duration: 0.16, ease: "easeOut" }}
+                        >
+                          {mode === "signin"
+                            ? "Sign In to Registry"
+                            : "Create Institutional Account"}
+                        </motion.span>
+                      </AnimatePresence>
                       <ArrowRight className="w-3.5 h-3.5" />
                     </>
                   )}
