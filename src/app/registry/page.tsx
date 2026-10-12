@@ -413,14 +413,14 @@ export default function StudentManagementPortal() {
             <div>
               <TextReveal
                 as="h1"
-                delay={0.06}
+                delay={0.08}
                 className="text-xl sm:text-2xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50"
               >
                 Student Directory
               </TextReveal>
               <TextReveal
                 as="p"
-                delay={0.14}
+                delay={0.22}
                 className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5 max-w-xl leading-relaxed"
               >
                 Institutional academic records, departmental divisions, and lifecycle registry.
@@ -429,7 +429,7 @@ export default function StudentManagementPortal() {
 
             {/* Consolidated Institutional Status Strip */}
             <TextReveal
-              delay={0.22}
+              delay={0.38}
               className="flex flex-wrap items-center gap-2 text-xs font-mono text-zinc-500 dark:text-zinc-400 shrink-0"
             >
               <div className="px-2.5 py-1 rounded-md glass-card-subtle flex items-center gap-1.5 border border-zinc-200/60 dark:border-white/5">
@@ -456,7 +456,7 @@ export default function StudentManagementPortal() {
           </div>
 
           {/* Controls Strip: Separated Search Dock & Filter Toolbar (Option C) */}
-          <section aria-label="Directory Search and Filters" className="relative z-30 space-y-2">
+          <TextReveal delay={0.52} as="section" aria-label="Directory Search and Filters" className="relative z-30 space-y-2">
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
               {/* Capsule 1: Autonomous Expanding Search Icon Button (~40px) */}
               <ExpandingSearchDock
@@ -514,7 +514,7 @@ export default function StudentManagementPortal() {
               departments={departments}
               onResetFilters={handleResetFilters}
             />
-          </section>
+          </TextReveal>
 
           {/* Student Records Data Table */}
           <section aria-label="Student Records Table" className="space-y-3">

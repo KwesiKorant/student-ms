@@ -179,7 +179,7 @@ function LoginFormContent() {
           <EdgeCornerFrame isFocused={isFocused}>
             {/* Header Badge & Title */}
             <div className="text-center mb-8">
-              <TextReveal delay={0.04} className="inline-block mb-3">
+              <TextReveal delay={0.06} className="inline-block mb-3">
                 <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-mono font-medium tracking-wide bg-zinc-200/60 dark:bg-zinc-800/60 text-zinc-600 dark:text-zinc-400 border border-zinc-300/40 dark:border-zinc-700/40">
                   <ShieldCheck className="w-3 h-3 text-emerald-500" />
                   <span>SECURE_GATEWAY · v2.4</span>
@@ -187,14 +187,14 @@ function LoginFormContent() {
               </TextReveal>
               <TextReveal
                 as="h1"
-                delay={0.12}
+                delay={0.18}
                 className="text-xl sm:text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50"
               >
                 Institutional Authentication
               </TextReveal>
               <TextReveal
                 as="p"
-                delay={0.2}
+                delay={0.32}
                 className="text-xs text-zinc-500 dark:text-zinc-400 mt-1"
               >
                 Academic records database & student lifecycle management
@@ -202,36 +202,38 @@ function LoginFormContent() {
             </div>
 
             {/* Mode Switcher Pills (Fluid spring transition) */}
-            <div className="flex p-1 mb-6 rounded-lg bg-zinc-200/50 dark:bg-zinc-900/60 border border-zinc-300/40 dark:border-zinc-800">
-              <button
-                type="button"
-                onClick={() => {
-                  setMode("signin");
-                  setErrorMessage(null);
-                }}
-                className={`tap-target flex-1 py-1.5 text-xs font-medium rounded-md transition-all cursor-pointer ${
-                  mode === "signin"
-                    ? "bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 shadow-xs"
-                    : "text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-300"
-                }`}
-              >
-                Sign In
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  setMode("signup");
-                  setErrorMessage(null);
-                }}
-                className={`tap-target flex-1 py-1.5 text-xs font-medium rounded-md transition-all cursor-pointer ${
-                  mode === "signup"
-                    ? "bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 shadow-xs"
-                    : "text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-300"
-                }`}
-              >
-                Register Staff
-              </button>
-            </div>
+            <TextReveal delay={0.46}>
+              <div className="flex p-1 mb-6 rounded-lg bg-zinc-200/50 dark:bg-zinc-900/60 border border-zinc-300/40 dark:border-zinc-800">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMode("signin");
+                    setErrorMessage(null);
+                  }}
+                  className={`tap-target flex-1 py-1.5 text-xs font-medium rounded-md transition-all cursor-pointer ${
+                    mode === "signin"
+                      ? "bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 shadow-xs"
+                      : "text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-300"
+                  }`}
+                >
+                  Sign In
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMode("signup");
+                    setErrorMessage(null);
+                  }}
+                  className={`tap-target flex-1 py-1.5 text-xs font-medium rounded-md transition-all cursor-pointer ${
+                    mode === "signup"
+                      ? "bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 shadow-xs"
+                      : "text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-300"
+                  }`}
+                >
+                  Register Staff
+                </button>
+              </div>
+            </TextReveal>
 
             {/* Error Message */}
             {errorMessage && (
