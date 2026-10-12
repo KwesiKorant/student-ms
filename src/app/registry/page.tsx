@@ -17,6 +17,7 @@ import { Tooltip } from "@/components/ui/tooltip";
 import { useSearchParams } from "next/navigation";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useStudentRealtime } from "@/hooks/use-student-realtime";
+import { Plus } from "lucide-react";
 
 function EnrollUrlWatcher({ onOpen }: { onOpen: () => void }) {
   const searchParams = useSearchParams();
@@ -405,7 +406,7 @@ export default function StudentManagementPortal() {
 
       <div className="min-h-screen flex flex-col bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 transition-colors duration-150">
         {/* Header with Auth User Session & Theme Controls */}
-        <Header onOpenEnrollModal={handleOpenEnrollModal} />
+        <Header onOpenEnrollModal={handleOpenEnrollModal} showEnrollButton={false} />
 
         {/* Main Content Area */}
         <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-5">
@@ -428,63 +429,77 @@ export default function StudentManagementPortal() {
               </TextReveal>
             </div>
 
-            {/* Consolidated Institutional Status Strip with Informative Tooltips */}
-            <TextReveal
-              delay={0.38}
-              className="flex flex-wrap items-center gap-2 text-xs font-mono text-zinc-500 dark:text-zinc-400 shrink-0"
-            >
-              <Tooltip
-                content="Active Matriculated Students"
-                subContent="Enrolled students currently in active good academic standing"
-                side="bottom"
+            {/* Consolidated Institutional Status Strip with Informative Tooltips & Contextual Primary Action */}
+            <div className="flex flex-wrap items-center gap-2.5 shrink-0">
+              <TextReveal
+                delay={0.38}
+                className="flex flex-wrap items-center gap-2 text-xs font-mono text-zinc-500 dark:text-zinc-400 shrink-0"
               >
-                <div className="px-2.5 py-1 rounded-md glass-card-subtle flex items-center gap-1.5 border border-zinc-200/60 dark:border-white/5 cursor-default select-none">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                  <span className="text-zinc-400 text-[10px]">ACTIVE</span>
-                  <span className="font-semibold text-zinc-900 dark:text-zinc-100">{metrics.active}</span>
-                </div>
-              </Tooltip>
-
-              <Tooltip
-                content="Total Directory Records"
-                subContent="Complete roster count of all student profiles across all departments"
-                side="bottom"
-              >
-                <div className="px-2.5 py-1 rounded-md glass-card-subtle flex items-center gap-1.5 border border-zinc-200/60 dark:border-white/5 cursor-default select-none">
-                  <span className="text-zinc-400 text-[10px]">TOTAL</span>
-                  <span className="font-semibold text-zinc-900 dark:text-zinc-100">{metrics.total}</span>
-                </div>
-              </Tooltip>
-
-              <Tooltip
-                content="Academic Divisions"
-                subContent="Configured degree-granting departmental faculties (e.g., CS, ENG, BIZ, MED, LAW)"
-                side="bottom"
-              >
-                <div className="px-2.5 py-1 rounded-md glass-card-subtle flex items-center gap-1.5 border border-zinc-200/60 dark:border-white/5 cursor-default select-none">
-                  <span className="text-zinc-400 text-[10px]">DIVISIONS</span>
-                  <span className="font-semibold text-zinc-900 dark:text-zinc-100">{departments.length}</span>
-                </div>
-              </Tooltip>
-
-              {metrics.archived > 0 && (
                 <Tooltip
-                  content="Archived Dossiers"
-                  subContent="Soft-archived student profiles preserved for compliance and fully restorable"
+                  content="Active Matriculated Students"
+                  subContent="Enrolled students currently in active good academic standing"
                   side="bottom"
                 >
-                  <div className="px-2.5 py-1 rounded-md glass-card-subtle flex items-center gap-1.5 border border-amber-500/20 text-amber-600 dark:text-amber-400 cursor-default select-none">
-                    <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
-                    <span className="text-[10px]">ARCHIVED</span>
-                    <span className="font-semibold">{metrics.archived}</span>
+                  <div className="px-2.5 py-1 rounded-md glass-card-subtle flex items-center gap-1.5 border border-zinc-200/60 dark:border-white/5 cursor-default select-none">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                    <span className="text-zinc-400 text-[10px]">ACTIVE</span>
+                    <span className="font-semibold text-zinc-900 dark:text-zinc-100">{metrics.active}</span>
                   </div>
                 </Tooltip>
-              )}
-            </TextReveal>
+
+                <Tooltip
+                  content="Total Directory Records"
+                  subContent="Complete roster count of all student profiles across all departments"
+                  side="bottom"
+                >
+                  <div className="px-2.5 py-1 rounded-md glass-card-subtle flex items-center gap-1.5 border border-zinc-200/60 dark:border-white/5 cursor-default select-none">
+                    <span className="text-zinc-400 text-[10px]">TOTAL</span>
+                    <span className="font-semibold text-zinc-900 dark:text-zinc-100">{metrics.total}</span>
+                  </div>
+                </Tooltip>
+
+                <Tooltip
+                  content="Academic Divisions"
+                  subContent="Configured degree-granting departmental faculties (e.g., CS, ENG, BIZ, MED, LAW)"
+                  side="bottom"
+                >
+                  <div className="px-2.5 py-1 rounded-md glass-card-subtle flex items-center gap-1.5 border border-zinc-200/60 dark:border-white/5 cursor-default select-none">
+                    <span className="text-zinc-400 text-[10px]">DIVISIONS</span>
+                    <span className="font-semibold text-zinc-900 dark:text-zinc-100">{departments.length}</span>
+                  </div>
+                </Tooltip>
+
+                {metrics.archived > 0 && (
+                  <Tooltip
+                    content="Archived Dossiers"
+                    subContent="Soft-archived student profiles preserved for compliance and fully restorable"
+                    side="bottom"
+                  >
+                    <div className="px-2.5 py-1 rounded-md glass-card-subtle flex items-center gap-1.5 border border-amber-500/20 text-amber-600 dark:text-amber-400 cursor-default select-none">
+                      <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                      <span className="text-[10px]">ARCHIVED</span>
+                      <span className="font-semibold">{metrics.archived}</span>
+                    </div>
+                  </Tooltip>
+                )}
+              </TextReveal>
+
+              {/* Contextual Primary Action: + Enroll Student */}
+              <TextReveal delay={0.44}>
+                <button
+                  type="button"
+                  onClick={handleOpenEnrollModal}
+                  className="tap-target inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-zinc-900 hover:bg-zinc-800 dark:bg-zinc-100 dark:hover:bg-zinc-200 text-white dark:text-zinc-950 shadow-xs hover:shadow cursor-pointer transition-all active:scale-[0.98]"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                  <span>Enroll Student</span>
+                </button>
+              </TextReveal>
+            </div>
           </div>
 
           {/* Controls Strip: Separated Search Dock & Filter Toolbar (Option C) */}
-          <TextReveal delay={0.52} as="section" aria-label="Directory Search and Filters" className="relative z-30 space-y-2">
+          <TextReveal delay={0.52} as="section" aria-label="Directory Search and Filters" className="relative z-10 space-y-2">
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
               {/* Capsule 1: Autonomous Expanding Search Icon Button (~40px) */}
               <ExpandingSearchDock

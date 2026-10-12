@@ -49,6 +49,7 @@ export interface TooltipProps {
   side?: "top" | "bottom" | "left" | "right";
   delayDuration?: number;
   className?: string;
+  disabled?: boolean;
 }
 
 function subscribeReducedMotion(callback: () => void) {
@@ -79,6 +80,7 @@ export function Tooltip({
   side = "top",
   delayDuration = 120,
   className = "",
+  disabled = false,
 }: TooltipProps) {
   const context = React.useContext(TooltipContext);
   const [isOpen, setIsOpen] = React.useState(false);
@@ -98,6 +100,14 @@ export function Tooltip({
       timerRef.current = null;
     }
   };
+
+  const closeTooltip = React.useCallback(() => {
+    cleanupTimer();
+    setIsOpen(false);
+    context?.onTooltipClosed();
+  }, [context]);
+
+  const isEffectiveOpen = isOpen && !disabled;
 
   const updateCoordinates = (target: HTMLElement) => {
     const rect = target.getBoundingClientRect();
@@ -122,6 +132,7 @@ export function Tooltip({
   };
 
   const openTooltip = (target: HTMLElement) => {
+    if (disabled) return;
     cleanupTimer();
     updateCoordinates(target);
 
@@ -138,12 +149,6 @@ export function Tooltip({
       }, delayDuration);
     }
   };
-
-  const closeTooltip = React.useCallback(() => {
-    cleanupTimer();
-    setIsOpen(false);
-    context?.onTooltipClosed();
-  }, [context]);
 
   const handlePointerEnter = (e: React.PointerEvent<HTMLDivElement>) => {
     openTooltip(e.currentTarget);
@@ -235,6 +240,7 @@ export function Tooltip({
       onPointerLeave={handlePointerLeave}
       onFocus={handleFocus}
       onBlur={handleBlur}
+      onClick={closeTooltip}
     >
       {children}
 
@@ -243,7 +249,7 @@ export function Tooltip({
         coords &&
         createPortal(
           <AnimatePresence>
-            {isOpen && (
+            {isEffectiveOpen && (
               <div
                 style={{
                   position: "fixed",

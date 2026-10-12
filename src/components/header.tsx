@@ -14,7 +14,7 @@ interface HeaderProps {
   showEnrollButton?: boolean;
 }
 
-export function Header({ onOpenEnrollModal, showEnrollButton = true }: HeaderProps) {
+export function Header({ onOpenEnrollModal, showEnrollButton = false }: HeaderProps) {
   const router = useRouter();
   const [userEmail, setUserEmail] = React.useState<string | null>(null);
   const [userRole, setUserRole] = React.useState<string | null>(null);
@@ -91,7 +91,7 @@ export function Header({ onOpenEnrollModal, showEnrollButton = true }: HeaderPro
   const username = userEmail ? userEmail.split("@")[0] : "";
 
   return (
-    <header className="sticky top-0 z-30 w-full glass-nav transition-colors">
+    <header className="sticky top-0 z-40 w-full glass-nav transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-14 gap-4">
           {/* Left: Brand Identity with Link to Landing */}
@@ -124,6 +124,7 @@ export function Header({ onOpenEnrollModal, showEnrollButton = true }: HeaderPro
             {userEmail ? (
               <div className="relative inline-flex items-center" ref={menuRef}>
                 <Tooltip
+                  disabled={isMenuOpen}
                   content={`Signed in as ${userEmail}`}
                   subContent="Click to view session details or sign out"
                   side="bottom"
@@ -169,7 +170,7 @@ export function Header({ onOpenEnrollModal, showEnrollButton = true }: HeaderPro
                         stiffness: 350,
                         damping: 28,
                       }}
-                      className="absolute right-0 top-full mt-2 w-64 z-50 rounded-2xl shadow-2xl bg-white dark:bg-[#121215] border border-zinc-200/90 dark:border-white/15 p-3.5 space-y-3 animate-modal-enter text-xs"
+                      className="absolute right-0 top-full mt-2 w-64 z-50 rounded-2xl shadow-2xl bg-white dark:bg-[#121215] border border-zinc-200/90 dark:border-white/15 p-3.5 space-y-3 text-xs"
                     >
                       {/* Identity Header */}
                       <div className="space-y-1">

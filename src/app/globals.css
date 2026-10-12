@@ -179,53 +179,68 @@ body {
   height: 128px;
   pointer-events: none;
   z-index: 0;
+  contain: layout paint;
   transition: opacity 280ms var(--spring-smooth), transform 280ms var(--spring-snappy);
 }
 
-/* Light Mode: Soft diffused ambient shadows */
+/* Light Mode: Precision Graphite Corner Radial Gradients */
 .edge-corner-tl {
-  top: -20px;
-  left: -20px;
-  border-radius: 9999px;
-  background: radial-gradient(circle, rgba(0, 0, 0, 0.10) 0%, rgba(0, 0, 0, 0.04) 45%, transparent 70%);
+  top: -16px;
+  left: -16px;
+  background: radial-gradient(circle at 16px 16px, rgba(0, 0, 0, 0.18) 0%, rgba(0, 0, 0, 0.08) 35%, rgba(0, 0, 0, 0.02) 65%, transparent 75%);
+  filter: drop-shadow(-8px -8px 20px rgba(0, 0, 0, 0.14));
 }
 
 .edge-corner-tr {
-  top: -20px;
-  right: -20px;
-  border-radius: 9999px;
-  background: radial-gradient(circle, rgba(0, 0, 0, 0.10) 0%, rgba(0, 0, 0, 0.04) 45%, transparent 70%);
+  top: -16px;
+  right: -16px;
+  background: radial-gradient(circle at 112px 16px, rgba(0, 0, 0, 0.18) 0%, rgba(0, 0, 0, 0.08) 35%, rgba(0, 0, 0, 0.02) 65%, transparent 75%);
+  filter: drop-shadow(8px -8px 20px rgba(0, 0, 0, 0.14));
 }
 
 .edge-corner-bl {
-  bottom: -20px;
-  left: -20px;
-  border-radius: 9999px;
-  background: radial-gradient(circle, rgba(0, 0, 0, 0.10) 0%, rgba(0, 0, 0, 0.04) 45%, transparent 70%);
+  bottom: -16px;
+  left: -16px;
+  background: radial-gradient(circle at 16px 112px, rgba(0, 0, 0, 0.18) 0%, rgba(0, 0, 0, 0.08) 35%, rgba(0, 0, 0, 0.02) 65%, transparent 75%);
+  filter: drop-shadow(-8px 8px 20px rgba(0, 0, 0, 0.14));
 }
 
 .edge-corner-br {
-  bottom: -20px;
-  right: -20px;
-  border-radius: 9999px;
-  background: radial-gradient(circle, rgba(0, 0, 0, 0.10) 0%, rgba(0, 0, 0, 0.04) 45%, transparent 70%);
+  bottom: -16px;
+  right: -16px;
+  background: radial-gradient(circle at 112px 112px, rgba(0, 0, 0, 0.18) 0%, rgba(0, 0, 0, 0.08) 35%, rgba(0, 0, 0, 0.02) 65%, transparent 75%);
+  filter: drop-shadow(8px 8px 20px rgba(0, 0, 0, 0.14));
 }
 
-/* Dark Mode: Soft ambient luminescence */
+/* Dark Mode: Dual-layer Corner Luminescence & Deep Obsidian Occlusion */
 .dark .edge-corner-tl {
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.14) 0%, rgba(161, 161, 170, 0.05) 45%, transparent 70%);
+  background: radial-gradient(circle at 16px 16px, rgba(255, 255, 255, 0.26) 0%, rgba(161, 161, 170, 0.10) 35%, rgba(99, 102, 241, 0.05) 60%, transparent 75%);
+  filter: drop-shadow(-6px -6px 18px rgba(255, 255, 255, 0.16)) drop-shadow(-12px -12px 32px rgba(0, 0, 0, 0.95));
 }
 
 .dark .edge-corner-tr {
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.14) 0%, rgba(161, 161, 170, 0.05) 45%, transparent 70%);
+  background: radial-gradient(circle at 112px 16px, rgba(255, 255, 255, 0.26) 0%, rgba(161, 161, 170, 0.10) 35%, rgba(99, 102, 241, 0.05) 60%, transparent 75%);
+  filter: drop-shadow(6px -6px 18px rgba(255, 255, 255, 0.16)) drop-shadow(12px -12px 32px rgba(0, 0, 0, 0.95));
 }
 
 .dark .edge-corner-bl {
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.14) 0%, rgba(161, 161, 170, 0.05) 45%, transparent 70%);
+  background: radial-gradient(circle at 16px 112px, rgba(255, 255, 255, 0.26) 0%, rgba(161, 161, 170, 0.10) 35%, rgba(99, 102, 241, 0.05) 60%, transparent 75%);
+  filter: drop-shadow(-6px 6px 18px rgba(255, 255, 255, 0.16)) drop-shadow(-12px 12px 32px rgba(0, 0, 0, 0.95));
 }
 
 .dark .edge-corner-br {
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.14) 0%, rgba(161, 161, 170, 0.05) 45%, transparent 70%);
+  background: radial-gradient(circle at 112px 112px, rgba(255, 255, 255, 0.26) 0%, rgba(161, 161, 170, 0.10) 35%, rgba(99, 102, 241, 0.05) 60%, transparent 75%);
+  filter: drop-shadow(6px 6px 18px rgba(255, 255, 255, 0.16)) drop-shadow(12px 12px 32px rgba(0, 0, 0, 0.95));
+}
+
+/* Precision optical corner tick marks */
+.edge-corner-bracket {
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  pointer-events: none;
+  z-index: 10;
+  transition: opacity 280ms var(--spring-smooth), transform 280ms var(--spring-snappy);
 }
 
 /* Respect user's motion preferences */
