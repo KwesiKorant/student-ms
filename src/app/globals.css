@@ -249,57 +249,57 @@ body {
   filter: drop-shadow(0 0 16px rgba(0, 0, 0, 0.08));
 }
 
-/* Dark Mode: Luminous Conical Specular Spread with Inward Occlusion */
+/* Dark Mode: Luminous Conical Specular Spread with Inward Occlusion (Soft Calibrated Tones) */
 .dark .edge-corner-tl {
   background: conic-gradient(
     from 90deg at 0% 0%,
-    rgba(255, 255, 255, 0.22) 0deg,
-    rgba(161, 161, 170, 0.09) 45deg,
-    rgba(255, 255, 255, 0.22) 90deg,
+    rgba(255, 255, 255, 0.08) 0deg,
+    rgba(161, 161, 170, 0.03) 45deg,
+    rgba(255, 255, 255, 0.08) 90deg,
     transparent 90deg
   );
   mask-image: radial-gradient(circle at 0% 0%, black 0%, rgba(0, 0, 0, 0.5) 45%, transparent 75%);
   -webkit-mask-image: radial-gradient(circle at 0% 0%, black 0%, rgba(0, 0, 0, 0.5) 45%, transparent 75%);
-  filter: drop-shadow(0 0 16px rgba(255, 255, 255, 0.14)) drop-shadow(0 0 32px rgba(0, 0, 0, 0.8));
+  filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.04)) drop-shadow(0 0 24px rgba(0, 0, 0, 0.8));
 }
 
 .dark .edge-corner-tr {
   background: conic-gradient(
     from 180deg at 100% 0%,
-    rgba(255, 255, 255, 0.22) 0deg,
-    rgba(161, 161, 170, 0.09) 45deg,
-    rgba(255, 255, 255, 0.22) 90deg,
+    rgba(255, 255, 255, 0.08) 0deg,
+    rgba(161, 161, 170, 0.03) 45deg,
+    rgba(255, 255, 255, 0.08) 90deg,
     transparent 90deg
   );
   mask-image: radial-gradient(circle at 100% 0%, black 0%, rgba(0, 0, 0, 0.5) 45%, transparent 75%);
   -webkit-mask-image: radial-gradient(circle at 100% 0%, black 0%, rgba(0, 0, 0, 0.5) 45%, transparent 75%);
-  filter: drop-shadow(0 0 16px rgba(255, 255, 255, 0.14)) drop-shadow(0 0 32px rgba(0, 0, 0, 0.8));
+  filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.04)) drop-shadow(0 0 24px rgba(0, 0, 0, 0.8));
 }
 
 .dark .edge-corner-bl {
   background: conic-gradient(
     from 0deg at 0% 100%,
-    rgba(255, 255, 255, 0.22) 0deg,
-    rgba(161, 161, 170, 0.09) 45deg,
-    rgba(255, 255, 255, 0.22) 90deg,
+    rgba(255, 255, 255, 0.08) 0deg,
+    rgba(161, 161, 170, 0.03) 45deg,
+    rgba(255, 255, 255, 0.08) 90deg,
     transparent 90deg
   );
   mask-image: radial-gradient(circle at 0% 100%, black 0%, rgba(0, 0, 0, 0.5) 45%, transparent 75%);
   -webkit-mask-image: radial-gradient(circle at 0% 100%, black 0%, rgba(0, 0, 0, 0.5) 45%, transparent 75%);
-  filter: drop-shadow(0 12px 20px rgba(255, 255, 255, 0.10)) drop-shadow(0 16px 32px rgba(0, 0, 0, 0.8));
+  filter: drop-shadow(0 6px 14px rgba(255, 255, 255, 0.04)) drop-shadow(0 10px 24px rgba(0, 0, 0, 0.8));
 }
 
 .dark .edge-corner-br {
   background: conic-gradient(
     from 270deg at 100% 100%,
-    rgba(255, 255, 255, 0.22) 0deg,
-    rgba(161, 161, 170, 0.09) 45deg,
-    rgba(255, 255, 255, 0.22) 90deg,
+    rgba(255, 255, 255, 0.08) 0deg,
+    rgba(161, 161, 170, 0.03) 45deg,
+    rgba(255, 255, 255, 0.08) 90deg,
     transparent 90deg
   );
   mask-image: radial-gradient(circle at 100% 100%, black 0%, rgba(0, 0, 0, 0.5) 45%, transparent 75%);
   -webkit-mask-image: radial-gradient(circle at 100% 100%, black 0%, rgba(0, 0, 0, 0.5) 45%, transparent 75%);
-  filter: drop-shadow(0 12px 20px rgba(255, 255, 255, 0.10)) drop-shadow(0 16px 32px rgba(0, 0, 0, 0.8));
+  filter: drop-shadow(0 6px 14px rgba(255, 255, 255, 0.04)) drop-shadow(0 10px 24px rgba(0, 0, 0, 0.8));
 }
 
 /* Precision optical corner tick marks */

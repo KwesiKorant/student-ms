@@ -133,7 +133,7 @@ export function Header({ onOpenEnrollModal, showEnrollButton = false }: HeaderPr
                     whileTap={{ scale: 0.96 }}
                     aria-expanded={isMenuOpen}
                     aria-label="User account menu"
-                    className="tap-target group flex items-center justify-center h-9 w-9 rounded-full border border-zinc-200/90 dark:border-white/10 bg-white/80 dark:bg-zinc-900 backdrop-blur-md dark:backdrop-blur-none shadow-xs dark:shadow-[0_6px_12px_-2px_rgba(255,255,255,0.06)] hover:border-zinc-300 dark:hover:border-white/20 transition-colors cursor-pointer select-none"
+                    className="tap-target group flex items-center justify-center h-9 w-9 rounded-full border border-zinc-200/90 dark:border-white/10 bg-white/80 dark:bg-zinc-900 backdrop-blur-md dark:backdrop-blur-none shadow-xs dark:shadow-[0_4px_8px_-2px_rgba(255,255,255,0.03)] hover:border-zinc-300 dark:hover:border-white/20 transition-colors cursor-pointer select-none"
                   >
                     <User className="w-4 h-4 text-zinc-700 dark:text-zinc-200 group-hover:text-zinc-900 dark:group-hover:text-white transition-colors" />
                   </motion.button>
@@ -152,7 +152,7 @@ export function Header({ onOpenEnrollModal, showEnrollButton = false }: HeaderPr
                         stiffness: 350,
                         damping: 28,
                       }}
-                      className="absolute right-0 top-full mt-2 w-64 z-50 rounded-2xl shadow-2xl dark:shadow-[0_18px_28px_-6px_rgba(255,255,255,0.08),0_6px_12px_-4px_rgba(255,255,255,0.04)] bg-white dark:bg-[#121215] border border-zinc-200/90 dark:border-white/15 p-3.5 space-y-3 text-xs"
+                      className="absolute right-0 top-full mt-2 w-64 z-50 rounded-2xl shadow-2xl dark:shadow-[0_10px_20px_-4px_rgba(255,255,255,0.04),0_4px_8px_-2px_rgba(255,255,255,0.02),0_16px_32px_rgba(0,0,0,0.8)] bg-white dark:bg-[#121215] border border-zinc-200/90 dark:border-white/15 p-3.5 space-y-3 text-xs"
                     >
                       {/* Identity Header */}
                       <div className="space-y-1">

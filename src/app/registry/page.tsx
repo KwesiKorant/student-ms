@@ -560,7 +560,7 @@ export default function StudentManagementPortal() {
           </TextReveal>
 
           {/* Student Records Data Table */}
-          <section aria-label="Student Records Table" className="space-y-3">
+          <TextReveal delay={0.62} as="section" aria-label="Student Records Table" className="space-y-3">
             <StudentTable
               students={students}
               isLoading={isLoading}
@@ -587,7 +587,7 @@ export default function StudentManagementPortal() {
                 }}
               />
             )}
-          </section>
+          </TextReveal>
 
           {/* Minimalist Institutional Footer */}
           <footer className="pt-8 pb-4 border-t border-zinc-200/60 dark:border-white/5 flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] font-mono text-zinc-400 dark:text-zinc-500">

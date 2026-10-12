@@ -22,15 +22,15 @@ export function EdgeCornerFrame({
     <div
       className={`edge-corner-frame group relative p-6 sm:p-10 transition-colors duration-200 ${className}`}
     >
-      {/* Optical Edge Corner Shadows (Ambient shadow applied only to the bottom in dark mode) */}
+      {/* 4 Optical Edge Corner Shadows (Rich graphite in light, subtle specular in dark) */}
       <div
-        className={`edge-corner-shadow absolute pointer-events-none edge-corner-tl transition-opacity duration-300 dark:hidden ${
+        className={`edge-corner-shadow absolute pointer-events-none edge-corner-tl transition-opacity duration-300 ${
           isFocused ? "opacity-100" : "opacity-85 group-hover:opacity-100"
         }`}
         aria-hidden="true"
       />
       <div
-        className={`edge-corner-shadow edge-corner-tr absolute pointer-events-none transition-opacity duration-300 dark:hidden ${
+        className={`edge-corner-shadow edge-corner-tr absolute pointer-events-none transition-opacity duration-300 ${
           isFocused ? "opacity-100" : "opacity-85 group-hover:opacity-100"
         }`}
         aria-hidden="true"
