@@ -184,6 +184,8 @@ export const StudentQuerySchema = z
     search: z.string().trim().optional(),
     departmentId: z.string().trim().optional(),
     status: EnrollmentStatusEnum.optional(),
+    academicYear: z.coerce.number().int().min(1).max(6).optional(),
+    gpaTier: z.enum(["deans_list", "good_standing", "probation"]).optional(),
     page: z.coerce.number().int().min(1).default(1),
     limit: z.coerce.number().int().min(1).max(100).default(10),
     includeArchived: z

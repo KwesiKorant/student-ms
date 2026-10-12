@@ -94,6 +94,18 @@ async function runTests() {
     assert(sortDeptRes.status === 200, "Department sort returns status 200");
     assert(sortDeptJson.data.length > 0, "Department sort returns records");
 
+    // Test 3c: Academic Year & GPA Standing Tier Filtering
+    console.log("\n--> Testing Academic Year & GPA Standing Tier Filters");
+    const yearRes = await apiFetch(`${BASE_URL}/api/v1/students?academicYear=2`);
+    const yearJson = await yearRes.json();
+    assert(yearRes.status === 200, "Academic year filter returns status 200");
+    assert(yearJson.data.every((s) => s.academicYear === 2), "All returned records match academicYear=2");
+
+    const gpaTierRes = await apiFetch(`${BASE_URL}/api/v1/students?gpaTier=deans_list`);
+    const gpaTierJson = await gpaTierRes.json();
+    assert(gpaTierRes.status === 200, "Dean's list filter returns status 200");
+    assert(gpaTierJson.data.every((s) => s.gpa >= 3.5), "All Dean's list records have GPA >= 3.5");
+
     // ----------------------------------------------------
     // Test 4: Student Record Creation (AC-1)
     // ----------------------------------------------------

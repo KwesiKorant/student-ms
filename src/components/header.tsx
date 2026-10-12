@@ -9,17 +9,9 @@ import { createClient } from "@/lib/supabase/client";
 
 interface HeaderProps {
   onOpenEnrollModal: () => void;
-  totalStudents?: number;
-  activeStudents?: number;
-  archivedStudents?: number;
 }
 
-export function Header({
-  onOpenEnrollModal,
-  totalStudents = 0,
-  activeStudents = 0,
-  archivedStudents = 0,
-}: HeaderProps) {
+export function Header({ onOpenEnrollModal }: HeaderProps) {
   const router = useRouter();
   const [userEmail, setUserEmail] = React.useState<string | null>(null);
   const [userRole, setUserRole] = React.useState<string | null>(null);
@@ -91,24 +83,8 @@ export function Header({
             </div>
           </Link>
 
-          {/* Center: Clean Live Census (Desktop) */}
-          <div className="hidden md:flex items-center gap-3 text-[11px] font-mono text-zinc-400">
-            <span>
-              Active: <strong className="text-zinc-700 dark:text-zinc-300 font-medium">{activeStudents}</strong>
-            </span>
-            <span className="text-zinc-300 dark:text-zinc-800">·</span>
-            <span>
-              Total: <strong className="text-zinc-700 dark:text-zinc-300 font-medium">{totalStudents}</strong>
-            </span>
-            {archivedStudents > 0 && (
-              <>
-                <span className="text-zinc-300 dark:text-zinc-800">·</span>
-                <span className="text-amber-600 dark:text-amber-400">
-                  Archived: <strong className="font-medium">{archivedStudents}</strong>
-                </span>
-              </>
-            )}
-          </div>
+          {/* Center spacer / clean breathing room */}
+          <div className="flex-1" />
 
           {/* Right: Actions, Auth Profile & Theme Toggle */}
           <div className="flex items-center gap-2 shrink-0">

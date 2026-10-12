@@ -35,7 +35,9 @@ export default function StudentManagementPortal() {
   // Filter & Query States
   const [search, setSearch] = React.useState("");
   const [departmentId, setDepartmentId] = React.useState("");
+  const [academicYear, setAcademicYear] = React.useState<number | "">("");
   const [status, setStatus] = React.useState("");
+  const [gpaTier, setGpaTier] = React.useState<string>("");
   const [includeArchived, setIncludeArchived] = React.useState(false);
   const [sortBy, setSortBy] = React.useState("createdAt");
   const [sortOrder, setSortOrder] = React.useState<"asc" | "desc">("desc");
@@ -91,14 +93,16 @@ export default function StudentManagementPortal() {
     () => ({
       search: search.trim(),
       departmentId,
+      academicYear,
       status,
+      gpaTier,
       includeArchived,
       sortBy,
       sortOrder,
       page: currentPage,
       limit: pageSize,
     }),
-    [search, departmentId, status, includeArchived, sortBy, sortOrder, currentPage, pageSize]
+    [search, departmentId, academicYear, status, gpaTier, includeArchived, sortBy, sortOrder, currentPage, pageSize]
   );
 
   // TanStack Query: Fetch Students with smooth placeholderData
@@ -112,7 +116,9 @@ export default function StudentManagementPortal() {
       const params = new URLSearchParams();
       if (queryParams.search) params.set("search", queryParams.search);
       if (queryParams.departmentId) params.set("departmentId", queryParams.departmentId);
+      if (queryParams.academicYear) params.set("academicYear", String(queryParams.academicYear));
       if (queryParams.status) params.set("status", queryParams.status);
+      if (queryParams.gpaTier) params.set("gpaTier", queryParams.gpaTier);
       if (queryParams.includeArchived) params.set("includeArchived", "true");
       params.set("sortBy", queryParams.sortBy);
       params.set("sortOrder", queryParams.sortOrder);
@@ -170,8 +176,18 @@ export default function StudentManagementPortal() {
     setCurrentPage(1);
   };
 
+  const handleAcademicYearChange = (val: number | "") => {
+    setAcademicYear(val);
+    setCurrentPage(1);
+  };
+
   const handleStatusChange = (val: string) => {
     setStatus(val);
+    setCurrentPage(1);
+  };
+
+  const handleGpaTierChange = (val: string) => {
+    setGpaTier(val);
     setCurrentPage(1);
   };
 
@@ -258,7 +274,9 @@ export default function StudentManagementPortal() {
   const handleResetFilters = () => {
     setSearch("");
     setDepartmentId("");
+    setAcademicYear("");
     setStatus("");
+    setGpaTier("");
     setIncludeArchived(false);
     setCurrentPage(1);
   };
@@ -266,7 +284,9 @@ export default function StudentManagementPortal() {
   const hasActiveFilters =
     search.trim() !== "" ||
     departmentId !== "" ||
+    academicYear !== "" ||
     status !== "" ||
+    gpaTier !== "" ||
     includeArchived;
 
   // RFC-4180 CSV Export Generator
@@ -278,7 +298,9 @@ export default function StudentManagementPortal() {
       const params = new URLSearchParams();
       if (search.trim()) params.set("search", search.trim());
       if (departmentId) params.set("departmentId", departmentId);
+      if (academicYear) params.set("academicYear", String(academicYear));
       if (status) params.set("status", status);
+      if (gpaTier) params.set("gpaTier", gpaTier);
       if (includeArchived) params.set("includeArchived", "true");
       params.set("limit", "1000");
 
@@ -370,7 +392,7 @@ export default function StudentManagementPortal() {
     } finally {
       setIsExporting(false);
     }
-  }, [search, departmentId, status, includeArchived, toast]);
+  }, [search, departmentId, academicYear, status, gpaTier, includeArchived, toast]);
 
   return (
     <>
@@ -379,13 +401,8 @@ export default function StudentManagementPortal() {
       </React.Suspense>
 
       <div className="min-h-screen flex flex-col bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 transition-colors duration-150">
-        {/* Header with Live Census & Auth User Session */}
-        <Header
-          onOpenEnrollModal={handleOpenEnrollModal}
-          totalStudents={metrics.total}
-          activeStudents={metrics.active}
-          archivedStudents={metrics.archived}
-        />
+        {/* Header with Auth User Session & Theme Controls */}
+        <Header onOpenEnrollModal={handleOpenEnrollModal} />
 
         {/* Main Content Area */}
         <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-5">
@@ -400,16 +417,28 @@ export default function StudentManagementPortal() {
               </p>
             </div>
 
-            {/* Subtle Inline Census Strip */}
-            <div className="flex items-center gap-2.5 text-xs font-mono text-zinc-500 dark:text-zinc-400 shrink-0">
-              <div className="px-2.5 py-1 rounded-md glass-card-subtle flex items-center gap-2">
-                <span className="text-zinc-400 text-[10px]">TOTAL</span>
-                <span className="font-semibold text-zinc-900 dark:text-zinc-100">{pagination.totalRecords}</span>
+            {/* Consolidated Institutional Status Strip */}
+            <div className="flex flex-wrap items-center gap-2 text-xs font-mono text-zinc-500 dark:text-zinc-400 shrink-0">
+              <div className="px-2.5 py-1 rounded-md glass-card-subtle flex items-center gap-1.5 border border-zinc-200/60 dark:border-white/5">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                <span className="text-zinc-400 text-[10px]">ACTIVE</span>
+                <span className="font-semibold text-zinc-900 dark:text-zinc-100">{metrics.active}</span>
               </div>
-              <div className="px-2.5 py-1 rounded-md glass-card-subtle flex items-center gap-2">
+              <div className="px-2.5 py-1 rounded-md glass-card-subtle flex items-center gap-1.5 border border-zinc-200/60 dark:border-white/5">
+                <span className="text-zinc-400 text-[10px]">TOTAL</span>
+                <span className="font-semibold text-zinc-900 dark:text-zinc-100">{metrics.total}</span>
+              </div>
+              <div className="px-2.5 py-1 rounded-md glass-card-subtle flex items-center gap-1.5 border border-zinc-200/60 dark:border-white/5">
                 <span className="text-zinc-400 text-[10px]">DIVISIONS</span>
                 <span className="font-semibold text-zinc-900 dark:text-zinc-100">{departments.length}</span>
               </div>
+              {metrics.archived > 0 && (
+                <div className="px-2.5 py-1 rounded-md glass-card-subtle flex items-center gap-1.5 border border-amber-500/20 text-amber-600 dark:text-amber-400">
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                  <span className="text-[10px]">ARCHIVED</span>
+                  <span className="font-semibold">{metrics.archived}</span>
+                </div>
+              )}
             </div>
           </div>
 
@@ -420,8 +449,12 @@ export default function StudentManagementPortal() {
               onSearchChange={handleSearchChange}
               departmentId={departmentId}
               onDepartmentChange={handleDepartmentChange}
+              academicYear={academicYear}
+              onAcademicYearChange={handleAcademicYearChange}
               status={status}
               onStatusChange={handleStatusChange}
+              gpaTier={gpaTier}
+              onGpaTierChange={handleGpaTierChange}
               includeArchived={includeArchived}
               onIncludeArchivedChange={handleIncludeArchivedChange}
               sortBy={sortBy}

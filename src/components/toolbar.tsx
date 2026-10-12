@@ -6,7 +6,6 @@ import {
   Search,
   X,
   RotateCw,
-  Archive,
   ArrowUpDown,
   Filter,
   Download,
@@ -19,8 +18,12 @@ interface ToolbarProps {
   onSearchChange: (value: string) => void;
   departmentId: string;
   onDepartmentChange: (value: string) => void;
+  academicYear?: number | "";
+  onAcademicYearChange?: (value: number | "") => void;
   status: string;
   onStatusChange: (value: string) => void;
+  gpaTier?: string;
+  onGpaTierChange?: (value: string) => void;
   includeArchived: boolean;
   onIncludeArchivedChange: (value: boolean) => void;
   sortBy: string;
@@ -41,8 +44,12 @@ export function Toolbar({
   onSearchChange,
   departmentId,
   onDepartmentChange,
+  academicYear = "",
+  onAcademicYearChange,
   status,
   onStatusChange,
+  gpaTier = "",
+  onGpaTierChange,
   includeArchived,
   onIncludeArchivedChange,
   sortBy,
@@ -57,7 +64,10 @@ export function Toolbar({
   isExporting = false,
   isLiveSync = false,
 }: ToolbarProps) {
-  const searchInputRef = React.useRef<HTMLInputElement>(null);
+  const searchOverlayRef = React.useRef<HTMLInputElement>(null);
+  const moreFiltersRef = React.useRef<HTMLDivElement>(null);
+
+  const [isMoreFiltersOpen, setIsMoreFiltersOpen] = React.useState(false);
 
   // Sync prop changes during render without cascading useEffect renders
   const [prevSearch, setPrevSearch] = React.useState(search);
@@ -68,7 +78,19 @@ export function Toolbar({
     setLocalSearch(search);
   }
 
-  // Global keyboard shortcut to focus search on '/' or 'Cmd+K'/'Ctrl+K'
+  // Close "More Filters" popover when clicking outside
+  React.useEffect(() => {
+    if (!isMoreFiltersOpen) return;
+    const handleClickOutside = (e: MouseEvent) => {
+      if (moreFiltersRef.current && !moreFiltersRef.current.contains(e.target as Node)) {
+        setIsMoreFiltersOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [isMoreFiltersOpen]);
+
+  // Global keyboard shortcut: '/' or 'Cmd+K' to focus search, 'Escape' to blur/close
   React.useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       const isSlash = e.key === "/" && !e.ctrlKey && !e.metaKey && !e.altKey;
@@ -83,23 +105,26 @@ export function Toolbar({
             target.tagName === "SELECT" ||
             target.isContentEditable);
 
-        // If already inside an input and pressing slash, allow normal typing
         if (isEditable && isSlash) return;
 
         e.preventDefault();
-        searchInputRef.current?.focus();
-        searchInputRef.current?.select();
+        searchOverlayRef.current?.focus();
+        searchOverlayRef.current?.select();
       } else if (e.key === "Escape") {
-        if (document.activeElement === searchInputRef.current) {
-          searchInputRef.current?.blur();
+        if (document.activeElement === searchOverlayRef.current) {
+          searchOverlayRef.current?.blur();
+        }
+        if (isMoreFiltersOpen) {
+          setIsMoreFiltersOpen(false);
         }
       }
     };
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
+  }, [isMoreFiltersOpen]);
 
+  // Debounced search propagation
   React.useEffect(() => {
     const handler = setTimeout(() => {
       if (localSearch !== search) {
@@ -110,60 +135,66 @@ export function Toolbar({
     return () => clearTimeout(handler);
   }, [localSearch, search, onSearchChange]);
 
-  const hasActiveFilters =
+  // Active advanced filters count
+  const advancedFilterCount =
+    (status !== "" ? 1 : 0) +
+    (gpaTier !== "" ? 1 : 0) +
+    (includeArchived ? 1 : 0);
+
+  const hasAnyFilterActive =
     search.trim() !== "" ||
     departmentId !== "" ||
+    academicYear !== "" ||
     status !== "" ||
+    gpaTier !== "" ||
     includeArchived;
 
   return (
     <div className="w-full space-y-2.5">
-      <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-2.5 p-2 rounded-xl glass-card">
-        {/* Search Bar */}
-        <div className="relative flex-1 min-w-[240px]">
-          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-zinc-400">
-            <Search className="w-3.5 h-3.5" />
-          </div>
-          <input
-            ref={searchInputRef}
-            type="search"
-            autoComplete="off"
-            autoCorrect="off"
-            spellCheck={false}
-            value={localSearch}
-            onChange={(e) => setLocalSearch(e.target.value)}
-            placeholder="Search registry (name, ID, email)..."
-            className="w-full pl-8.5 pr-14 py-1.5 text-xs rounded-lg border border-zinc-200/80 dark:border-white/10 bg-white/70 dark:bg-zinc-900/70 text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-400 dark:focus:ring-zinc-600 transition-all font-sans"
-          />
-          {localSearch ? (
-            <button
-              type="button"
-              onClick={() => {
-                setLocalSearch("");
-                onSearchChange("");
-              }}
-              className="absolute inset-y-0 right-0 pr-2.5 flex items-center text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 cursor-pointer"
-              title="Clear search query"
-              aria-label="Clear search query"
-            >
-              <X className="w-3.5 h-3.5" />
-            </button>
-          ) : (
-            <div className="absolute inset-y-0 right-0 pr-2.5 flex items-center">
-              <kbd
-                title="Press / to focus search"
-                className="hidden sm:inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-mono font-medium text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 bg-zinc-100 hover:bg-zinc-200/80 dark:bg-zinc-800 dark:hover:bg-zinc-700/80 border border-zinc-200/60 dark:border-white/5 cursor-pointer transition-colors active:scale-95"
-                onClick={() => searchInputRef.current?.focus()}
-              >
-                /
-              </kbd>
+      {/* Primary Toolbar Container */}
+      <div className="relative flex flex-col md:flex-row items-stretch md:items-center justify-between gap-2.5 p-2 rounded-xl glass-card isolated-card">
+        {/* Left Section: Natural Search & Direct Filters */}
+        <div className="flex flex-wrap items-center gap-2 flex-1 min-w-0">
+          {/* High-Performance Search Capsule (Zero Geometry Reflow, Dedicated Flex Slot) */}
+          <div className="relative flex-1 min-w-[180px] max-w-[260px] sm:max-w-[320px] h-8">
+            <div className="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-zinc-400">
+              <Search className="w-3.5 h-3.5" />
             </div>
-          )}
-        </div>
+            <input
+              ref={searchOverlayRef}
+              type="search"
+              autoComplete="off"
+              autoCorrect="off"
+              spellCheck={false}
+              value={localSearch}
+              onChange={(e) => setLocalSearch(e.target.value)}
+              placeholder="Search registry (name, ID, email)..."
+              className="w-full h-full pl-8 pr-12 text-xs rounded-lg border border-zinc-200/80 dark:border-white/10 bg-white/70 dark:bg-zinc-900/70 text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-400 dark:focus:ring-zinc-600 transition-colors font-sans"
+            />
+            {localSearch ? (
+              <button
+                type="button"
+                onClick={() => {
+                  setLocalSearch("");
+                  onSearchChange("");
+                  searchOverlayRef.current?.focus();
+                }}
+                className="absolute inset-y-0 right-0 pr-2.5 flex items-center text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 cursor-pointer"
+                title="Clear query"
+                aria-label="Clear query"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            ) : (
+              <div className="absolute inset-y-0 right-0 pr-2 flex items-center pointer-events-none">
+                <kbd className="hidden sm:inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-mono text-zinc-400 bg-zinc-100 dark:bg-zinc-800 border border-zinc-200/60 dark:border-white/5">
+                  /
+                </kbd>
+              </div>
+            )}
+          </div>
 
-        {/* Filter Controls Group */}
-        <div className="flex flex-wrap items-center gap-1.5">
-          {/* Section 1: Entity Filters (Dept, Status, Archived) */}
+          {/* Primary Filter 1: Department */}
           <div className="relative inline-flex items-center">
             <select
               value={departmentId}
@@ -171,7 +202,9 @@ export function Toolbar({
               aria-label="Filter by department"
               className="appearance-none pl-2.5 pr-7 py-1.5 text-xs rounded-lg border border-zinc-200/80 dark:border-white/10 bg-white/70 dark:bg-zinc-900/70 text-zinc-800 dark:text-zinc-200 focus:outline-none focus:ring-1 focus:ring-zinc-400 cursor-pointer transition-colors"
             >
-              <option value="" className="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">All Departments</option>
+              <option value="" className="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">
+                All Departments
+              </option>
               {departments.map((dept) => (
                 <option key={dept.id} value={dept.id} className="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">
                   {dept.name} ({dept.code})
@@ -181,58 +214,152 @@ export function Toolbar({
             <ChevronDown className="w-3 h-3 text-zinc-400 pointer-events-none absolute right-2" />
           </div>
 
+          {/* Primary Filter 2: Academic Year */}
           <div className="relative inline-flex items-center">
             <select
-              value={status}
-              onChange={(e) => onStatusChange(e.target.value)}
-              aria-label="Filter by enrollment status"
+              value={academicYear}
+              onChange={(e) => {
+                const val = e.target.value === "" ? "" : Number(e.target.value);
+                onAcademicYearChange?.(val);
+              }}
+              aria-label="Filter by academic year"
               className="appearance-none pl-2.5 pr-7 py-1.5 text-xs rounded-lg border border-zinc-200/80 dark:border-white/10 bg-white/70 dark:bg-zinc-900/70 text-zinc-800 dark:text-zinc-200 focus:outline-none focus:ring-1 focus:ring-zinc-400 cursor-pointer transition-colors"
             >
-              <option value="" className="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">All Statuses</option>
-              <option value="ACTIVE" className="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">Active</option>
-              <option value="INACTIVE" className="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">Inactive</option>
-              <option value="SUSPENDED" className="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">Suspended</option>
-              <option value="GRADUATED" className="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">Graduated</option>
+              <option value="" className="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">
+                All Years
+              </option>
+              <option value={1} className="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">Year 1 (Freshman)</option>
+              <option value={2} className="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">Year 2 (Sophomore)</option>
+              <option value={3} className="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">Year 3 (Junior)</option>
+              <option value={4} className="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">Year 4 (Senior)</option>
             </select>
             <ChevronDown className="w-3 h-3 text-zinc-400 pointer-events-none absolute right-2" />
           </div>
 
-          {/* Include Archived Toggle Chip */}
-          <Tooltip
-            content="Archived Records Tier"
-            subContent="Include soft-archived profiles alongside active students"
-            side="top"
-          >
+          {/* Primary Filter 3: "More Filters" Popover Trigger */}
+          <div className="relative inline-flex items-center" ref={moreFiltersRef}>
             <button
               type="button"
-              role="switch"
-              aria-checked={includeArchived}
-              onClick={() => onIncludeArchivedChange(!includeArchived)}
+              onClick={() => setIsMoreFiltersOpen((prev) => !prev)}
+              aria-expanded={isMoreFiltersOpen}
               className={`tap-target inline-flex items-center gap-1.5 px-2.5 py-1.5 text-xs rounded-lg border cursor-pointer select-none transition-colors ${
-                includeArchived
-                  ? "bg-amber-500/15 border-amber-500/30 text-amber-700 dark:text-amber-300 font-medium"
-                  : "bg-white/70 dark:bg-zinc-900/70 border-zinc-200/80 dark:border-white/10 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200 hover:bg-zinc-100/80 dark:hover:bg-zinc-800/80"
+                advancedFilterCount > 0
+                  ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-950 border-zinc-900 dark:border-zinc-100 font-medium"
+                  : "bg-white/70 dark:bg-zinc-900/70 border-zinc-200/80 dark:border-white/10 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200"
               }`}
             >
-              <Archive className={`w-3.5 h-3.5 ${includeArchived ? "text-amber-600 dark:text-amber-400" : "text-zinc-400"}`} />
-              <span className="text-[11px]">Archived</span>
-              {includeArchived && (
-                <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
+              <Filter className="w-3.5 h-3.5 shrink-0" />
+              <span>Filters</span>
+              {advancedFilterCount > 0 ? (
+                <span className="w-4 h-4 rounded-full bg-emerald-500 text-white text-[10px] font-mono flex items-center justify-center font-bold">
+                  {advancedFilterCount}
+                </span>
+              ) : (
+                <ChevronDown className="w-3 h-3 text-zinc-400" />
               )}
             </button>
-          </Tooltip>
 
-          {/* Section Divider 1 */}
-          <div className="hidden sm:block h-4 w-px bg-zinc-200/80 dark:bg-white/10" aria-hidden="true" />
+            {/* "More Filters" Floating Popover */}
+            {isMoreFiltersOpen && (
+              <div
+                style={{ contain: "layout style paint" }}
+                className="absolute top-full left-0 mt-1.5 w-72 z-50 rounded-xl shadow-2xl bg-white dark:bg-[#121215] border border-zinc-200/90 dark:border-white/10 p-3.5 space-y-3.5 animate-modal-enter text-xs"
+              >
+                <div className="flex items-center justify-between pb-2 border-b border-zinc-100 dark:border-white/5">
+                  <span className="font-semibold text-zinc-900 dark:text-zinc-100 font-mono text-[11px] uppercase tracking-wider">
+                    Advanced Filters
+                  </span>
+                  {advancedFilterCount > 0 && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        onStatusChange("");
+                        onGpaTierChange?.("");
+                        onIncludeArchivedChange(false);
+                      }}
+                      className="text-[11px] text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 cursor-pointer font-mono"
+                    >
+                      Clear
+                    </button>
+                  )}
+                </div>
 
-          {/* Section 2: Unified Sort Control */}
-          <div className="hidden sm:inline-flex items-center rounded-lg border border-zinc-200/80 dark:border-white/10 bg-white/70 dark:bg-zinc-900/70 divide-x divide-zinc-200/80 dark:divide-white/10 overflow-hidden">
+                {/* 1. Status Filter */}
+                <div className="space-y-1">
+                  <label className="text-[11px] font-medium text-zinc-500 dark:text-zinc-400">
+                    Enrollment Status
+                  </label>
+                  <select
+                    value={status}
+                    onChange={(e) => onStatusChange(e.target.value)}
+                    className="w-full px-2 py-1.5 text-xs rounded-lg border border-zinc-200/80 dark:border-white/10 bg-zinc-50 dark:bg-zinc-900 text-zinc-800 dark:text-zinc-200 focus:outline-none"
+                  >
+                    <option value="">All Statuses</option>
+                    <option value="ACTIVE">Active</option>
+                    <option value="INACTIVE">Inactive</option>
+                    <option value="SUSPENDED">Suspended</option>
+                    <option value="GRADUATED">Graduated</option>
+                  </select>
+                </div>
+
+                {/* 2. GPA Standing Tier Filter */}
+                <div className="space-y-1">
+                  <label className="text-[11px] font-medium text-zinc-500 dark:text-zinc-400">
+                    Academic Standing (GPA)
+                  </label>
+                  <select
+                    value={gpaTier}
+                    onChange={(e) => onGpaTierChange?.(e.target.value)}
+                    className="w-full px-2 py-1.5 text-xs rounded-lg border border-zinc-200/80 dark:border-white/10 bg-zinc-50 dark:bg-zinc-900 text-zinc-800 dark:text-zinc-200 focus:outline-none"
+                  >
+                    <option value="">All Academic Standings</option>
+                    <option value="deans_list">Dean&apos;s List (GPA ≥ 3.50)</option>
+                    <option value="good_standing">Good Standing (GPA 2.50 – 3.49)</option>
+                    <option value="probation">Academic Probation (GPA &lt; 2.00)</option>
+                  </select>
+                </div>
+
+                {/* 3. Soft-Archived Toggle */}
+                <div className="pt-2 border-t border-zinc-100 dark:border-white/5 flex items-center justify-between">
+                  <div>
+                    <div className="text-xs font-medium text-zinc-900 dark:text-zinc-100">
+                      Include Archived
+                    </div>
+                    <div className="text-[10px] text-zinc-500">
+                      Show soft-archived student dossiers
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    role="switch"
+                    aria-checked={includeArchived}
+                    onClick={() => onIncludeArchivedChange(!includeArchived)}
+                    className={`w-8 h-4.5 rounded-full p-0.5 transition-colors cursor-pointer ${
+                      includeArchived ? "bg-amber-500" : "bg-zinc-200 dark:bg-zinc-700"
+                    }`}
+                  >
+                    <div
+                      className={`w-3.5 h-3.5 rounded-full bg-white shadow-xs transition-transform ${
+                        includeArchived ? "translate-x-3.5" : "translate-x-0"
+                      }`}
+                    />
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Right Section: View & Output Controls (Clearly Separated) */}
+        <div className="flex items-center gap-2 shrink-0 border-t md:border-t-0 md:border-l border-zinc-200/80 dark:border-white/10 pt-2 md:pt-0 md:pl-2.5">
+          {/* Sorting Control */}
+          <div className="flex items-center gap-1">
             <div className="relative inline-flex items-center">
               <select
                 value={sortBy}
                 onChange={(e) => onSortByChange(e.target.value)}
                 aria-label="Sort records by"
-                className="appearance-none pl-2.5 pr-6 py-1.5 text-xs bg-transparent text-zinc-800 dark:text-zinc-200 focus:outline-none cursor-pointer transition-colors"
+                className="appearance-none pl-2 pr-6 py-1.5 text-xs rounded-lg border border-zinc-200/80 dark:border-white/10 bg-white/70 dark:bg-zinc-900/70 text-zinc-800 dark:text-zinc-200 focus:outline-none focus:ring-1 focus:ring-zinc-400 cursor-pointer transition-colors"
               >
                 <option value="createdAt" className="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">Date Enrolled</option>
                 <option value="name" className="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">Full Name</option>
@@ -245,26 +372,22 @@ export function Toolbar({
             </div>
 
             <Tooltip
-              content={`Sort: ${sortOrder.toUpperCase()}`}
-              subContent={`Switch to ${sortOrder === "asc" ? "descending (newest/highest first)" : "ascending (oldest/lowest first)"}`}
+              content={sortOrder === "asc" ? "Sort Ascending" : "Sort Descending"}
+              subContent={`Currently sorting ${sortOrder.toUpperCase()}`}
               side="top"
             >
               <button
                 type="button"
                 onClick={() => onSortOrderChange(sortOrder === "asc" ? "desc" : "asc")}
-                aria-label={`Toggle sort direction, currently ${sortOrder.toUpperCase()}`}
-                className="inline-flex items-center gap-1 px-2 py-1.5 text-xs text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100/80 dark:hover:bg-zinc-800/80 cursor-pointer transition-colors"
+                aria-label="Toggle sort order"
+                className="tap-target p-1.5 rounded-lg border border-zinc-200/80 dark:border-white/10 bg-white/70 dark:bg-zinc-900/70 text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 cursor-pointer transition-colors"
               >
-                <ArrowUpDown className="w-3 h-3 text-zinc-400" />
-                <span className="font-mono text-[10px] uppercase font-semibold">{sortOrder}</span>
+                <ArrowUpDown className="w-3.5 h-3.5" />
               </button>
             </Tooltip>
           </div>
 
-          {/* Section Divider 2 */}
-          <div className="hidden sm:block h-4 w-px bg-zinc-200/80 dark:bg-white/10" aria-hidden="true" />
-
-          {/* Realtime Live Sync Indicator */}
+          {/* Realtime Live Sync Badge */}
           {isLiveSync && (
             <div
               className="hidden lg:inline-flex items-center gap-1.5 px-2 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-[10px] font-mono tracking-tight"
@@ -275,36 +398,35 @@ export function Toolbar({
             </div>
           )}
 
-          {/* Section 3: Data Actions (Refresh, Export) */}
+          {/* Actions: Refresh & Export */}
           <Tooltip
             content="Synchronize Registry"
-            subContent="Re-query fresh candidate data from database"
+            subContent="Re-query latest records from database"
             side="top"
           >
             <button
               type="button"
               onClick={onRefresh}
               disabled={isLoading}
-              aria-label="Refresh student records"
-              className="tap-target p-1.5 rounded-lg border border-zinc-200/80 dark:border-white/10 bg-white/70 dark:bg-zinc-900/70 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-zinc-100/80 dark:hover:bg-zinc-800/80 disabled:opacity-50 cursor-pointer transition-colors"
+              aria-label="Refresh student directory"
+              className="tap-target p-1.5 rounded-lg border border-zinc-200/80 dark:border-white/10 bg-white/70 dark:bg-zinc-900/70 text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 cursor-pointer transition-colors disabled:opacity-40"
             >
-              <RotateCw className={`w-3.5 h-3.5 ${isLoading ? "animate-spin" : ""}`} />
+              <RotateCw className={`w-3.5 h-3.5 ${isLoading ? "animate-spin text-zinc-800 dark:text-zinc-200" : ""}`} />
             </button>
           </Tooltip>
 
-          {/* Export CSV Action */}
           {onExport && (
             <Tooltip
-              content="Export Registry CSV"
-              subContent="Download active cohort as standard RFC-4180 CSV"
+              content="Export Registry"
+              subContent="Download filtered dataset as UTF-8 CSV"
               side="top"
             >
               <button
                 type="button"
                 onClick={onExport}
                 disabled={isExporting}
-                aria-label="Export filtered student records to CSV"
-                className="tap-target p-1.5 rounded-lg border border-zinc-200/80 dark:border-white/10 bg-white/70 dark:bg-zinc-900/70 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-zinc-100/80 dark:hover:bg-zinc-800/80 disabled:opacity-50 cursor-pointer transition-colors"
+                aria-label="Export student registry to CSV"
+                className="tap-target p-1.5 rounded-lg border border-zinc-200/80 dark:border-white/10 bg-white/70 dark:bg-zinc-900/70 text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 cursor-pointer transition-colors disabled:opacity-40"
               >
                 <Download className={`w-3.5 h-3.5 ${isExporting ? "animate-pulse" : ""}`} />
               </button>
@@ -313,70 +435,99 @@ export function Toolbar({
         </div>
       </div>
 
-      {/* Active Filter Badges & Reset Bar */}
-      {hasActiveFilters && (
-        <div className="flex flex-wrap items-center gap-1.5 px-1 text-xs">
-          <span className="text-zinc-400 text-[11px] font-mono flex items-center gap-1 mr-1">
-            <Filter className="w-3 h-3" /> Filters:
-          </span>
+      {/* Active Filter Indicators Micro-Strip */}
+      {hasAnyFilterActive && (
+        <div className="flex flex-wrap items-center gap-1.5 text-[11px] font-mono px-1">
+          <span className="text-zinc-400">ACTIVE:</span>
 
           {search.trim() !== "" && (
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-zinc-100 dark:bg-zinc-800/80 text-zinc-700 dark:text-zinc-300 text-[11px] border border-zinc-200 dark:border-white/10">
-              Query: &quot;{search}&quot;
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-200/60 dark:border-white/5">
+              <span>query:&ldquo;{search}&rdquo;</span>
               <button
-                onClick={() => onSearchChange("")}
-                className="hover:text-zinc-900 dark:hover:text-white cursor-pointer ml-0.5"
+                type="button"
+                onClick={() => {
+                  setLocalSearch("");
+                  onSearchChange("");
+                }}
+                className="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 cursor-pointer"
               >
-                <X className="w-3 h-3" />
+                <X className="w-2.5 h-2.5" />
               </button>
             </span>
           )}
 
           {departmentId !== "" && (
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-zinc-100 dark:bg-zinc-800/80 text-zinc-700 dark:text-zinc-300 text-[11px] border border-zinc-200 dark:border-white/10">
-              Dept: {departments.find((d) => d.id === departmentId)?.code || departmentId}
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-200/60 dark:border-white/5">
+              <span>dept:{departments.find((d) => d.id === departmentId)?.code || "custom"}</span>
               <button
+                type="button"
                 onClick={() => onDepartmentChange("")}
-                className="hover:text-zinc-900 dark:hover:text-white cursor-pointer ml-0.5"
+                className="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 cursor-pointer"
               >
-                <X className="w-3 h-3" />
+                <X className="w-2.5 h-2.5" />
+              </button>
+            </span>
+          )}
+
+          {academicYear !== "" && (
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-200/60 dark:border-white/5">
+              <span>year:{academicYear}</span>
+              <button
+                type="button"
+                onClick={() => onAcademicYearChange?.("")}
+                className="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 cursor-pointer"
+              >
+                <X className="w-2.5 h-2.5" />
               </button>
             </span>
           )}
 
           {status !== "" && (
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-zinc-100 dark:bg-zinc-800/80 text-zinc-700 dark:text-zinc-300 text-[11px] border border-zinc-200 dark:border-white/10">
-              Status: {status}
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-200/60 dark:border-white/5">
+              <span>status:{status.toLowerCase()}</span>
               <button
+                type="button"
                 onClick={() => onStatusChange("")}
-                className="hover:text-zinc-900 dark:hover:text-white cursor-pointer ml-0.5"
+                className="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 cursor-pointer"
               >
-                <X className="w-3 h-3" />
+                <X className="w-2.5 h-2.5" />
+              </button>
+            </span>
+          )}
+
+          {gpaTier !== "" && (
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-200/60 dark:border-white/5">
+              <span>gpa:{gpaTier === "deans_list" ? "≥3.5" : gpaTier === "good_standing" ? "2.5-3.5" : "<2.0"}</span>
+              <button
+                type="button"
+                onClick={() => onGpaTierChange?.("")}
+                className="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 cursor-pointer"
+              >
+                <X className="w-2.5 h-2.5" />
               </button>
             </span>
           )}
 
           {includeArchived && (
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-700 dark:text-amber-400 text-[11px] border border-amber-500/20">
-              Showing Archived
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20">
+              <span>archived:included</span>
               <button
+                type="button"
                 onClick={() => onIncludeArchivedChange(false)}
-                className="hover:text-amber-900 dark:hover:text-amber-200 cursor-pointer ml-0.5"
+                className="text-amber-500 hover:text-amber-700 dark:hover:text-amber-300 cursor-pointer"
               >
-                <X className="w-3 h-3" />
+                <X className="w-2.5 h-2.5" />
               </button>
             </span>
           )}
 
-          <Tooltip content="Reset All Filters" subContent="Clear search query and restore full registry" side="top">
-            <button
-              type="button"
-              onClick={onResetFilters}
-              className="text-[11px] font-medium text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 underline underline-offset-2 ml-1 cursor-pointer transition-colors"
-            >
-              Reset all
-            </button>
-          </Tooltip>
+          <button
+            type="button"
+            onClick={onResetFilters}
+            className="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 hover:underline cursor-pointer ml-1"
+          >
+            Reset all
+          </button>
         </div>
       )}
     </div>

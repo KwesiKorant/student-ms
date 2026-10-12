@@ -41,6 +41,8 @@ export async function GET(req: NextRequest) {
       search,
       departmentId,
       status,
+      academicYear,
+      gpaTier,
       page,
       limit,
       includeArchived,
@@ -63,6 +65,22 @@ export async function GET(req: NextRequest) {
     // Status filtering
     if (status) {
       where.status = status;
+    }
+
+    // Academic Year filtering
+    if (academicYear) {
+      where.academicYear = academicYear;
+    }
+
+    // GPA Tier filtering
+    if (gpaTier) {
+      if (gpaTier === "deans_list") {
+        where.gpa = { gte: 3.5 };
+      } else if (gpaTier === "good_standing") {
+        where.gpa = { gte: 2.5, lt: 3.5 };
+      } else if (gpaTier === "probation") {
+        where.gpa = { lt: 2.0 };
+      }
     }
 
     // Search query matching firstName, lastName, email, studentId
