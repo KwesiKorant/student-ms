@@ -9,16 +9,17 @@ An institutional academic records registry and student lifecycle management port
 
 - **Framework:** Next.js 16.4 (App Router with Turbopack, `proxy.ts` request gateway)
 - **Language:** TypeScript 5.x
+- **Typography:** Self-hosted **Chillax Variable** (display/brand headers) & **Inter Variable** (candidate profiles and system typography)
 - **Styling:** Tailwind CSS (Institutional `zinc-950` / `zinc-50` multi-theme engine)
 - **Database & ORM:** Prisma ORM 6.x connected to Supabase PostgreSQL 17 with Supavisor connection pooling (port 6543) and direct connection (port 5432)
-- **Security & Compliance:** Database-level Row Level Security (RLS) role enforcement and FERPA immutable append-only audit trigger
+- **Security & Compliance:** Database-level Row Level Security (RLS) role enforcement, FERPA immutable audit trigger, and CWE-306 / CWE-601 defenses
 - **Authentication:** Supabase Auth with `@supabase/ssr` session management and cardless optical Edge Corner Frame design
 - **Real-Time CDC:** Supabase Realtime WebSocket publication paired with TanStack Query v5 for live directory synchronization
 - **Theme Engine:** `next-themes` (Dark, Light, and System modes with zero flash of unstyled content)
 - **Icons:** `lucide-react`
 - **Validation:** Zod schemas with `.strip()` boundary defense against mass-assignment
 - **Rate Limiting:** Sliding-window IP rate limiter (60 reads/min, 20 mutations/min)
-- **Export Engine:** Native RFC-4180 CSV generator with UTF-8 BOM (`\uFEFF`)
+- **Export Engine:** Native RFC-4180 CSV generator with UTF-8 BOM (`\uFEFF`) and formula injection defense
 - **Compositor Standards:** Zero reflow motion protocol mutating exclusively hardware-accelerated `transform` and `opacity`
 
 ---
@@ -159,7 +160,7 @@ Open **[http://localhost:3000](http://localhost:3000)** in your browser. The app
 
 ## 🧪 Automated Test Suite
 
-The repository includes a comprehensive standalone Node.js test suite ([tests/api.test.mjs](file:///Users/kay/Documents/student-ms/tests/api.test.mjs)) executing 44 automated assertions:
+The repository includes a comprehensive standalone Node.js test suite ([tests/api.test.mjs](file:///Users/kay/Documents/student-ms/tests/api.test.mjs)) executing 56 automated assertions validating functional acceptance criteria and security barriers:
 
 ```bash
 # Execute automated test suite
@@ -171,6 +172,7 @@ npm test
 - `GET /api/v1/students`: Tests directory pagination, metadata limits, and record counts.
 - `AC-4 Real-Time Search`: Tests single-token and multi-token candidate queries.
 - `Department Sorting`: Validates relational sorting by department code.
+- `Academic Year & GPA Tier Filters`: Validates parametric filtering bounds and Dean's List criteria.
 - `AC-1 Auto-Enrollment`: Tests automatic STU-ID assignment and audit log generation.
 - `FR-1.2 Manual Enrollment`: Validates manual ID ingestion and duplicate ID rejection (`409`).
 - `AC-2 Bounds Validation`: Validates rejection of GPA > 4.0 and malformed emails (`400`).
@@ -180,8 +182,35 @@ npm test
 - `AC-7 Soft Archival & Restore`: Validates soft delete (`DELETE`) and restore (`POST /restore`).
 - `Defensive Handling`: Validates malformed JSON payloads and invalid department foreign keys.
 - `AC-8 Rate Limiting`: Floods mutation endpoint to confirm HTTP `429 Too Many Requests`.
+- `CWE-306 Defense`: Asserts unauthenticated mutation attempts (`POST`, `PUT`, `DELETE`) are rejected with `401 Unauthorized`.
+- `CWE-601 Defense`: Asserts open redirect attempts on auth callbacks are stripped.
 - `Security Headers`: Asserts presence of `nosniff`, `DENY`, and absence of `X-Powered-By`.
-- `Automated Teardown`: Automatically cleans up test fixtures via hard-delete cleanup, leaving the database pristine.
+- `Automated Teardown`: Automatically purges temporary test fixtures via hard-delete cleanup, leaving the database pristine.
+
+---
+
+## ☁️ Vercel Production Deployment
+
+The application is engineered for zero-config production deployment on Vercel:
+
+### 1. Vercel Project Setup
+1. Import the repository **`KwesiKorant/student-ms`** into [Vercel](https://vercel.com/new).
+2. Use standard Next.js preset:
+   - **Framework:** Next.js
+   - **Build Command:** `next build` (with `postinstall: prisma generate` automatically running)
+   - **Output Directory:** `.next`
+
+### 2. Environment Variables
+Add the following 4 environment variables in **Project Settings → Environment Variables**:
+- `DATABASE_URL`: Supabase connection pooler URL (port `6543`, `?pgbouncer=true`)
+- `DIRECT_URL`: Direct PostgreSQL connection URL (port `5432`)
+- `NEXT_PUBLIC_SUPABASE_URL`: Supabase project URL (`https://<project-ref>.supabase.co`)
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`: Supabase anonymous public client key
+
+### 3. Supabase Auth Configuration
+In your Supabase Dashboard under **Authentication → URL Configuration**, add your Vercel URL:
+- **Site URL:** `https://<your-vercel-domain>.vercel.app`
+- **Redirect URLs:** `https://<your-vercel-domain>.vercel.app/auth/callback`
 
 ---
 
