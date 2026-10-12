@@ -167,70 +167,135 @@ body {
 }
 
 /* Optical Edge Corner Shadows (Cardless Dimensional Frame) */
+/* Cardless Architecture: Conical Layer Gradient Spread Radiating Inward */
 .edge-corner-frame {
   position: relative;
   isolation: isolate;
 }
 
-/* Base corner shadow layer: 128px x 128px with hardware-accelerated transforms */
+/* 140px x 140px conical corner layer spreading inward from the edges */
 .edge-corner-shadow {
   position: absolute;
-  width: 128px;
-  height: 128px;
+  width: 140px;
+  height: 140px;
   pointer-events: none;
   z-index: 0;
   contain: layout paint;
   transition: opacity 280ms var(--spring-smooth), transform 280ms var(--spring-snappy);
 }
 
-/* Light Mode: Precision Graphite Corner Radial Gradients */
+/* Light Mode: Conical graphite fan layer spread precisely inward from each corner apex */
 .edge-corner-tl {
-  top: -16px;
-  left: -16px;
-  background: radial-gradient(circle at 16px 16px, rgba(0, 0, 0, 0.18) 0%, rgba(0, 0, 0, 0.08) 35%, rgba(0, 0, 0, 0.02) 65%, transparent 75%);
-  filter: drop-shadow(-8px -8px 20px rgba(0, 0, 0, 0.14));
+  top: 0;
+  left: 0;
+  background: conic-gradient(
+    from 90deg at 0% 0%,
+    rgba(0, 0, 0, 0.16) 0deg,
+    rgba(0, 0, 0, 0.06) 45deg,
+    rgba(0, 0, 0, 0.16) 90deg,
+    transparent 90deg
+  );
+  mask-image: radial-gradient(circle at 0% 0%, black 0%, rgba(0, 0, 0, 0.6) 40%, transparent 75%);
+  -webkit-mask-image: radial-gradient(circle at 0% 0%, black 0%, rgba(0, 0, 0, 0.6) 40%, transparent 75%);
+  filter: drop-shadow(0 0 16px rgba(0, 0, 0, 0.08));
 }
 
 .edge-corner-tr {
-  top: -16px;
-  right: -16px;
-  background: radial-gradient(circle at 112px 16px, rgba(0, 0, 0, 0.18) 0%, rgba(0, 0, 0, 0.08) 35%, rgba(0, 0, 0, 0.02) 65%, transparent 75%);
-  filter: drop-shadow(8px -8px 20px rgba(0, 0, 0, 0.14));
+  top: 0;
+  right: 0;
+  background: conic-gradient(
+    from 180deg at 100% 0%,
+    rgba(0, 0, 0, 0.16) 0deg,
+    rgba(0, 0, 0, 0.06) 45deg,
+    rgba(0, 0, 0, 0.16) 90deg,
+    transparent 90deg
+  );
+  mask-image: radial-gradient(circle at 100% 0%, black 0%, rgba(0, 0, 0, 0.6) 40%, transparent 75%);
+  -webkit-mask-image: radial-gradient(circle at 100% 0%, black 0%, rgba(0, 0, 0, 0.6) 40%, transparent 75%);
+  filter: drop-shadow(0 0 16px rgba(0, 0, 0, 0.08));
 }
 
 .edge-corner-bl {
-  bottom: -16px;
-  left: -16px;
-  background: radial-gradient(circle at 16px 112px, rgba(0, 0, 0, 0.18) 0%, rgba(0, 0, 0, 0.08) 35%, rgba(0, 0, 0, 0.02) 65%, transparent 75%);
-  filter: drop-shadow(-8px 8px 20px rgba(0, 0, 0, 0.14));
+  bottom: 0;
+  left: 0;
+  background: conic-gradient(
+    from 0deg at 0% 100%,
+    rgba(0, 0, 0, 0.16) 0deg,
+    rgba(0, 0, 0, 0.06) 45deg,
+    rgba(0, 0, 0, 0.16) 90deg,
+    transparent 90deg
+  );
+  mask-image: radial-gradient(circle at 0% 100%, black 0%, rgba(0, 0, 0, 0.6) 40%, transparent 75%);
+  -webkit-mask-image: radial-gradient(circle at 0% 100%, black 0%, rgba(0, 0, 0, 0.6) 40%, transparent 75%);
+  filter: drop-shadow(0 0 16px rgba(0, 0, 0, 0.08));
 }
 
 .edge-corner-br {
-  bottom: -16px;
-  right: -16px;
-  background: radial-gradient(circle at 112px 112px, rgba(0, 0, 0, 0.18) 0%, rgba(0, 0, 0, 0.08) 35%, rgba(0, 0, 0, 0.02) 65%, transparent 75%);
-  filter: drop-shadow(8px 8px 20px rgba(0, 0, 0, 0.14));
+  bottom: 0;
+  right: 0;
+  background: conic-gradient(
+    from 270deg at 100% 100%,
+    rgba(0, 0, 0, 0.16) 0deg,
+    rgba(0, 0, 0, 0.06) 45deg,
+    rgba(0, 0, 0, 0.16) 90deg,
+    transparent 90deg
+  );
+  mask-image: radial-gradient(circle at 100% 100%, black 0%, rgba(0, 0, 0, 0.6) 40%, transparent 75%);
+  -webkit-mask-image: radial-gradient(circle at 100% 100%, black 0%, rgba(0, 0, 0, 0.6) 40%, transparent 75%);
+  filter: drop-shadow(0 0 16px rgba(0, 0, 0, 0.08));
 }
 
-/* Dark Mode: Dual-layer Corner Luminescence & Deep Obsidian Occlusion */
+/* Dark Mode: Luminous Conical Specular Spread with Inward Occlusion */
 .dark .edge-corner-tl {
-  background: radial-gradient(circle at 16px 16px, rgba(255, 255, 255, 0.26) 0%, rgba(161, 161, 170, 0.10) 35%, rgba(99, 102, 241, 0.05) 60%, transparent 75%);
-  filter: drop-shadow(-6px -6px 18px rgba(255, 255, 255, 0.16)) drop-shadow(-12px -12px 32px rgba(0, 0, 0, 0.95));
+  background: conic-gradient(
+    from 90deg at 0% 0%,
+    rgba(255, 255, 255, 0.22) 0deg,
+    rgba(161, 161, 170, 0.09) 45deg,
+    rgba(255, 255, 255, 0.22) 90deg,
+    transparent 90deg
+  );
+  mask-image: radial-gradient(circle at 0% 0%, black 0%, rgba(0, 0, 0, 0.5) 45%, transparent 75%);
+  -webkit-mask-image: radial-gradient(circle at 0% 0%, black 0%, rgba(0, 0, 0, 0.5) 45%, transparent 75%);
+  filter: drop-shadow(0 0 16px rgba(255, 255, 255, 0.14)) drop-shadow(0 0 32px rgba(0, 0, 0, 0.8));
 }
 
 .dark .edge-corner-tr {
-  background: radial-gradient(circle at 112px 16px, rgba(255, 255, 255, 0.26) 0%, rgba(161, 161, 170, 0.10) 35%, rgba(99, 102, 241, 0.05) 60%, transparent 75%);
-  filter: drop-shadow(6px -6px 18px rgba(255, 255, 255, 0.16)) drop-shadow(12px -12px 32px rgba(0, 0, 0, 0.95));
+  background: conic-gradient(
+    from 180deg at 100% 0%,
+    rgba(255, 255, 255, 0.22) 0deg,
+    rgba(161, 161, 170, 0.09) 45deg,
+    rgba(255, 255, 255, 0.22) 90deg,
+    transparent 90deg
+  );
+  mask-image: radial-gradient(circle at 100% 0%, black 0%, rgba(0, 0, 0, 0.5) 45%, transparent 75%);
+  -webkit-mask-image: radial-gradient(circle at 100% 0%, black 0%, rgba(0, 0, 0, 0.5) 45%, transparent 75%);
+  filter: drop-shadow(0 0 16px rgba(255, 255, 255, 0.14)) drop-shadow(0 0 32px rgba(0, 0, 0, 0.8));
 }
 
 .dark .edge-corner-bl {
-  background: radial-gradient(circle at 16px 112px, rgba(255, 255, 255, 0.26) 0%, rgba(161, 161, 170, 0.10) 35%, rgba(99, 102, 241, 0.05) 60%, transparent 75%);
-  filter: drop-shadow(-6px 6px 18px rgba(255, 255, 255, 0.16)) drop-shadow(-12px 12px 32px rgba(0, 0, 0, 0.95));
+  background: conic-gradient(
+    from 0deg at 0% 100%,
+    rgba(255, 255, 255, 0.22) 0deg,
+    rgba(161, 161, 170, 0.09) 45deg,
+    rgba(255, 255, 255, 0.22) 90deg,
+    transparent 90deg
+  );
+  mask-image: radial-gradient(circle at 0% 100%, black 0%, rgba(0, 0, 0, 0.5) 45%, transparent 75%);
+  -webkit-mask-image: radial-gradient(circle at 0% 100%, black 0%, rgba(0, 0, 0, 0.5) 45%, transparent 75%);
+  filter: drop-shadow(0 0 16px rgba(255, 255, 255, 0.14)) drop-shadow(0 0 32px rgba(0, 0, 0, 0.8));
 }
 
 .dark .edge-corner-br {
-  background: radial-gradient(circle at 112px 112px, rgba(255, 255, 255, 0.26) 0%, rgba(161, 161, 170, 0.10) 35%, rgba(99, 102, 241, 0.05) 60%, transparent 75%);
-  filter: drop-shadow(6px 6px 18px rgba(255, 255, 255, 0.16)) drop-shadow(12px 12px 32px rgba(0, 0, 0, 0.95));
+  background: conic-gradient(
+    from 270deg at 100% 100%,
+    rgba(255, 255, 255, 0.22) 0deg,
+    rgba(161, 161, 170, 0.09) 45deg,
+    rgba(255, 255, 255, 0.22) 90deg,
+    transparent 90deg
+  );
+  mask-image: radial-gradient(circle at 100% 100%, black 0%, rgba(0, 0, 0, 0.5) 45%, transparent 75%);
+  -webkit-mask-image: radial-gradient(circle at 100% 100%, black 0%, rgba(0, 0, 0, 0.5) 45%, transparent 75%);
+  filter: drop-shadow(0 0 16px rgba(255, 255, 255, 0.14)) drop-shadow(0 0 32px rgba(0, 0, 0, 0.8));
 }
 
 /* Precision optical corner tick marks */

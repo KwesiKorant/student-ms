@@ -212,34 +212,34 @@ export function StudentDetailModal({
             <div className="space-y-5 text-xs">
               {/* Academic Highlights Cards */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <div className="p-3 rounded-lg border border-zinc-200 dark:border-white/10 bg-zinc-50/60 dark:bg-zinc-850/60">
-                  <span className="text-zinc-400 text-[11px] font-mono block">Division</span>
+                <div className="p-3 rounded-xl border border-zinc-200/80 dark:border-white/10 bg-zinc-50/70 dark:bg-zinc-900/80">
+                  <span className="text-zinc-500 dark:text-zinc-400 text-[11px] font-mono block">Division</span>
                   <span className="text-sm font-semibold text-zinc-900 dark:text-zinc-100 mt-0.5 block truncate">
                     {student.department?.name || "General"}
                   </span>
-                  <span className="text-[10px] font-mono text-zinc-500">
+                  <span className="text-[10px] font-mono text-zinc-400 dark:text-zinc-500">
                     Code: {student.department?.code || "N/A"}
                   </span>
                 </div>
 
-                <div className="p-3 rounded-lg border border-zinc-200 dark:border-white/10 bg-zinc-50/60 dark:bg-zinc-850/60">
-                  <span className="text-zinc-400 text-[11px] font-mono block">Standing</span>
+                <div className="p-3 rounded-xl border border-zinc-200/80 dark:border-white/10 bg-zinc-50/70 dark:bg-zinc-900/80">
+                  <span className="text-zinc-500 dark:text-zinc-400 text-[11px] font-mono block">Standing</span>
                   <span className="text-sm font-semibold text-zinc-900 dark:text-zinc-100 mt-0.5 block font-mono">
                     Year {student.academicYear}
                   </span>
-                  <span className="text-[10px] font-mono text-zinc-500">
+                  <span className="text-[10px] font-mono text-zinc-400 dark:text-zinc-500">
                     Cohort {2026 - (student.academicYear - 1)}
                   </span>
                 </div>
 
-                <div className="p-3 rounded-lg border border-zinc-200 dark:border-white/10 bg-zinc-50/60 dark:bg-zinc-850/60">
-                  <span className="text-zinc-400 text-[11px] font-mono block">Cumulative GPA</span>
+                <div className="p-3 rounded-xl border border-zinc-200/80 dark:border-white/10 bg-zinc-50/70 dark:bg-zinc-900/80">
+                  <span className="text-zinc-500 dark:text-zinc-400 text-[11px] font-mono block">Cumulative GPA</span>
                   <span className="text-sm font-semibold text-zinc-900 dark:text-zinc-100 mt-0.5 block font-mono">
                     {student.gpa !== null && student.gpa !== undefined
                       ? student.gpa.toFixed(2)
                       : "Unassigned"}
                   </span>
-                  <div className="w-full bg-zinc-200 dark:bg-zinc-700 h-1.5 rounded-full mt-1.5 overflow-hidden">
+                  <div className="w-full bg-zinc-200 dark:bg-zinc-800 h-1.5 rounded-full mt-1.5 overflow-hidden">
                     <div
                       className="bg-emerald-500 h-full rounded-full"
                       style={{
@@ -249,9 +249,8 @@ export function StudentDetailModal({
                   </div>
                 </div>
               </div>
-
               {/* Demographics & Contact */}
-              <div className="rounded-lg border border-zinc-200 dark:border-white/10 p-4 space-y-3">
+              <div className="rounded-xl border border-zinc-200/80 dark:border-white/10 bg-zinc-50/50 dark:bg-zinc-900/50 p-4 space-y-3">
                 <h4 className="font-semibold text-zinc-800 dark:text-zinc-200 flex items-center gap-1.5 text-xs font-mono uppercase tracking-wider">
                   <FileText className="w-3.5 h-3.5 text-zinc-400" />
                   Demographic & Contact Details
@@ -261,7 +260,7 @@ export function StudentDetailModal({
                   <div className="flex items-center gap-2">
                     <Mail className="w-4 h-4 text-zinc-400 shrink-0" />
                     <div className="min-w-0">
-                      <span className="text-[11px] text-zinc-400 block font-mono">Email Address</span>
+                      <span className="text-[11px] text-zinc-500 dark:text-zinc-400 block font-mono">Email Address</span>
                       <span className="font-mono text-zinc-800 dark:text-zinc-200 inline-flex items-center gap-1.5 max-w-full">
                         <span className="truncate">{student.email}</span>
                         <button
@@ -284,7 +283,7 @@ export function StudentDetailModal({
                   <div className="flex items-center gap-2">
                     <Phone className="w-4 h-4 text-zinc-400 shrink-0" />
                     <div>
-                      <span className="text-[11px] text-zinc-400 block font-mono">Phone Number</span>
+                      <span className="text-[11px] text-zinc-500 dark:text-zinc-400 block font-mono">Phone Number</span>
                       <span className="font-mono text-zinc-800 dark:text-zinc-200">
                         {student.phone || "Not specified"}
                       </span>
@@ -294,7 +293,7 @@ export function StudentDetailModal({
                   <div className="flex items-center gap-2">
                     <Calendar className="w-4 h-4 text-zinc-400 shrink-0" />
                     <div>
-                      <span className="text-[11px] text-zinc-400 block font-mono">Date of Birth</span>
+                      <span className="text-[11px] text-zinc-500 dark:text-zinc-400 block font-mono">Date of Birth</span>
                       <span className="font-mono text-zinc-800 dark:text-zinc-200">
                         {student.dateOfBirth || "Not specified"}
                       </span>
@@ -304,7 +303,7 @@ export function StudentDetailModal({
                   <div className="flex items-center gap-2">
                     <Clock className="w-4 h-4 text-zinc-400 shrink-0" />
                     <div>
-                      <span className="text-[11px] text-zinc-400 block font-mono">Enrolled Since</span>
+                      <span className="text-[11px] text-zinc-500 dark:text-zinc-400 block font-mono">Enrolled Since</span>
                       <span className="font-mono text-zinc-800 dark:text-zinc-200">
                         {new Date(student.createdAt).toLocaleDateString()}
                       </span>
@@ -328,19 +327,19 @@ export function StudentDetailModal({
                     return (
                       <div
                         key={log.id}
-                        className="p-3 rounded-lg border border-zinc-200 dark:border-white/10 bg-zinc-50/50 dark:bg-zinc-850/50 text-xs font-mono"
+                        className="p-3 rounded-xl border border-zinc-200/80 dark:border-white/10 bg-zinc-50/60 dark:bg-zinc-900/60 text-xs font-mono"
                       >
                         <div className="flex items-center justify-between gap-2 mb-1.5">
                           <div className="flex items-center gap-1.5">
                             <span
                               className={`px-1.5 py-0.5 rounded text-[10px] font-bold ${
                                 log.action === "CREATE"
-                                  ? "bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-400"
+                                  ? "bg-emerald-50 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/40"
                                   : log.action === "UPDATE"
-                                  ? "bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-400"
+                                  ? "bg-zinc-100 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 border border-zinc-200 dark:border-zinc-700/60"
                                   : log.action === "ARCHIVE"
-                                  ? "bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-400"
-                                  : "bg-purple-100 dark:bg-purple-950 text-purple-700 dark:text-purple-400"
+                                  ? "bg-amber-50 dark:bg-amber-950/70 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800/40"
+                                  : "bg-purple-50 dark:bg-purple-950/70 text-purple-700 dark:text-purple-400 border border-purple-200 dark:border-purple-800/40"
                               }`}
                             >
                               {log.action}
@@ -355,7 +354,7 @@ export function StudentDetailModal({
                         </div>
 
                         {/* Expandable details view */}
-                        <div className="p-2 rounded bg-white dark:bg-zinc-900 border border-zinc-200/60 dark:border-white/5 text-[11px] text-zinc-600 dark:text-zinc-300 overflow-x-auto">
+                        <div className="p-2.5 rounded-lg bg-white dark:bg-zinc-950/80 border border-zinc-200/60 dark:border-white/10 text-[11px] text-zinc-600 dark:text-zinc-300 overflow-x-auto">
                           {details.event && (
                             <p className="font-semibold text-zinc-800 dark:text-zinc-200 mb-1">
                               {details.event}
@@ -364,17 +363,17 @@ export function StudentDetailModal({
                           {details.initialData && (
                             <div className="mt-1 flex flex-wrap gap-1.5 text-[10px]">
                               {details.initialData.status && (
-                                <span className="px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800/80 text-zinc-700 dark:text-zinc-300 border border-zinc-200/60 dark:border-white/5">
+                                <span className="px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300 border border-zinc-200/60 dark:border-white/10">
                                   Status: <strong className="text-zinc-900 dark:text-zinc-100">{details.initialData.status}</strong>
                                 </span>
                               )}
                               {details.initialData.academicYear !== undefined && (
-                                <span className="px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800/80 text-zinc-700 dark:text-zinc-300 border border-zinc-200/60 dark:border-white/5">
+                                <span className="px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300 border border-zinc-200/60 dark:border-white/10">
                                   Year: <strong className="text-zinc-900 dark:text-zinc-100">{details.initialData.academicYear}</strong>
                                 </span>
                               )}
                               {details.initialData.gpa !== undefined && details.initialData.gpa !== null && (
-                                <span className="px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800/80 text-zinc-700 dark:text-zinc-300 border border-zinc-200/60 dark:border-white/5">
+                                <span className="px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300 border border-zinc-200/60 dark:border-white/10">
                                   GPA: <strong className="text-zinc-900 dark:text-zinc-100">{Number(details.initialData.gpa).toFixed(2)}</strong>
                                 </span>
                               )}

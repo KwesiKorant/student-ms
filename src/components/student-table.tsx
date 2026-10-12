@@ -134,7 +134,7 @@ export function StudentTable({
                 <div className="w-7 h-7 rounded-full bg-zinc-200/70 dark:bg-zinc-800/70 animate-pulse" />
                 <div className="space-y-1.5">
                   <div className="h-3.5 w-36 bg-zinc-200/70 dark:bg-zinc-800/70 rounded animate-pulse" />
-                  <div className="h-2.5 w-48 bg-zinc-100/70 dark:bg-zinc-850/70 rounded animate-pulse" />
+                  <div className="h-2.5 w-48 bg-zinc-100/70 dark:bg-zinc-800/60 rounded animate-pulse" />
                 </div>
               </div>
               <div className="hidden sm:block h-3.5 w-24 bg-zinc-200/70 dark:bg-zinc-800/70 rounded animate-pulse" />

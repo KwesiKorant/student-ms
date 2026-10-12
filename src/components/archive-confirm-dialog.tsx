@@ -129,7 +129,7 @@ export function ArchiveConfirmDialog({
         </div>
 
         {/* Student Summary Callout */}
-        <div className="mt-4 p-3 rounded-lg border border-zinc-200 dark:border-white/10 bg-zinc-50/70 dark:bg-zinc-850/70 text-xs space-y-1">
+        <div className="mt-4 p-3 rounded-lg border border-zinc-200 dark:border-white/10 bg-zinc-50/70 dark:bg-zinc-900/80 text-xs space-y-1">
           <div className="flex items-center justify-between font-mono">
             <span className="font-semibold text-zinc-900 dark:text-zinc-100">
               {student.firstName} {student.lastName}
