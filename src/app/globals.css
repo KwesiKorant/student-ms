@@ -312,6 +312,39 @@ body {
   transition: opacity 280ms var(--spring-smooth), transform 280ms var(--spring-snappy);
 }
 
+/* Native View Transitions API GPU Crossfade */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 220ms;
+  animation-timing-function: var(--spring-smooth);
+}
+
+::view-transition-old(root) {
+  animation-name: viewTransitionFadeOut;
+}
+
+::view-transition-new(root) {
+  animation-name: viewTransitionFadeIn;
+}
+
+@keyframes viewTransitionFadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes viewTransitionFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 /* Respect user's motion preferences */
 @media (prefers-reduced-motion: reduce) {
   *, ::before, ::after {
@@ -319,6 +352,11 @@ body {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 0.01ms !important;
   }
 
   .tap-target:active {

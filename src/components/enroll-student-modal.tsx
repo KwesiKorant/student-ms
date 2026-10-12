@@ -6,6 +6,7 @@ import { CreateStudentSchema, MAX_STUDENT_DOB, MIN_STUDENT_DOB } from "@/lib/val
 import { useToast } from "@/components/ui/toast";
 import { X, UserPlus, AlertCircle, Loader2 } from "lucide-react";
 import { useModalDismiss } from "@/hooks/use-modal-dismiss";
+import { motion } from "motion/react";
 
 interface EnrollStudentModalProps {
   isOpen: boolean;
@@ -142,20 +143,38 @@ export function EnrollStudentModal({
   };
 
   return (
-    <div
+    <motion.div
       role="dialog"
       aria-modal="true"
       aria-labelledby="enroll-modal-title"
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.16 }}
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto overscroll-contain"
     >
       {/* Backdrop - strictly zero blur for compositor efficiency */}
-      <div
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.16, ease: "easeOut" }}
         onClick={onClose}
-        className="fixed inset-0 bg-black/75 animate-backdrop-enter"
+        className="fixed inset-0 bg-black/75"
       />
 
       {/* Modal Dialog Card - fully opaque in light and dark mode to prevent any text bleed */}
-      <div className="relative w-full max-w-lg rounded-2xl bg-white dark:bg-[#111114] border border-zinc-200/90 dark:border-white/10 shadow-2xl p-6 z-10 animate-modal-enter text-zinc-900 dark:text-zinc-100 isolated-card my-8">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.96, y: 8 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.97, y: 6 }}
+        transition={{
+          type: "spring",
+          stiffness: 380,
+          damping: 30,
+        }}
+        className="relative w-full max-w-lg rounded-2xl bg-white dark:bg-[#111114] border border-zinc-200/90 dark:border-white/10 shadow-2xl p-6 z-10 text-zinc-900 dark:text-zinc-100 isolated-card my-8"
+      >
         {/* Header */}
         <div className="flex items-center justify-between pb-4 border-b border-zinc-100 dark:border-white/5">
           <div className="flex items-center gap-2.5">
@@ -491,7 +510,7 @@ export function EnrollStudentModal({
             </button>
           </div>
         </form>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }

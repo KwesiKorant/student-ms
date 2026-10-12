@@ -18,6 +18,7 @@ import {
   Copy,
   Check,
 } from "lucide-react";
+import { motion } from "motion/react";
 import { useModalDismiss } from "@/hooks/use-modal-dismiss";
 
 interface StudentDetailModalProps {
@@ -98,20 +99,38 @@ export function StudentDetailModal({
   };
 
   return (
-    <div
+    <motion.div
       role="dialog"
       aria-modal="true"
       aria-labelledby="detail-modal-title"
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.16 }}
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto overscroll-contain"
     >
       {/* Backdrop - strictly zero blur for compositor efficiency */}
-      <div
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.16, ease: "easeOut" }}
         onClick={onClose}
-        className="fixed inset-0 bg-black/75 animate-backdrop-enter"
+        className="fixed inset-0 bg-black/75"
       />
 
       {/* Modal Dialog Card - fully opaque in light and dark mode to prevent any text bleed */}
-      <div className="relative w-full max-w-2xl rounded-2xl bg-white dark:bg-[#111114] border border-zinc-200/90 dark:border-white/10 shadow-2xl p-6 z-10 animate-modal-enter text-zinc-900 dark:text-zinc-100 isolated-card my-8">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.96, y: 8 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.97, y: 6 }}
+        transition={{
+          type: "spring",
+          stiffness: 380,
+          damping: 30,
+        }}
+        className="relative w-full max-w-2xl rounded-2xl bg-white dark:bg-[#111114] border border-zinc-200/90 dark:border-white/10 shadow-2xl p-6 z-10 text-zinc-900 dark:text-zinc-100 isolated-card my-8"
+      >
         {/* Header Profile Bar */}
         <div className="flex items-start justify-between pb-5 border-b border-zinc-100 dark:border-white/5">
           <div className="flex items-center gap-3.5">
@@ -465,7 +484,7 @@ export function StudentDetailModal({
             </button>
           </div>
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }

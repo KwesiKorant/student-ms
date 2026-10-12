@@ -18,6 +18,7 @@ import { useSearchParams } from "next/navigation";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useStudentRealtime } from "@/hooks/use-student-realtime";
 import { Plus } from "lucide-react";
+import { AnimatePresence } from "motion/react";
 
 function EnrollUrlWatcher({ onOpen }: { onOpen: () => void }) {
   const searchParams = useSearchParams();
@@ -596,54 +597,57 @@ export default function StudentManagementPortal() {
           </footer>
         </main>
 
-        {/* Modals & Dialogs */}
-        {isEnrollModalOpen && (
-          <EnrollStudentModal
-            isOpen={true}
-            onClose={handleCloseEnrollModal}
-            departments={departments}
-            onStudentCreated={handleStudentCreated}
-          />
-        )}
+        {/* Modals & Dialogs (Asymmetric compositor exit lifecycle) */}
+        <AnimatePresence>
+          {isEnrollModalOpen && (
+            <EnrollStudentModal
+              key="enroll-modal"
+              isOpen={true}
+              onClose={handleCloseEnrollModal}
+              departments={departments}
+              onStudentCreated={handleStudentCreated}
+            />
+          )}
 
-        {detailStudent && (
-          <StudentDetailModal
-            key={detailStudent.id}
-            student={detailStudent}
-            isOpen={true}
-            onClose={() => setDetailStudent(null)}
-            onEdit={(student) => {
-              setDetailStudent(null);
-              setEditStudent(student);
-            }}
-            onArchive={(student) => {
-              setDetailStudent(null);
-              setArchiveStudent(student);
-            }}
-            onRestore={handleRestoreStudent}
-          />
-        )}
+          {detailStudent && (
+            <StudentDetailModal
+              key={`detail-${detailStudent.id}`}
+              student={detailStudent}
+              isOpen={true}
+              onClose={() => setDetailStudent(null)}
+              onEdit={(student) => {
+                setDetailStudent(null);
+                setEditStudent(student);
+              }}
+              onArchive={(student) => {
+                setDetailStudent(null);
+                setArchiveStudent(student);
+              }}
+              onRestore={handleRestoreStudent}
+            />
+          )}
 
-        {editStudent && (
-          <EditStudentModal
-            key={editStudent.id}
-            student={editStudent}
-            isOpen={true}
-            onClose={() => setEditStudent(null)}
-            departments={departments}
-            onStudentUpdated={handleStudentUpdated}
-          />
-        )}
+          {editStudent && (
+            <EditStudentModal
+              key={`edit-${editStudent.id}`}
+              student={editStudent}
+              isOpen={true}
+              onClose={() => setEditStudent(null)}
+              departments={departments}
+              onStudentUpdated={handleStudentUpdated}
+            />
+          )}
 
-        {archiveStudent && (
-          <ArchiveConfirmDialog
-            key={archiveStudent.id}
-            student={archiveStudent}
-            isOpen={true}
-            onClose={() => setArchiveStudent(null)}
-            onArchived={handleStudentArchived}
-          />
-        )}
+          {archiveStudent && (
+            <ArchiveConfirmDialog
+              key={`archive-${archiveStudent.id}`}
+              student={archiveStudent}
+              isOpen={true}
+              onClose={() => setArchiveStudent(null)}
+              onArchived={handleStudentArchived}
+            />
+          )}
+        </AnimatePresence>
       </div>
     </>
   );

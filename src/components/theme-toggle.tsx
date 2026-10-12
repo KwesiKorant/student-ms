@@ -42,6 +42,25 @@ export function ThemeToggle() {
 
   const currentTheme = theme ?? "system";
 
+  const handleThemeChange = (nextTheme: string) => {
+    if (nextTheme === currentTheme) return;
+
+    // Zero-overhead GPU crossfade via native View Transitions API
+    const doc = typeof document !== "undefined" ? (document as unknown as { startViewTransition?: (cb: () => void) => void }) : null;
+    const prefersReducedMotion =
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    if (!doc?.startViewTransition || prefersReducedMotion) {
+      setTheme(nextTheme);
+      return;
+    }
+
+    doc.startViewTransition(() => {
+      setTheme(nextTheme);
+    });
+  };
+
   return (
     <div
       role="group"
@@ -52,7 +71,7 @@ export function ThemeToggle() {
       <Tooltip content="Light Theme" subContent="Clean crisp white canvas" side="bottom">
         <button
           type="button"
-          onClick={() => setTheme("light")}
+          onClick={() => handleThemeChange("light")}
           aria-label="Switch to light mode"
           aria-pressed={currentTheme === "light"}
           className={`tap-target p-1.5 rounded-md transition-colors cursor-pointer ${
@@ -69,7 +88,7 @@ export function ThemeToggle() {
       <Tooltip content="Dark Theme" subContent="Deep void cosmic canvas" side="bottom">
         <button
           type="button"
-          onClick={() => setTheme("dark")}
+          onClick={() => handleThemeChange("dark")}
           aria-label="Switch to dark mode"
           aria-pressed={currentTheme === "dark"}
           className={`tap-target p-1.5 rounded-md transition-colors cursor-pointer ${
@@ -86,7 +105,7 @@ export function ThemeToggle() {
       <Tooltip content="System Preference" subContent="Auto-synchronize with OS theme" side="bottom">
         <button
           type="button"
-          onClick={() => setTheme("system")}
+          onClick={() => handleThemeChange("system")}
           aria-label="Switch to system theme"
           aria-pressed={currentTheme === "system"}
           className={`tap-target p-1.5 rounded-md transition-colors cursor-pointer ${
