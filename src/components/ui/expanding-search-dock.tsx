@@ -122,42 +122,39 @@ export function ExpandingSearchDock({
       <AnimatePresence mode="wait">
         {!isExpanded ? (
           <motion.button
-            key="collapsed-pill"
+            key="collapsed-circle"
             type="button"
-            initial={{ scale: 0.92, opacity: 0 }}
+            initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.92, opacity: 0 }}
+            exit={{ scale: 0.9, opacity: 0 }}
             whileHover={{
-              scale: 1.03,
+              scale: 1.08,
               y: -1,
               transition: { type: "spring", stiffness: 400, damping: 25 },
             }}
-            whileTap={{ scale: 0.97 }}
+            whileTap={{ scale: 0.94 }}
             onClick={handleExpand}
-            className="group relative flex items-center gap-2 h-9 px-3 rounded-xl border border-zinc-200/80 dark:border-white/10 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md text-zinc-600 dark:text-zinc-300 shadow-xs hover:border-zinc-300 dark:hover:border-white/20 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors cursor-pointer select-none"
-            aria-label="Open search dock"
+            className="group relative flex items-center justify-center h-10 w-10 rounded-full border border-zinc-200/90 dark:border-white/10 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md text-zinc-500 dark:text-zinc-400 shadow-xs hover:border-zinc-300 dark:hover:border-white/25 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors cursor-pointer select-none"
+            title="Search registry (/ or ⌘K)"
+            aria-label="Search registry"
           >
-            <Search className="w-3.5 h-3.5 text-zinc-400 group-hover:text-zinc-600 dark:group-hover:text-zinc-200 transition-colors" />
-            <span className="text-xs font-medium">Search</span>
-            <kbd className="hidden sm:inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-mono text-zinc-400 dark:text-zinc-500 bg-zinc-100 dark:bg-zinc-800/80 border border-zinc-200/60 dark:border-white/5">
-              /
-            </kbd>
+            <Search className="w-4 h-4 transition-transform group-hover:scale-105" />
           </motion.button>
         ) : (
           <motion.div
             key="expanded-dock"
-            initial={{ width: 100, opacity: 0 }}
+            initial={{ width: 40, opacity: 0 }}
             animate={{ width: 280, opacity: 1 }}
-            exit={{ width: 100, opacity: 0 }}
+            exit={{ width: 40, opacity: 0 }}
             transition={{
               type: "spring",
               stiffness: 350,
               damping: 28,
             }}
-            className="relative flex items-center h-9 w-64 sm:w-72 rounded-xl border border-zinc-300 dark:border-white/20 bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md shadow-lg shadow-zinc-900/5 dark:shadow-black/20 overflow-hidden"
+            className="relative flex items-center h-10 w-64 sm:w-72 rounded-full border border-zinc-300 dark:border-white/20 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md shadow-lg shadow-zinc-900/5 dark:shadow-black/20 overflow-hidden"
           >
-            <div className="pl-3 pr-1.5 flex items-center pointer-events-none text-zinc-400">
-              <Search className="w-3.5 h-3.5" />
+            <div className="pl-3.5 pr-1.5 flex items-center pointer-events-none text-zinc-400">
+              <Search className="w-4 h-4" />
             </div>
 
             <input
@@ -176,7 +173,7 @@ export function ExpandingSearchDock({
               <button
                 type="button"
                 onClick={handleClear}
-                className="p-1 mr-1 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 rounded-md hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
+                className="p-1 mr-1 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
                 title="Clear text"
                 aria-label="Clear search"
               >
@@ -187,11 +184,11 @@ export function ExpandingSearchDock({
             <button
               type="button"
               onClick={handleCollapse}
-              className="px-2 py-1 mr-1 text-[11px] font-mono text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 rounded hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
-              title="Close dock (Esc)"
-              aria-label="Close search dock"
+              className="px-2.5 py-1 mr-1 text-[10px] font-mono font-medium text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
+              title="Close search (Esc)"
+              aria-label="Close search"
             >
-              esc
+              ESC
             </button>
           </motion.div>
         )}

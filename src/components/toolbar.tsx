@@ -12,7 +12,145 @@ import {
 } from "lucide-react";
 import { Tooltip } from "@/components/ui/tooltip";
 
-interface ToolbarProps {
+export interface ActiveFilterChipsProps {
+  search?: string;
+  onClearSearch?: () => void;
+  departmentId: string;
+  onDepartmentChange: (value: string) => void;
+  academicYear?: number | "";
+  onAcademicYearChange?: (value: number | "") => void;
+  status: string;
+  onStatusChange: (value: string) => void;
+  gpaTier?: string;
+  onGpaTierChange?: (value: string) => void;
+  includeArchived: boolean;
+  onIncludeArchivedChange: (value: boolean) => void;
+  departments: Department[];
+  onResetFilters: () => void;
+}
+
+export function ActiveFilterChips({
+  search = "",
+  onClearSearch,
+  departmentId,
+  onDepartmentChange,
+  academicYear = "",
+  onAcademicYearChange,
+  status,
+  onStatusChange,
+  gpaTier = "",
+  onGpaTierChange,
+  includeArchived,
+  onIncludeArchivedChange,
+  departments,
+  onResetFilters,
+}: ActiveFilterChipsProps) {
+  const hasAnyFilterActive =
+    search.trim() !== "" ||
+    departmentId !== "" ||
+    academicYear !== "" ||
+    status !== "" ||
+    gpaTier !== "" ||
+    includeArchived;
+
+  if (!hasAnyFilterActive) return null;
+
+  return (
+    <div className="flex flex-wrap items-center gap-1.5 text-[11px] font-mono px-1">
+      <span className="text-zinc-400">ACTIVE:</span>
+
+      {search.trim() !== "" && (
+        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-200/60 dark:border-white/5">
+          <span>query:&ldquo;{search}&rdquo;</span>
+          {onClearSearch && (
+            <button
+              type="button"
+              onClick={onClearSearch}
+              className="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 cursor-pointer"
+            >
+              <X className="w-2.5 h-2.5" />
+            </button>
+          )}
+        </span>
+      )}
+
+      {departmentId !== "" && (
+        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-200/60 dark:border-white/5">
+          <span>dept:{departments.find((d) => d.id === departmentId)?.code || "custom"}</span>
+          <button
+            type="button"
+            onClick={() => onDepartmentChange("")}
+            className="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 cursor-pointer"
+          >
+            <X className="w-2.5 h-2.5" />
+          </button>
+        </span>
+      )}
+
+      {academicYear !== "" && (
+        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-200/60 dark:border-white/5">
+          <span>year:{academicYear}</span>
+          <button
+            type="button"
+            onClick={() => onAcademicYearChange?.("")}
+            className="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 cursor-pointer"
+          >
+            <X className="w-2.5 h-2.5" />
+          </button>
+        </span>
+      )}
+
+      {status !== "" && (
+        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-200/60 dark:border-white/5">
+          <span>status:{status.toLowerCase()}</span>
+          <button
+            type="button"
+            onClick={() => onStatusChange("")}
+            className="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 cursor-pointer"
+          >
+            <X className="w-2.5 h-2.5" />
+          </button>
+        </span>
+      )}
+
+      {gpaTier !== "" && (
+        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-200/60 dark:border-white/5">
+          <span>gpa:{gpaTier === "deans_list" ? "≥3.5" : gpaTier === "good_standing" ? "2.5-3.5" : "<2.0"}</span>
+          <button
+            type="button"
+            onClick={() => onGpaTierChange?.("")}
+            className="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 cursor-pointer"
+          >
+            <X className="w-2.5 h-2.5" />
+          </button>
+        </span>
+      )}
+
+      {includeArchived && (
+        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20">
+          <span>archived:included</span>
+          <button
+            type="button"
+            onClick={() => onIncludeArchivedChange(false)}
+            className="text-amber-500 hover:text-amber-700 dark:hover:text-amber-300 cursor-pointer"
+          >
+            <X className="w-2.5 h-2.5" />
+          </button>
+        </span>
+      )}
+
+      <button
+        type="button"
+        onClick={onResetFilters}
+        className="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 hover:underline cursor-pointer ml-1"
+      >
+        Reset all
+      </button>
+    </div>
+  );
+}
+
+export interface ToolbarProps {
   departmentId: string;
   onDepartmentChange: (value: string) => void;
   academicYear?: number | "";
@@ -36,6 +174,7 @@ interface ToolbarProps {
   isLiveSync?: boolean;
   search?: string;
   onClearSearch?: () => void;
+  showActiveChips?: boolean;
 }
 
 export function Toolbar({
@@ -62,6 +201,7 @@ export function Toolbar({
   isLiveSync = false,
   search = "",
   onClearSearch,
+  showActiveChips = true,
 }: ToolbarProps) {
   const moreFiltersRef = React.useRef<HTMLDivElement>(null);
   const [isMoreFiltersOpen, setIsMoreFiltersOpen] = React.useState(false);
@@ -93,18 +233,10 @@ export function Toolbar({
     (gpaTier !== "" ? 1 : 0) +
     (includeArchived ? 1 : 0);
 
-  const hasAnyFilterActive =
-    (search && search.trim() !== "") ||
-    departmentId !== "" ||
-    academicYear !== "" ||
-    status !== "" ||
-    gpaTier !== "" ||
-    includeArchived;
-
   return (
     <div className="w-full space-y-2 relative z-20 overflow-visible">
-      {/* Primary Toolbar Container (overflow-visible, unclipped popovers) */}
-      <div className="relative flex flex-col md:flex-row items-stretch md:items-center justify-between gap-2.5 p-2 rounded-xl glass-card overflow-visible">
+      {/* Primary Toolbar Container (height aligned, unclipped popovers) */}
+      <div className="relative flex flex-col md:flex-row items-stretch md:items-center justify-between gap-2.5 p-1.5 sm:p-2 rounded-xl glass-card overflow-visible min-h-10">
         {/* Left Section: Direct Parametric Filters */}
         <div className="flex flex-wrap items-center gap-2 flex-1 min-w-0 overflow-visible">
           {/* Primary Filter 1: Department */}
@@ -172,7 +304,7 @@ export function Toolbar({
               )}
             </button>
 
-            {/* "More Filters" Floating Popover (Unclipped & High Stacking Priority) */}
+            {/* "More Filters" Floating Popover (Unclipped & High Elevation) */}
             {isMoreFiltersOpen && (
               <div
                 className="absolute top-full left-0 mt-2 w-72 z-50 rounded-xl shadow-2xl bg-white dark:bg-[#121215] border border-zinc-200/90 dark:border-white/15 p-3.5 space-y-3.5 animate-modal-enter text-xs"
@@ -347,99 +479,24 @@ export function Toolbar({
         </div>
       </div>
 
-      {/* Active Filter Indicators Micro-Strip */}
-      {hasAnyFilterActive && (
-        <div className="flex flex-wrap items-center gap-1.5 text-[11px] font-mono px-1">
-          <span className="text-zinc-400">ACTIVE:</span>
-
-          {search && search.trim() !== "" && (
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-200/60 dark:border-white/5">
-              <span>query:&ldquo;{search}&rdquo;</span>
-              {onClearSearch && (
-                <button
-                  type="button"
-                  onClick={onClearSearch}
-                  className="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 cursor-pointer"
-                >
-                  <X className="w-2.5 h-2.5" />
-                </button>
-              )}
-            </span>
-          )}
-
-          {departmentId !== "" && (
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-200/60 dark:border-white/5">
-              <span>dept:{departments.find((d) => d.id === departmentId)?.code || "custom"}</span>
-              <button
-                type="button"
-                onClick={() => onDepartmentChange("")}
-                className="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 cursor-pointer"
-              >
-                <X className="w-2.5 h-2.5" />
-              </button>
-            </span>
-          )}
-
-          {academicYear !== "" && (
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-200/60 dark:border-white/5">
-              <span>year:{academicYear}</span>
-              <button
-                type="button"
-                onClick={() => onAcademicYearChange?.("")}
-                className="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 cursor-pointer"
-              >
-                <X className="w-2.5 h-2.5" />
-              </button>
-            </span>
-          )}
-
-          {status !== "" && (
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-200/60 dark:border-white/5">
-              <span>status:{status.toLowerCase()}</span>
-              <button
-                type="button"
-                onClick={() => onStatusChange("")}
-                className="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 cursor-pointer"
-              >
-                <X className="w-2.5 h-2.5" />
-              </button>
-            </span>
-          )}
-
-          {gpaTier !== "" && (
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-200/60 dark:border-white/5">
-              <span>gpa:{gpaTier === "deans_list" ? "≥3.5" : gpaTier === "good_standing" ? "2.5-3.5" : "<2.0"}</span>
-              <button
-                type="button"
-                onClick={() => onGpaTierChange?.("")}
-                className="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 cursor-pointer"
-              >
-                <X className="w-2.5 h-2.5" />
-              </button>
-            </span>
-          )}
-
-          {includeArchived && (
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20">
-              <span>archived:included</span>
-              <button
-                type="button"
-                onClick={() => onIncludeArchivedChange(false)}
-                className="text-amber-500 hover:text-amber-700 dark:hover:text-amber-300 cursor-pointer"
-              >
-                <X className="w-2.5 h-2.5" />
-              </button>
-            </span>
-          )}
-
-          <button
-            type="button"
-            onClick={onResetFilters}
-            className="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 hover:underline cursor-pointer ml-1"
-          >
-            Reset all
-          </button>
-        </div>
+      {/* Internal active chips fallback if showActiveChips is true */}
+      {showActiveChips && (
+        <ActiveFilterChips
+          search={search}
+          onClearSearch={onClearSearch}
+          departmentId={departmentId}
+          onDepartmentChange={onDepartmentChange}
+          academicYear={academicYear}
+          onAcademicYearChange={onAcademicYearChange}
+          status={status}
+          onStatusChange={onStatusChange}
+          gpaTier={gpaTier}
+          onGpaTierChange={onGpaTierChange}
+          includeArchived={includeArchived}
+          onIncludeArchivedChange={onIncludeArchivedChange}
+          departments={departments}
+          onResetFilters={onResetFilters}
+        />
       )}
     </div>
   );
