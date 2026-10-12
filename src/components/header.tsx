@@ -4,17 +4,22 @@ import * as React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { Plus, LogOut, User, LogIn } from "lucide-react";
+import { Plus, LogOut, LogIn, ChevronDown, ShieldCheck } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
+import { AnimatePresence, motion } from "motion/react";
+import { Tooltip } from "@/components/ui/tooltip";
 
 interface HeaderProps {
-  onOpenEnrollModal: () => void;
+  onOpenEnrollModal?: () => void;
+  showEnrollButton?: boolean;
 }
 
-export function Header({ onOpenEnrollModal }: HeaderProps) {
+export function Header({ onOpenEnrollModal, showEnrollButton = true }: HeaderProps) {
   const router = useRouter();
   const [userEmail, setUserEmail] = React.useState<string | null>(null);
   const [userRole, setUserRole] = React.useState<string | null>(null);
+  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+  const menuRef = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
     const supabase = createClient();
@@ -51,7 +56,29 @@ export function Header({ onOpenEnrollModal }: HeaderProps) {
     };
   }, []);
 
+  // Close menu on click outside or Escape
+  React.useEffect(() => {
+    if (!isMenuOpen) return;
+    const handleClickOutside = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setIsMenuOpen(false);
+      }
+    };
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setIsMenuOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isMenuOpen]);
+
   const handleSignOut = async () => {
+    setIsMenuOpen(false);
     const supabase = createClient();
     await supabase.auth.signOut();
     setUserEmail(null);
@@ -59,6 +86,9 @@ export function Header({ onOpenEnrollModal }: HeaderProps) {
     router.push("/login");
     router.refresh();
   };
+
+  const userInitial = userEmail ? userEmail.charAt(0).toUpperCase() : "U";
+  const username = userEmail ? userEmail.split("@")[0] : "";
 
   return (
     <header className="sticky top-0 z-30 w-full glass-nav transition-colors">
@@ -86,54 +116,122 @@ export function Header({ onOpenEnrollModal }: HeaderProps) {
           {/* Center spacer / clean breathing room */}
           <div className="flex-1" />
 
-          {/* Right: Actions, Auth Profile & Theme Toggle */}
-          <div className="flex items-center gap-2 shrink-0">
+          {/* Right: Actions, Auth Profile Menu & Theme Toggle */}
+          <div className="flex items-center gap-2.5 shrink-0">
             <ThemeToggle />
 
-            {/* Auth Session State */}
+            {/* Vertically Expanding User Profile Menu Dock */}
             {userEmail ? (
-              <div className="flex items-center gap-1.5 pl-1.5 border-l border-zinc-200 dark:border-zinc-800">
-                <div
-                  className="hidden sm:flex items-center gap-1.5 px-2 py-1 rounded-md bg-zinc-100 dark:bg-zinc-800/80 text-[11px] font-mono text-zinc-600 dark:text-zinc-300 max-w-[170px]"
-                  title={userEmail}
+              <div className="relative inline-flex items-center" ref={menuRef}>
+                <Tooltip
+                  content={`Signed in as ${userEmail}`}
+                  subContent="Click to view session details or sign out"
+                  side="bottom"
                 >
-                  <User className="w-3 h-3 text-emerald-500 shrink-0" />
-                  <span className="truncate">{userEmail.split("@")[0]}</span>
-                  {userRole && (
-                    <span className="text-[9px] uppercase px-1 py-0.2 rounded bg-zinc-200 dark:bg-zinc-700 font-semibold text-zinc-700 dark:text-zinc-200">
-                      {userRole}
-                    </span>
-                  )}
-                </div>
+                  <motion.button
+                    type="button"
+                    onClick={() => setIsMenuOpen((prev) => !prev)}
+                    whileHover={{ scale: 1.04, y: -1 }}
+                    whileTap={{ scale: 0.96 }}
+                    aria-expanded={isMenuOpen}
+                    aria-label="User account menu"
+                    className="tap-target group flex items-center gap-2 h-9 pl-2 pr-2.5 rounded-full border border-zinc-200/90 dark:border-white/10 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md shadow-xs hover:border-zinc-300 dark:hover:border-white/20 transition-colors cursor-pointer select-none"
+                  >
+                    {/* User Initials Avatar Capsule */}
+                    <div className="w-5 h-5 rounded-full bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-950 font-mono font-bold text-[10px] flex items-center justify-center shrink-0">
+                      {userInitial}
+                    </div>
 
-                <button
-                  type="button"
-                  onClick={handleSignOut}
-                  title="Sign out"
-                  className="tap-target p-1.5 rounded-lg text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer transition-colors"
-                >
-                  <LogOut className="w-3.5 h-3.5" />
-                  <span className="sr-only">Sign out</span>
-                </button>
+                    <span className="text-xs font-medium text-zinc-700 dark:text-zinc-200 max-w-[120px] truncate hidden sm:inline">
+                      {username}
+                    </span>
+
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+
+                    <ChevronDown
+                      className={`w-3 h-3 text-zinc-400 transition-transform duration-200 ${
+                        isMenuOpen ? "rotate-180" : ""
+                      }`}
+                    />
+                  </motion.button>
+                </Tooltip>
+
+                {/* Vertically Expanding Floating Profile Dock Card */}
+                <AnimatePresence>
+                  {isMenuOpen && (
+                    <motion.div
+                      key="profile-menu-dock"
+                      initial={{ opacity: 0, y: -6, scale: 0.96 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: -6, scale: 0.96 }}
+                      transition={{
+                        type: "spring",
+                        stiffness: 350,
+                        damping: 28,
+                      }}
+                      className="absolute right-0 top-full mt-2 w-64 z-50 rounded-2xl shadow-2xl bg-white dark:bg-[#121215] border border-zinc-200/90 dark:border-white/15 p-3.5 space-y-3 animate-modal-enter text-xs"
+                    >
+                      {/* Identity Header */}
+                      <div className="space-y-1">
+                        <div className="flex items-center justify-between">
+                          <span className="text-[10px] font-mono text-zinc-400 uppercase tracking-wider">
+                            Active Session
+                          </span>
+                          <span className="inline-flex items-center gap-1 text-[10px] font-mono text-emerald-600 dark:text-emerald-400">
+                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                            Live
+                          </span>
+                        </div>
+                        <div className="font-semibold text-zinc-900 dark:text-zinc-100 truncate text-xs" title={userEmail}>
+                          {userEmail}
+                        </div>
+                        {userRole && (
+                          <div className="pt-0.5">
+                            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-mono uppercase font-bold bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-200/60 dark:border-white/10">
+                              <ShieldCheck className="w-3 h-3 text-emerald-500" />
+                              {userRole}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Divider */}
+                      <div className="h-px bg-zinc-100 dark:border-t dark:border-white/5" />
+
+                      {/* Standard-Color Visible Logout Button */}
+                      <button
+                        type="button"
+                        onClick={handleSignOut}
+                        className="tap-target w-full py-2 px-3 rounded-xl text-xs font-semibold text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 dark:hover:bg-rose-900/60 border border-rose-200/80 dark:border-rose-800/40 flex items-center justify-center gap-2 cursor-pointer transition-colors shadow-xs"
+                      >
+                        <LogOut className="w-3.5 h-3.5" />
+                        <span>Sign Out of Arcfield</span>
+                      </button>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             ) : (
               <Link
                 href="/login"
-                className="tap-target inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium rounded-lg text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+                className="tap-target inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-full text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
               >
                 <LogIn className="w-3.5 h-3.5" />
                 <span>Sign In</span>
               </Link>
             )}
 
-            <button
-              type="button"
-              onClick={onOpenEnrollModal}
-              className="tap-target inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg bg-zinc-900 hover:bg-zinc-800 dark:bg-zinc-100 dark:hover:bg-zinc-200 text-white dark:text-zinc-900 shadow-xs cursor-pointer transition-colors"
-            >
-              <Plus className="w-3.5 h-3.5" />
-              <span>Enroll Student</span>
-            </button>
+            {/* Enroll Student Button (Optional in Navbar, Can also live in Hero) */}
+            {showEnrollButton && onOpenEnrollModal && (
+              <button
+                type="button"
+                onClick={onOpenEnrollModal}
+                className="tap-target inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg bg-zinc-900 hover:bg-zinc-800 dark:bg-zinc-100 dark:hover:bg-zinc-200 text-white dark:text-zinc-900 shadow-xs cursor-pointer transition-colors"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                <span>Enroll Student</span>
+              </button>
+            )}
           </div>
         </div>
       </div>

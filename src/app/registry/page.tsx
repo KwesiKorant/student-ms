@@ -13,6 +13,7 @@ import { StudentDetailModal } from "@/components/student-detail-modal";
 import { EditStudentModal } from "@/components/edit-student-modal";
 import { ArchiveConfirmDialog } from "@/components/archive-confirm-dialog";
 import { useToast } from "@/components/ui/toast";
+import { Tooltip } from "@/components/ui/tooltip";
 import { useSearchParams } from "next/navigation";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useStudentRealtime } from "@/hooks/use-student-realtime";
@@ -427,30 +428,57 @@ export default function StudentManagementPortal() {
               </TextReveal>
             </div>
 
-            {/* Consolidated Institutional Status Strip */}
+            {/* Consolidated Institutional Status Strip with Informative Tooltips */}
             <TextReveal
               delay={0.38}
               className="flex flex-wrap items-center gap-2 text-xs font-mono text-zinc-500 dark:text-zinc-400 shrink-0"
             >
-              <div className="px-2.5 py-1 rounded-md glass-card-subtle flex items-center gap-1.5 border border-zinc-200/60 dark:border-white/5">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                <span className="text-zinc-400 text-[10px]">ACTIVE</span>
-                <span className="font-semibold text-zinc-900 dark:text-zinc-100">{metrics.active}</span>
-              </div>
-              <div className="px-2.5 py-1 rounded-md glass-card-subtle flex items-center gap-1.5 border border-zinc-200/60 dark:border-white/5">
-                <span className="text-zinc-400 text-[10px]">TOTAL</span>
-                <span className="font-semibold text-zinc-900 dark:text-zinc-100">{metrics.total}</span>
-              </div>
-              <div className="px-2.5 py-1 rounded-md glass-card-subtle flex items-center gap-1.5 border border-zinc-200/60 dark:border-white/5">
-                <span className="text-zinc-400 text-[10px]">DIVISIONS</span>
-                <span className="font-semibold text-zinc-900 dark:text-zinc-100">{departments.length}</span>
-              </div>
-              {metrics.archived > 0 && (
-                <div className="px-2.5 py-1 rounded-md glass-card-subtle flex items-center gap-1.5 border border-amber-500/20 text-amber-600 dark:text-amber-400">
-                  <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
-                  <span className="text-[10px]">ARCHIVED</span>
-                  <span className="font-semibold">{metrics.archived}</span>
+              <Tooltip
+                content="Active Matriculated Students"
+                subContent="Enrolled students currently in active good academic standing"
+                side="bottom"
+              >
+                <div className="px-2.5 py-1 rounded-md glass-card-subtle flex items-center gap-1.5 border border-zinc-200/60 dark:border-white/5 cursor-default select-none">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                  <span className="text-zinc-400 text-[10px]">ACTIVE</span>
+                  <span className="font-semibold text-zinc-900 dark:text-zinc-100">{metrics.active}</span>
                 </div>
+              </Tooltip>
+
+              <Tooltip
+                content="Total Directory Records"
+                subContent="Complete roster count of all student profiles across all departments"
+                side="bottom"
+              >
+                <div className="px-2.5 py-1 rounded-md glass-card-subtle flex items-center gap-1.5 border border-zinc-200/60 dark:border-white/5 cursor-default select-none">
+                  <span className="text-zinc-400 text-[10px]">TOTAL</span>
+                  <span className="font-semibold text-zinc-900 dark:text-zinc-100">{metrics.total}</span>
+                </div>
+              </Tooltip>
+
+              <Tooltip
+                content="Academic Divisions"
+                subContent="Configured degree-granting departmental faculties (e.g., CS, ENG, BIZ, MED, LAW)"
+                side="bottom"
+              >
+                <div className="px-2.5 py-1 rounded-md glass-card-subtle flex items-center gap-1.5 border border-zinc-200/60 dark:border-white/5 cursor-default select-none">
+                  <span className="text-zinc-400 text-[10px]">DIVISIONS</span>
+                  <span className="font-semibold text-zinc-900 dark:text-zinc-100">{departments.length}</span>
+                </div>
+              </Tooltip>
+
+              {metrics.archived > 0 && (
+                <Tooltip
+                  content="Archived Dossiers"
+                  subContent="Soft-archived student profiles preserved for compliance and fully restorable"
+                  side="bottom"
+                >
+                  <div className="px-2.5 py-1 rounded-md glass-card-subtle flex items-center gap-1.5 border border-amber-500/20 text-amber-600 dark:text-amber-400 cursor-default select-none">
+                    <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                    <span className="text-[10px]">ARCHIVED</span>
+                    <span className="font-semibold">{metrics.archived}</span>
+                  </div>
+                </Tooltip>
               )}
             </TextReveal>
           </div>

@@ -182,64 +182,50 @@ body {
   transition: opacity 280ms var(--spring-smooth), transform 280ms var(--spring-snappy);
 }
 
-/* Light Mode: Rich Graphite Ambient Drop-Shadows radiating from the 4 corners */
+/* Light Mode: Soft diffused ambient shadows */
 .edge-corner-tl {
-  top: -16px;
-  left: -16px;
-  background: radial-gradient(circle at 16px 16px, rgba(0, 0, 0, 0.18) 0%, rgba(0, 0, 0, 0.08) 35%, rgba(0, 0, 0, 0.02) 65%, transparent 75%);
-  filter: drop-shadow(-8px -8px 20px rgba(0, 0, 0, 0.14));
+  top: -20px;
+  left: -20px;
+  border-radius: 9999px;
+  background: radial-gradient(circle, rgba(0, 0, 0, 0.10) 0%, rgba(0, 0, 0, 0.04) 45%, transparent 70%);
 }
 
 .edge-corner-tr {
-  top: -16px;
-  right: -16px;
-  background: radial-gradient(circle at 112px 16px, rgba(0, 0, 0, 0.18) 0%, rgba(0, 0, 0, 0.08) 35%, rgba(0, 0, 0, 0.02) 65%, transparent 75%);
-  filter: drop-shadow(8px -8px 20px rgba(0, 0, 0, 0.14));
+  top: -20px;
+  right: -20px;
+  border-radius: 9999px;
+  background: radial-gradient(circle, rgba(0, 0, 0, 0.10) 0%, rgba(0, 0, 0, 0.04) 45%, transparent 70%);
 }
 
 .edge-corner-bl {
-  bottom: -16px;
-  left: -16px;
-  background: radial-gradient(circle at 16px 112px, rgba(0, 0, 0, 0.18) 0%, rgba(0, 0, 0, 0.08) 35%, rgba(0, 0, 0, 0.02) 65%, transparent 75%);
-  filter: drop-shadow(-8px 8px 20px rgba(0, 0, 0, 0.14));
+  bottom: -20px;
+  left: -20px;
+  border-radius: 9999px;
+  background: radial-gradient(circle, rgba(0, 0, 0, 0.10) 0%, rgba(0, 0, 0, 0.04) 45%, transparent 70%);
 }
 
 .edge-corner-br {
-  bottom: -16px;
-  right: -16px;
-  background: radial-gradient(circle at 112px 112px, rgba(0, 0, 0, 0.18) 0%, rgba(0, 0, 0, 0.08) 35%, rgba(0, 0, 0, 0.02) 65%, transparent 75%);
-  filter: drop-shadow(8px 8px 20px rgba(0, 0, 0, 0.14));
+  bottom: -20px;
+  right: -20px;
+  border-radius: 9999px;
+  background: radial-gradient(circle, rgba(0, 0, 0, 0.10) 0%, rgba(0, 0, 0, 0.04) 45%, transparent 70%);
 }
 
-/* Dark Mode: Dual-layer Corner Luminescence & Deep Obsidian Occlusion */
+/* Dark Mode: Soft ambient luminescence */
 .dark .edge-corner-tl {
-  background: radial-gradient(circle at 16px 16px, rgba(255, 255, 255, 0.26) 0%, rgba(161, 161, 170, 0.10) 35%, rgba(99, 102, 241, 0.05) 60%, transparent 75%);
-  filter: drop-shadow(-6px -6px 18px rgba(255, 255, 255, 0.16)) drop-shadow(-12px -12px 32px rgba(0, 0, 0, 0.95));
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.14) 0%, rgba(161, 161, 170, 0.05) 45%, transparent 70%);
 }
 
 .dark .edge-corner-tr {
-  background: radial-gradient(circle at 112px 16px, rgba(255, 255, 255, 0.26) 0%, rgba(161, 161, 170, 0.10) 35%, rgba(99, 102, 241, 0.05) 60%, transparent 75%);
-  filter: drop-shadow(6px -6px 18px rgba(255, 255, 255, 0.16)) drop-shadow(12px -12px 32px rgba(0, 0, 0, 0.95));
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.14) 0%, rgba(161, 161, 170, 0.05) 45%, transparent 70%);
 }
 
 .dark .edge-corner-bl {
-  background: radial-gradient(circle at 16px 112px, rgba(255, 255, 255, 0.26) 0%, rgba(161, 161, 170, 0.10) 35%, rgba(99, 102, 241, 0.05) 60%, transparent 75%);
-  filter: drop-shadow(-6px 6px 18px rgba(255, 255, 255, 0.16)) drop-shadow(-12px 12px 32px rgba(0, 0, 0, 0.95));
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.14) 0%, rgba(161, 161, 170, 0.05) 45%, transparent 70%);
 }
 
 .dark .edge-corner-br {
-  background: radial-gradient(circle at 112px 112px, rgba(255, 255, 255, 0.26) 0%, rgba(161, 161, 170, 0.10) 35%, rgba(99, 102, 241, 0.05) 60%, transparent 75%);
-  filter: drop-shadow(6px 6px 18px rgba(255, 255, 255, 0.16)) drop-shadow(12px 12px 32px rgba(0, 0, 0, 0.95));
-}
-
-/* Precision optical corner tick marks */
-.edge-corner-bracket {
-  position: absolute;
-  width: 24px;
-  height: 24px;
-  pointer-events: none;
-  z-index: 10;
-  transition: opacity 280ms var(--spring-smooth), transform 280ms var(--spring-snappy);
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.14) 0%, rgba(161, 161, 170, 0.05) 45%, transparent 70%);
 }
 
 /* Respect user's motion preferences */

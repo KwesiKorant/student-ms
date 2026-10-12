@@ -16,7 +16,6 @@ import {
   ShieldCheck,
   AlertCircle,
   Loader2,
-  Sparkles,
   User,
 } from "lucide-react";
 
@@ -177,27 +176,21 @@ function LoginFormContent() {
         <div className="w-full max-w-md mx-auto">
           {/* Cardless Frame with Pre-Rendered Edge Corner Shadows */}
           <EdgeCornerFrame isFocused={isFocused}>
-            {/* Header Badge & Title */}
+            {/* Header Title */}
             <div className="text-center mb-8">
-              <TextReveal delay={0.06} className="inline-block mb-3">
-                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-mono font-medium tracking-wide bg-zinc-200/60 dark:bg-zinc-800/60 text-zinc-600 dark:text-zinc-400 border border-zinc-300/40 dark:border-zinc-700/40">
-                  <ShieldCheck className="w-3 h-3 text-emerald-500" />
-                  <span>SECURE_GATEWAY · v2.4</span>
-                </div>
-              </TextReveal>
               <TextReveal
                 as="h1"
-                delay={0.18}
+                delay={0.08}
                 className="text-xl sm:text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50"
               >
                 Institutional Authentication
               </TextReveal>
               <TextReveal
                 as="p"
-                delay={0.32}
+                delay={0.22}
                 className="text-xs text-zinc-500 dark:text-zinc-400 mt-1"
               >
-                Academic records database & student lifecycle management
+                Academic records & student directory portal
               </TextReveal>
             </div>
 
@@ -377,45 +370,26 @@ function LoginFormContent() {
 
             {/* Quick Demo Access Bar */}
             <div className="mt-6 pt-5 border-t border-zinc-200/60 dark:border-zinc-800/60">
-              <div className="flex items-center justify-between mb-2.5">
-                <span className="text-[10px] font-mono font-medium text-zinc-400 uppercase tracking-wider flex items-center gap-1">
-                  <Sparkles className="w-3 h-3 text-amber-500" />
-                  Evaluation Shortcut
-                </span>
-                <span className="text-[10px] font-mono text-zinc-400">
-                  Role: Lead Registrar
-                </span>
-              </div>
-
               <button
                 type="button"
                 onClick={handleQuickDemoSignIn}
                 disabled={isLoading || isDemoLoading}
-                className="tap-target w-full py-2 px-3 rounded-lg bg-zinc-100 hover:bg-zinc-200/80 dark:bg-zinc-900 dark:hover:bg-zinc-800 border border-zinc-200 dark:border-zinc-800 text-zinc-800 dark:text-zinc-200 text-xs font-medium flex items-center justify-between cursor-pointer transition-colors disabled:opacity-50"
+                className="tap-target w-full py-2.5 px-3.5 rounded-xl bg-zinc-100 hover:bg-zinc-200/80 dark:bg-zinc-900 dark:hover:bg-zinc-800 border border-zinc-200 dark:border-zinc-800 text-zinc-800 dark:text-zinc-200 text-xs font-medium flex items-center justify-between cursor-pointer transition-colors disabled:opacity-50"
               >
                 <div className="flex items-center gap-2 min-w-0">
                   <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                  <span className="truncate">One-Click Lead Registrar Sign In</span>
+                  <span className="truncate">One-Click Registrar Demo Sign In</span>
                 </div>
                 {isDemoLoading ? (
                   <Loader2 className="w-3.5 h-3.5 animate-spin text-zinc-500 shrink-0" />
                 ) : (
                   <span className="text-[11px] font-mono text-zinc-400 shrink-0">
-                    Auto-Fill ↵
+                    Instant Access ↵
                   </span>
                 )}
               </button>
-
-              <p className="text-[10px] text-zinc-400 text-center mt-2 font-mono">
-                registrar@arcfield.systems · ArcfieldAdmin2026!
-              </p>
             </div>
           </EdgeCornerFrame>
-
-          {/* Institutional Compliance Footer */}
-          <div className="text-center mt-6 text-[11px] text-zinc-400 font-mono tracking-tight">
-            TLS 1.3 · Supabase Auth · Zero-Knowledge Database · FERPA Aligned
-          </div>
         </div>
       </main>
 
