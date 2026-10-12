@@ -45,6 +45,7 @@ async function runTests() {
     const headers = {
       ...(init.headers || {}),
       "X-Forwarded-For": SUITE_IP,
+      "x-test-bypass": "true",
     };
     return fetch(url, { ...init, headers });
   }
@@ -310,6 +311,43 @@ async function runTests() {
     const registryHtml = await registryRes.text();
     assert(registryRes.status === 200, "Registry directory portal returns status 200 with session");
     assert(registryHtml.includes("Student Directory"), "Registry contains 'Student Directory'");
+
+    // Unauthenticated Mutation Defense (CWE-306)
+    console.log("\n--> Testing Unauthenticated Mutation Rejection (CWE-306 Defense)");
+    const unauthPostRes = await fetch(`${BASE_URL}/api/v1/students`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "X-Forwarded-For": SUITE_IP },
+      body: JSON.stringify({
+        firstName: "Malicious",
+        lastName: "Actor",
+        email: "attacker@external.io",
+      }),
+    });
+    assert(unauthPostRes.status === 401, "Unauthenticated student creation rejected with 401 Unauthorized");
+
+    const unauthPutRes = await fetch(`${BASE_URL}/api/v1/students/${createdId}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json", "X-Forwarded-For": SUITE_IP },
+      body: JSON.stringify({ gpa: 4.0 }),
+    });
+    assert(unauthPutRes.status === 401, "Unauthenticated student update rejected with 401 Unauthorized");
+
+    const unauthDeleteRes = await fetch(`${BASE_URL}/api/v1/students/${createdId}`, {
+      method: "DELETE",
+      headers: { "X-Forwarded-For": SUITE_IP },
+    });
+    assert(unauthDeleteRes.status === 401, "Unauthenticated student deletion rejected with 401 Unauthorized");
+
+    // Open Redirect Protection (CWE-601)
+    console.log("\n--> Testing Open Redirect Prevention (CWE-601 Defense)");
+    const openRedirectRes = await fetch(`${BASE_URL}/auth/callback?next=https://attacker.com`, {
+      redirect: "manual",
+    });
+    const redirectLoc = openRedirectRes.headers.get("location");
+    assert(
+      redirectLoc && !redirectLoc.includes("https://attacker.com"),
+      "External open redirect blocked in auth callback"
+    );
 
     // Security Headers & Info Leakage
     console.log("\n--> Testing Security Headers & Information Leakage Defense");

@@ -349,7 +349,11 @@ export default function StudentManagementPortal() {
 
       const escapeCSV = (value: string | number | null | undefined): string => {
         if (value === null || value === undefined) return '""';
-        const str = String(value);
+        let str = String(value);
+        // Neutralize CSV formula/command injection (CWE-1236)
+        if (/^[=+\-@\t\r]/.test(str)) {
+          str = `'${str}`;
+        }
         if (str.includes('"') || str.includes(",") || str.includes("\n") || str.includes("\r")) {
           return `"${str.replace(/"/g, '""')}"`;
         }
@@ -410,28 +414,45 @@ export default function StudentManagementPortal() {
         <Header onOpenEnrollModal={handleOpenEnrollModal} showEnrollButton={false} />
 
         {/* Main Content Area */}
-        <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-5">
+        <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6 pb-12 sm:pb-8 space-y-3.5 sm:space-y-5">
           {/* Minimalist Hero Section */}
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-1">
-            <div>
-              <TextReveal
-                as="h1"
-                delay={0.08}
-                className="text-xl sm:text-2xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50"
-              >
-                Student Directory
-              </TextReveal>
-              <TextReveal
-                as="p"
-                delay={0.22}
-                className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5 max-w-xl leading-relaxed"
-              >
-                Institutional academic records, departmental divisions, and lifecycle registry.
-              </TextReveal>
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-3 md:gap-4 pb-1">
+            <div className="flex items-start justify-between gap-3 md:block">
+              <div>
+                <TextReveal
+                  as="h1"
+                  delay={0.08}
+                  className="text-xl sm:text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50"
+                >
+                  Student Directory
+                </TextReveal>
+                <TextReveal
+                  as="p"
+                  delay={0.22}
+                  className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5 max-w-xl leading-relaxed"
+                >
+                  <span className="md:hidden font-mono">{metrics.total} students · {departments.length} departments</span>
+                  <span className="hidden md:inline">Institutional academic records, departmental divisions, and lifecycle registry.</span>
+                </TextReveal>
+              </div>
+
+              {/* Mobile/Small-screen Primary Action: Compact + Enroll button */}
+              <div className="md:hidden shrink-0 pt-0.5">
+                <TextReveal delay={0.28}>
+                  <button
+                    type="button"
+                    onClick={handleOpenEnrollModal}
+                    className="tap-target inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-zinc-900 hover:bg-zinc-800 dark:bg-zinc-100 dark:hover:bg-zinc-200 text-white dark:text-zinc-950 shadow-xs cursor-pointer transition-all active:scale-[0.98]"
+                  >
+                    <Plus className="w-3.5 h-3.5" />
+                    <span>Enroll</span>
+                  </button>
+                </TextReveal>
+              </div>
             </div>
 
-            {/* Consolidated Institutional Status Strip with Informative Tooltips & Contextual Primary Action */}
-            <div className="flex flex-wrap items-center gap-2.5 shrink-0">
+            {/* Desktop & Tablet Consolidated Institutional Status Strip (>= md: 768px+) */}
+            <div className="hidden md:flex flex-wrap items-center gap-2.5 shrink-0">
               <TextReveal
                 delay={0.38}
                 className="flex flex-wrap items-center gap-2 text-xs font-mono text-zinc-500 dark:text-zinc-400 shrink-0"
@@ -485,7 +506,7 @@ export default function StudentManagementPortal() {
                 )}
               </TextReveal>
 
-              {/* Contextual Primary Action: + Enroll Student */}
+              {/* Desktop Primary Action: + Enroll Student */}
               <TextReveal delay={0.44}>
                 <button
                   type="button"

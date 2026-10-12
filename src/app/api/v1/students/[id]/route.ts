@@ -11,6 +11,7 @@ import {
   jsonResponse,
 } from "@/lib/api-response";
 import { UpdateStudentSchema } from "@/lib/validations/student";
+import { verifyApiAuth } from "@/lib/auth-check";
 
 interface RouteParams {
   params: Promise<{ id: string }>;
@@ -59,6 +60,18 @@ export async function PUT(req: NextRequest, { params }: RouteParams) {
   const rateLimit: RateLimitResult = checkRateLimit(req, "mutation");
   if (!rateLimit.allowed) {
     return rateLimitErrorResponse(rateLimit);
+  }
+
+  const auth = await verifyApiAuth(req);
+  if (!auth.authorized) {
+    return jsonResponse(
+      {
+        success: false,
+        error: "UNAUTHORIZED",
+        message: "Institutional authentication required to update student records.",
+      },
+      { status: 401, rateLimit }
+    );
   }
 
   try {
@@ -115,7 +128,7 @@ export async function PUT(req: NextRequest, { params }: RouteParams) {
               event: "Student profile updated",
               modifiedFields: diff,
             }),
-            performedBy: "admin_registrar",
+            performedBy: auth.userId || "admin_registrar",
           },
         });
       }
@@ -136,6 +149,18 @@ export async function DELETE(req: NextRequest, { params }: RouteParams) {
   const rateLimit: RateLimitResult = checkRateLimit(req, "mutation");
   if (!rateLimit.allowed) {
     return rateLimitErrorResponse(rateLimit);
+  }
+
+  const auth = await verifyApiAuth(req);
+  if (!auth.authorized) {
+    return jsonResponse(
+      {
+        success: false,
+        error: "UNAUTHORIZED",
+        message: "Institutional authentication required to archive or delete student records.",
+      },
+      { status: 401, rateLimit }
+    );
   }
 
   try {
@@ -198,7 +223,7 @@ export async function DELETE(req: NextRequest, { params }: RouteParams) {
             fullName: `${student.firstName} ${student.lastName}`,
             archivedAt: student.archivedAt,
           }),
-          performedBy: "admin_registrar",
+          performedBy: auth.userId || "admin_registrar",
         },
       });
 

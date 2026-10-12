@@ -8,6 +8,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { EdgeCornerFrame } from "@/components/ui/edge-corner-frame";
 import { TextReveal } from "@/components/ui/text-reveal";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { getSafeRedirectUrl } from "@/lib/utils";
 import {
   Lock,
   Mail,
@@ -23,7 +24,7 @@ import {
 function LoginFormContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const nextUrl = searchParams.get("next") || "/registry";
+  const nextUrl = getSafeRedirectUrl(searchParams.get("next"), "/registry");
 
   const [mode, setMode] = React.useState<"signin" | "signup">("signin");
   const [email, setEmail] = React.useState("");
@@ -114,7 +115,7 @@ function LoginFormContent() {
             data: {
               firstName: firstName.trim() || "Staff",
               lastName: lastName.trim() || "Member",
-              role: "REGISTRAR",
+              role: "STAFF",
             },
           },
         });

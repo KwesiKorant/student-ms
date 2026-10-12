@@ -16,6 +16,7 @@ import {
   StudentQuerySchema,
 } from "@/lib/validations/student";
 import { Prisma } from "@prisma/client";
+import { verifyApiAuth } from "@/lib/auth-check";
 
 function generateStudentId(): string {
   const year = new Date().getFullYear();
@@ -168,6 +169,18 @@ export async function POST(req: NextRequest) {
     return rateLimitErrorResponse(rateLimit);
   }
 
+  const auth = await verifyApiAuth(req);
+  if (!auth.authorized) {
+    return jsonResponse(
+      {
+        success: false,
+        error: "UNAUTHORIZED",
+        message: "Institutional authentication required to enroll students.",
+      },
+      { status: 401, rateLimit }
+    );
+  }
+
   try {
     const body = await req.json();
     const validatedData = CreateStudentSchema.parse(body);
@@ -234,7 +247,7 @@ export async function POST(req: NextRequest) {
             status: student.status,
             gpa: student.gpa,
           }),
-          performedBy: "admin_registrar",
+          performedBy: auth.userId || "admin_registrar",
         },
       });
 

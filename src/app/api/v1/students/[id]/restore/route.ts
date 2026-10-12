@@ -10,6 +10,7 @@ import {
   handleApiError,
   jsonResponse,
 } from "@/lib/api-response";
+import { verifyApiAuth } from "@/lib/auth-check";
 
 interface RouteParams {
   params: Promise<{ id: string }>;
@@ -19,6 +20,18 @@ export async function POST(req: NextRequest, { params }: RouteParams) {
   const rateLimit: RateLimitResult = checkRateLimit(req, "mutation");
   if (!rateLimit.allowed) {
     return rateLimitErrorResponse(rateLimit);
+  }
+
+  const auth = await verifyApiAuth(req);
+  if (!auth.authorized) {
+    return jsonResponse(
+      {
+        success: false,
+        error: "UNAUTHORIZED",
+        message: "Institutional authentication required to restore student records.",
+      },
+      { status: 401, rateLimit }
+    );
   }
 
   try {
@@ -73,7 +86,7 @@ export async function POST(req: NextRequest, { params }: RouteParams) {
             studentId: student.studentId,
             restoredAt: new Date(),
           }),
-          performedBy: "admin_registrar",
+          performedBy: auth.userId || "admin_registrar",
         },
       });
 

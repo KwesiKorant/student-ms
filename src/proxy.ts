@@ -35,9 +35,10 @@ export async function proxy(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   const pathname = request.nextUrl.pathname;
+  // Test bypass restricted strictly to non-production environments (CWE-290)
   const isTest =
-    request.headers.get("x-test-bypass") === "true" ||
-    request.headers.get("user-agent")?.includes("Node");
+    process.env.NODE_ENV !== "production" &&
+    request.headers.get("x-test-bypass") === "true";
 
   // Protect /registry route
   if (pathname.startsWith("/registry") && !user && !isTest) {
