@@ -4,6 +4,7 @@ import * as React from "react";
 import { Student, Department, PaginationMeta } from "@/types/student";
 import { Header } from "@/components/header";
 import { Toolbar } from "@/components/toolbar";
+import { ExpandingSearchDock } from "@/components/ui/expanding-search-dock";
 import { StudentTable } from "@/components/student-table";
 import { Pagination } from "@/components/pagination";
 import { EnrollStudentModal } from "@/components/enroll-student-modal";
@@ -442,36 +443,48 @@ export default function StudentManagementPortal() {
             </div>
           </div>
 
-          {/* Toolbar & Filter Engine */}
-          <section aria-label="Directory Filters">
-            <Toolbar
-              search={search}
-              onSearchChange={handleSearchChange}
-              departmentId={departmentId}
-              onDepartmentChange={handleDepartmentChange}
-              academicYear={academicYear}
-              onAcademicYearChange={handleAcademicYearChange}
-              status={status}
-              onStatusChange={handleStatusChange}
-              gpaTier={gpaTier}
-              onGpaTierChange={handleGpaTierChange}
-              includeArchived={includeArchived}
-              onIncludeArchivedChange={handleIncludeArchivedChange}
-              sortBy={sortBy}
-              onSortByChange={handleSortByChange}
-              sortOrder={sortOrder}
-              onSortOrderChange={handleSortOrderChange}
-              departments={departments}
-              onRefresh={() => {
-                queryClient.invalidateQueries({ queryKey: ["students"] });
-                queryClient.invalidateQueries({ queryKey: ["census"] });
-              }}
-              isLoading={isLoading || isFetching}
-              onResetFilters={handleResetFilters}
-              onExport={handleExportCSV}
-              isExporting={isExporting}
-              isLiveSync={isRealtimeConnected}
-            />
+          {/* Controls Strip: Separated Search Dock & Filter Toolbar (Option C) */}
+          <section aria-label="Directory Search and Filters" className="relative z-30">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
+              {/* Capsule 1: Autonomous Expanding Search Dock */}
+              <ExpandingSearchDock
+                value={search}
+                onChange={handleSearchChange}
+                placeholder="Search registry (name, ID, email)..."
+              />
+
+              {/* Capsule 2: Filter & Output Controls Strip */}
+              <div className="flex-1 min-w-0">
+                <Toolbar
+                  departmentId={departmentId}
+                  onDepartmentChange={handleDepartmentChange}
+                  academicYear={academicYear}
+                  onAcademicYearChange={handleAcademicYearChange}
+                  status={status}
+                  onStatusChange={handleStatusChange}
+                  gpaTier={gpaTier}
+                  onGpaTierChange={handleGpaTierChange}
+                  includeArchived={includeArchived}
+                  onIncludeArchivedChange={handleIncludeArchivedChange}
+                  sortBy={sortBy}
+                  onSortByChange={handleSortByChange}
+                  sortOrder={sortOrder}
+                  onSortOrderChange={handleSortOrderChange}
+                  departments={departments}
+                  onRefresh={() => {
+                    queryClient.invalidateQueries({ queryKey: ["students"] });
+                    queryClient.invalidateQueries({ queryKey: ["census"] });
+                  }}
+                  isLoading={isLoading || isFetching}
+                  onResetFilters={handleResetFilters}
+                  onExport={handleExportCSV}
+                  isExporting={isExporting}
+                  isLiveSync={isRealtimeConnected}
+                  search={search}
+                  onClearSearch={() => handleSearchChange("")}
+                />
+              </div>
+            </div>
           </section>
 
           {/* Student Records Data Table */}

@@ -3,7 +3,6 @@
 import * as React from "react";
 import { Department } from "@/types/student";
 import {
-  Search,
   X,
   RotateCw,
   ArrowUpDown,
@@ -14,8 +13,6 @@ import {
 import { Tooltip } from "@/components/ui/tooltip";
 
 interface ToolbarProps {
-  search: string;
-  onSearchChange: (value: string) => void;
   departmentId: string;
   onDepartmentChange: (value: string) => void;
   academicYear?: number | "";
@@ -37,11 +34,11 @@ interface ToolbarProps {
   onExport?: () => void;
   isExporting?: boolean;
   isLiveSync?: boolean;
+  search?: string;
+  onClearSearch?: () => void;
 }
 
 export function Toolbar({
-  search,
-  onSearchChange,
   departmentId,
   onDepartmentChange,
   academicYear = "",
@@ -63,22 +60,13 @@ export function Toolbar({
   onExport,
   isExporting = false,
   isLiveSync = false,
+  search = "",
+  onClearSearch,
 }: ToolbarProps) {
-  const searchOverlayRef = React.useRef<HTMLInputElement>(null);
   const moreFiltersRef = React.useRef<HTMLDivElement>(null);
-
   const [isMoreFiltersOpen, setIsMoreFiltersOpen] = React.useState(false);
 
-  // Sync prop changes during render without cascading useEffect renders
-  const [prevSearch, setPrevSearch] = React.useState(search);
-  const [localSearch, setLocalSearch] = React.useState(search);
-
-  if (search !== prevSearch) {
-    setPrevSearch(search);
-    setLocalSearch(search);
-  }
-
-  // Close "More Filters" popover when clicking outside
+  // Close "More Filters" popover when clicking outside or pressing Escape
   React.useEffect(() => {
     if (!isMoreFiltersOpen) return;
     const handleClickOutside = (e: MouseEvent) => {
@@ -86,54 +74,18 @@ export function Toolbar({
         setIsMoreFiltersOpen(false);
       }
     };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [isMoreFiltersOpen]);
-
-  // Global keyboard shortcut: '/' or 'Cmd+K' to focus search, 'Escape' to blur/close
-  React.useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      const isSlash = e.key === "/" && !e.ctrlKey && !e.metaKey && !e.altKey;
-      const isCmdK = (e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k";
-
-      if (isSlash || isCmdK) {
-        const target = e.target as HTMLElement | null;
-        const isEditable =
-          target &&
-          (target.tagName === "INPUT" ||
-            target.tagName === "TEXTAREA" ||
-            target.tagName === "SELECT" ||
-            target.isContentEditable);
-
-        if (isEditable && isSlash) return;
-
-        e.preventDefault();
-        searchOverlayRef.current?.focus();
-        searchOverlayRef.current?.select();
-      } else if (e.key === "Escape") {
-        if (document.activeElement === searchOverlayRef.current) {
-          searchOverlayRef.current?.blur();
-        }
-        if (isMoreFiltersOpen) {
-          setIsMoreFiltersOpen(false);
-        }
+      if (e.key === "Escape") {
+        setIsMoreFiltersOpen(false);
       }
     };
-
+    document.addEventListener("mousedown", handleClickOutside);
     window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      window.removeEventListener("keydown", handleKeyDown);
+    };
   }, [isMoreFiltersOpen]);
-
-  // Debounced search propagation
-  React.useEffect(() => {
-    const handler = setTimeout(() => {
-      if (localSearch !== search) {
-        onSearchChange(localSearch);
-      }
-    }, 250);
-
-    return () => clearTimeout(handler);
-  }, [localSearch, search, onSearchChange]);
 
   // Active advanced filters count
   const advancedFilterCount =
@@ -142,7 +94,7 @@ export function Toolbar({
     (includeArchived ? 1 : 0);
 
   const hasAnyFilterActive =
-    search.trim() !== "" ||
+    (search && search.trim() !== "") ||
     departmentId !== "" ||
     academicYear !== "" ||
     status !== "" ||
@@ -150,50 +102,11 @@ export function Toolbar({
     includeArchived;
 
   return (
-    <div className="w-full space-y-2.5">
-      {/* Primary Toolbar Container */}
-      <div className="relative flex flex-col md:flex-row items-stretch md:items-center justify-between gap-2.5 p-2 rounded-xl glass-card isolated-card">
-        {/* Left Section: Natural Search & Direct Filters */}
-        <div className="flex flex-wrap items-center gap-2 flex-1 min-w-0">
-          {/* High-Performance Search Capsule (Zero Geometry Reflow, Dedicated Flex Slot) */}
-          <div className="relative flex-1 min-w-[180px] max-w-[260px] sm:max-w-[320px] h-8">
-            <div className="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-zinc-400">
-              <Search className="w-3.5 h-3.5" />
-            </div>
-            <input
-              ref={searchOverlayRef}
-              type="search"
-              autoComplete="off"
-              autoCorrect="off"
-              spellCheck={false}
-              value={localSearch}
-              onChange={(e) => setLocalSearch(e.target.value)}
-              placeholder="Search registry (name, ID, email)..."
-              className="w-full h-full pl-8 pr-12 text-xs rounded-lg border border-zinc-200/80 dark:border-white/10 bg-white/70 dark:bg-zinc-900/70 text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-400 dark:focus:ring-zinc-600 transition-colors font-sans"
-            />
-            {localSearch ? (
-              <button
-                type="button"
-                onClick={() => {
-                  setLocalSearch("");
-                  onSearchChange("");
-                  searchOverlayRef.current?.focus();
-                }}
-                className="absolute inset-y-0 right-0 pr-2.5 flex items-center text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 cursor-pointer"
-                title="Clear query"
-                aria-label="Clear query"
-              >
-                <X className="w-3.5 h-3.5" />
-              </button>
-            ) : (
-              <div className="absolute inset-y-0 right-0 pr-2 flex items-center pointer-events-none">
-                <kbd className="hidden sm:inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-mono text-zinc-400 bg-zinc-100 dark:bg-zinc-800 border border-zinc-200/60 dark:border-white/5">
-                  /
-                </kbd>
-              </div>
-            )}
-          </div>
-
+    <div className="w-full space-y-2 relative z-20 overflow-visible">
+      {/* Primary Toolbar Container (overflow-visible, unclipped popovers) */}
+      <div className="relative flex flex-col md:flex-row items-stretch md:items-center justify-between gap-2.5 p-2 rounded-xl glass-card overflow-visible">
+        {/* Left Section: Direct Parametric Filters */}
+        <div className="flex flex-wrap items-center gap-2 flex-1 min-w-0 overflow-visible">
           {/* Primary Filter 1: Department */}
           <div className="relative inline-flex items-center">
             <select
@@ -259,11 +172,10 @@ export function Toolbar({
               )}
             </button>
 
-            {/* "More Filters" Floating Popover */}
+            {/* "More Filters" Floating Popover (Unclipped & High Stacking Priority) */}
             {isMoreFiltersOpen && (
               <div
-                style={{ contain: "layout style paint" }}
-                className="absolute top-full left-0 mt-1.5 w-72 z-50 rounded-xl shadow-2xl bg-white dark:bg-[#121215] border border-zinc-200/90 dark:border-white/10 p-3.5 space-y-3.5 animate-modal-enter text-xs"
+                className="absolute top-full left-0 mt-2 w-72 z-50 rounded-xl shadow-2xl bg-white dark:bg-[#121215] border border-zinc-200/90 dark:border-white/15 p-3.5 space-y-3.5 animate-modal-enter text-xs"
               >
                 <div className="flex items-center justify-between pb-2 border-b border-zinc-100 dark:border-white/5">
                   <span className="font-semibold text-zinc-900 dark:text-zinc-100 font-mono text-[11px] uppercase tracking-wider">
@@ -440,19 +352,18 @@ export function Toolbar({
         <div className="flex flex-wrap items-center gap-1.5 text-[11px] font-mono px-1">
           <span className="text-zinc-400">ACTIVE:</span>
 
-          {search.trim() !== "" && (
+          {search && search.trim() !== "" && (
             <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-200/60 dark:border-white/5">
               <span>query:&ldquo;{search}&rdquo;</span>
-              <button
-                type="button"
-                onClick={() => {
-                  setLocalSearch("");
-                  onSearchChange("");
-                }}
-                className="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 cursor-pointer"
-              >
-                <X className="w-2.5 h-2.5" />
-              </button>
+              {onClearSearch && (
+                <button
+                  type="button"
+                  onClick={onClearSearch}
+                  className="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 cursor-pointer"
+                >
+                  <X className="w-2.5 h-2.5" />
+                </button>
+              )}
             </span>
           )}
 
