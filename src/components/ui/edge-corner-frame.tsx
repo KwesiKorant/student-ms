@@ -66,9 +66,13 @@ export function EdgeCornerFrame({
         aria-hidden="true"
       />
 
-      {/* Subtle Borderless Surface Depth with Matching Smooth Curvature */}
+      {/* Unified Perimeter Border with Soft Curve Edges (Giving the perception of a card container) */}
       <div
-        className="absolute inset-0 rounded-2xl bg-white/40 dark:bg-zinc-900/30 -z-10 pointer-events-none"
+        className={`absolute inset-0 rounded-2xl border pointer-events-none transition-colors duration-200 ${
+          isFocused
+            ? "border-zinc-400 dark:border-white/25"
+            : "border-zinc-300/80 dark:border-white/10 group-hover:border-zinc-400/80 dark:group-hover:border-white/20"
+        }`}
         aria-hidden="true"
       />
 
