@@ -10,7 +10,9 @@ import {
   Download,
   ChevronDown,
 } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
 import { Tooltip } from "@/components/ui/tooltip";
+import { CustomSelect, CustomSelectOption } from "@/components/ui/custom-select";
 
 export interface ActiveFilterChipsProps {
   search?: string;
@@ -233,6 +235,63 @@ export function Toolbar({
     (gpaTier !== "" ? 1 : 0) +
     (includeArchived ? 1 : 0);
 
+  // Memoized options for custom selects matching design language
+  const departmentOptions = React.useMemo<CustomSelectOption[]>(
+    () => [
+      { value: "", label: "All Departments" },
+      ...departments.map((dept) => ({
+        value: dept.id,
+        label: `${dept.name} (${dept.code})`,
+        badge: dept.code,
+      })),
+    ],
+    [departments]
+  );
+
+  const academicYearOptions = React.useMemo<CustomSelectOption<number | "">[]>(
+    () => [
+      { value: "", label: "All Years" },
+      { value: 1, label: "Year 1" },
+      { value: 2, label: "Year 2" },
+      { value: 3, label: "Year 3" },
+      { value: 4, label: "Year 4" },
+    ],
+    []
+  );
+
+  const sortOptions = React.useMemo<CustomSelectOption[]>(
+    () => [
+      { value: "createdAt", label: "Date Enrolled" },
+      { value: "name", label: "Full Name" },
+      { value: "studentId", label: "Student ID" },
+      { value: "department", label: "Department" },
+      { value: "gpa", label: "GPA Score" },
+      { value: "academicYear", label: "Academic Year" },
+    ],
+    []
+  );
+
+  const statusOptions = React.useMemo<CustomSelectOption[]>(
+    () => [
+      { value: "", label: "All Statuses" },
+      { value: "ACTIVE", label: "Active" },
+      { value: "INACTIVE", label: "Inactive" },
+      { value: "SUSPENDED", label: "Suspended" },
+      { value: "GRADUATED", label: "Graduated" },
+    ],
+    []
+  );
+
+  const gpaTierOptions = React.useMemo<CustomSelectOption[]>(
+    () => [
+      { value: "", label: "All Academic Standings" },
+      { value: "deans_list", label: "Dean's List (GPA ≥ 3.50)" },
+      { value: "good_standing", label: "Good Standing (GPA 2.50 – 3.49)" },
+      { value: "probation", label: "Academic Probation (GPA < 2.00)" },
+    ],
+    []
+  );
+
   return (
     <div className="w-full space-y-2 relative z-20 overflow-visible">
       {/* Primary Toolbar Container (Unified Single Row Across Mobile, Tablet & Desktop) */}
@@ -240,46 +299,26 @@ export function Toolbar({
         {/* Left Section: Direct Parametric Filters */}
         <div className="flex flex-nowrap items-center gap-1.5 sm:gap-2 flex-1 min-w-0 overflow-visible">
           {/* Primary Filter 1: Department */}
-          <div className="relative inline-flex items-center min-w-0 flex-1 sm:flex-initial">
-            <select
-              value={departmentId}
-              onChange={(e) => onDepartmentChange(e.target.value)}
-              aria-label="Filter by department"
-              className="appearance-none w-full sm:w-36 lg:w-auto pl-2 sm:pl-2.5 pr-5 sm:pr-6 py-1.5 text-xs rounded-lg border border-zinc-200/80 dark:border-white/10 bg-white/70 dark:bg-zinc-900/70 text-zinc-800 dark:text-zinc-200 focus:outline-none focus:ring-1 focus:ring-zinc-400 cursor-pointer transition-colors truncate"
-            >
-              <option value="" className="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">
-                All Departments
-              </option>
-              {departments.map((dept) => (
-                <option key={dept.id} value={dept.id} className="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">
-                  {dept.name} ({dept.code})
-                </option>
-              ))}
-            </select>
-            <ChevronDown className="w-3 h-3 text-zinc-400 pointer-events-none absolute right-1.5" />
-          </div>
+          <CustomSelect
+            value={departmentId}
+            onChange={onDepartmentChange}
+            options={departmentOptions}
+            ariaLabel="Filter by department"
+            placeholder="All Departments"
+            className="min-w-0 flex-1 sm:flex-initial"
+            triggerClassName="w-full sm:w-40 lg:w-44 truncate"
+          />
 
           {/* Primary Filter 2: Academic Year */}
-          <div className="relative inline-flex items-center shrink-0">
-            <select
-              value={academicYear}
-              onChange={(e) => {
-                const val = e.target.value === "" ? "" : Number(e.target.value);
-                onAcademicYearChange?.(val);
-              }}
-              aria-label="Filter by academic year"
-              className="appearance-none w-20 sm:w-auto pl-2 pr-5 sm:pr-6 py-1.5 text-xs rounded-lg border border-zinc-200/80 dark:border-white/10 bg-white/70 dark:bg-zinc-900/70 text-zinc-800 dark:text-zinc-200 focus:outline-none focus:ring-1 focus:ring-zinc-400 cursor-pointer transition-colors"
-            >
-              <option value="" className="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">
-                All Years
-              </option>
-              <option value={1} className="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">Year 1</option>
-              <option value={2} className="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">Year 2</option>
-              <option value={3} className="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">Year 3</option>
-              <option value={4} className="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">Year 4</option>
-            </select>
-            <ChevronDown className="w-3 h-3 text-zinc-400 pointer-events-none absolute right-1.5" />
-          </div>
+          <CustomSelect
+            value={academicYear}
+            onChange={(val) => onAcademicYearChange?.(val)}
+            options={academicYearOptions}
+            ariaLabel="Filter by academic year"
+            placeholder="All Years"
+            className="shrink-0"
+            triggerClassName="w-24 sm:w-auto"
+          />
 
           {/* Primary Filter 3: "More Filters" Popover Trigger */}
           <div className="relative inline-flex items-center shrink-0" ref={moreFiltersRef}>
@@ -304,156 +343,155 @@ export function Toolbar({
               )}
             </button>
 
-            {/* "More Filters" Floating Popover (Unclipped & High Elevation) */}
-            {isMoreFiltersOpen && (
-              <div
-                className="absolute top-full right-0 sm:right-auto sm:left-0 mt-2 w-72 sm:w-80 max-w-[calc(100vw-2rem)] z-50 rounded-xl shadow-2xl bg-white dark:bg-[#121215] border border-zinc-200/90 dark:border-white/15 p-3.5 space-y-3.5 animate-modal-enter text-xs"
-              >
-                <div className="flex items-center justify-between pb-2 border-b border-zinc-100 dark:border-white/5">
-                  <span className="font-semibold text-zinc-900 dark:text-zinc-100 font-mono text-[11px] uppercase tracking-wider">
-                    Filters & Options
-                  </span>
-                  {advancedFilterCount > 0 && (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        onStatusChange("");
-                        onGpaTierChange?.("");
-                        onIncludeArchivedChange(false);
-                      }}
-                      className="text-[11px] text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 cursor-pointer font-mono"
-                    >
-                      Reset All
-                    </button>
-                  )}
-                </div>
-
-                {/* Mobile-Only Sorting Controls (< sm) */}
-                <div className="sm:hidden space-y-2 pb-2 border-b border-zinc-100 dark:border-white/5">
-                  <label className="text-[11px] font-medium text-zinc-500 dark:text-zinc-400">
-                    Sort Records
-                  </label>
-                  <div className="flex items-center gap-1.5">
-                    <div className="relative inline-flex items-center flex-1 min-w-0">
-                      <select
-                        value={sortBy}
-                        onChange={(e) => onSortByChange(e.target.value)}
-                        aria-label="Sort records by"
-                        className="appearance-none w-full pl-2 pr-6 py-1.5 text-xs rounded-lg border border-zinc-200/80 dark:border-white/10 bg-zinc-50 dark:bg-zinc-900 text-zinc-800 dark:text-zinc-200 focus:outline-none truncate"
+            {/* "More Filters" Floating Popover Window */}
+            <AnimatePresence>
+              {isMoreFiltersOpen && (
+                <motion.div
+                  initial={{ opacity: 0, y: -6, scale: 0.97 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: -6, scale: 0.97 }}
+                  transition={{
+                    type: "spring",
+                    stiffness: 350,
+                    damping: 28,
+                  }}
+                  className="absolute top-full right-0 sm:right-auto sm:left-0 mt-2 w-72 sm:w-80 max-w-[calc(100vw-2rem)] z-50 rounded-2xl shadow-2xl dark:shadow-[0_10px_20px_-4px_rgba(255,255,255,0.04),0_4px_8px_-2px_rgba(255,255,255,0.02),0_16px_32px_rgba(0,0,0,0.8)] bg-white dark:bg-[#121215] border border-zinc-200/90 dark:border-white/15 p-3.5 space-y-3.5 text-xs font-sans"
+                >
+                  <div className="flex items-center justify-between pb-2 border-b border-zinc-100 dark:border-white/5">
+                    <span className="font-semibold text-zinc-900 dark:text-zinc-100 font-mono text-[11px] uppercase tracking-wider">
+                      Filters & Options
+                    </span>
+                    {advancedFilterCount > 0 && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          onStatusChange("");
+                          onGpaTierChange?.("");
+                          onIncludeArchivedChange(false);
+                        }}
+                        className="text-[11px] text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 cursor-pointer font-mono"
                       >
-                        <option value="createdAt" className="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">Date Enrolled</option>
-                        <option value="name" className="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">Full Name</option>
-                        <option value="studentId" className="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">Student ID</option>
-                        <option value="department" className="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">Department</option>
-                        <option value="gpa" className="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">GPA Score</option>
-                        <option value="academicYear" className="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">Academic Year</option>
-                      </select>
-                      <ChevronDown className="w-3 h-3 text-zinc-400 pointer-events-none absolute right-1.5" />
+                        Reset All
+                      </button>
+                    )}
+                  </div>
+
+                  {/* Mobile-Only Sorting Controls (< sm) */}
+                  <div className="sm:hidden space-y-2 pb-2 border-b border-zinc-100 dark:border-white/5">
+                    <label className="text-[11px] font-medium text-zinc-500 dark:text-zinc-400">
+                      Sort Records
+                    </label>
+                    <div className="flex items-center gap-1.5">
+                      <CustomSelect
+                        value={sortBy}
+                        onChange={onSortByChange}
+                        options={sortOptions}
+                        className="flex-1 min-w-0"
+                        triggerClassName="w-full justify-between"
+                        ariaLabel="Sort records by"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => onSortOrderChange(sortOrder === "asc" ? "desc" : "asc")}
+                        aria-label="Toggle sort order"
+                        className="tap-target p-1.5 rounded-lg border border-zinc-200/80 dark:border-white/10 bg-zinc-50 dark:bg-zinc-900 text-zinc-600 dark:text-zinc-400 cursor-pointer shrink-0"
+                      >
+                        <ArrowUpDown className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* 1. Status Filter */}
+                  <div className="space-y-1">
+                    <label className="text-[11px] font-medium text-zinc-500 dark:text-zinc-400">
+                      Enrollment Status
+                    </label>
+                    <CustomSelect
+                      value={status}
+                      onChange={onStatusChange}
+                      options={statusOptions}
+                      className="w-full"
+                      triggerClassName="w-full justify-between bg-zinc-50 dark:bg-zinc-900"
+                      placeholder="All Statuses"
+                      ariaLabel="Filter by enrollment status"
+                    />
+                  </div>
+
+                  {/* 2. GPA Standing Tier Filter */}
+                  <div className="space-y-1">
+                    <label className="text-[11px] font-medium text-zinc-500 dark:text-zinc-400">
+                      Academic Standing (GPA)
+                    </label>
+                    <CustomSelect
+                      value={gpaTier}
+                      onChange={(val) => onGpaTierChange?.(val)}
+                      options={gpaTierOptions}
+                      className="w-full"
+                      triggerClassName="w-full justify-between bg-zinc-50 dark:bg-zinc-900"
+                      placeholder="All Academic Standings"
+                      ariaLabel="Filter by academic standing"
+                    />
+                  </div>
+
+                  {/* 3. Soft-Archived Toggle */}
+                  <div className="pt-2 border-t border-zinc-100 dark:border-white/5 flex items-center justify-between">
+                    <div>
+                      <div className="text-xs font-medium text-zinc-900 dark:text-zinc-100">
+                        Include Archived
+                      </div>
+                      <div className="text-[10px] text-zinc-500">
+                        Show soft-archived student dossiers
+                      </div>
                     </div>
                     <button
                       type="button"
-                      onClick={() => onSortOrderChange(sortOrder === "asc" ? "desc" : "asc")}
-                      aria-label="Toggle sort order"
-                      className="tap-target p-1.5 rounded-lg border border-zinc-200/80 dark:border-white/10 bg-zinc-50 dark:bg-zinc-900 text-zinc-600 dark:text-zinc-400 cursor-pointer shrink-0"
+                      role="switch"
+                      aria-checked={includeArchived}
+                      onClick={() => onIncludeArchivedChange(!includeArchived)}
+                      className={`w-8 h-4.5 rounded-full p-0.5 transition-colors cursor-pointer ${
+                        includeArchived ? "bg-amber-500" : "bg-zinc-200 dark:bg-zinc-700"
+                      }`}
                     >
-                      <ArrowUpDown className="w-3.5 h-3.5" />
+                      <div
+                        className={`w-3.5 h-3.5 rounded-full bg-white shadow-xs transition-transform ${
+                          includeArchived ? "translate-x-3.5" : "translate-x-0"
+                        }`}
+                      />
                     </button>
                   </div>
-                </div>
 
-                {/* 1. Status Filter */}
-                <div className="space-y-1">
-                  <label className="text-[11px] font-medium text-zinc-500 dark:text-zinc-400">
-                    Enrollment Status
-                  </label>
-                  <select
-                    value={status}
-                    onChange={(e) => onStatusChange(e.target.value)}
-                    className="w-full px-2 py-1.5 text-xs rounded-lg border border-zinc-200/80 dark:border-white/10 bg-zinc-50 dark:bg-zinc-900 text-zinc-800 dark:text-zinc-200 focus:outline-none"
-                  >
-                    <option value="">All Statuses</option>
-                    <option value="ACTIVE">Active</option>
-                    <option value="INACTIVE">Inactive</option>
-                    <option value="SUSPENDED">Suspended</option>
-                    <option value="GRADUATED">Graduated</option>
-                  </select>
-                </div>
-
-                {/* 2. GPA Standing Tier Filter */}
-                <div className="space-y-1">
-                  <label className="text-[11px] font-medium text-zinc-500 dark:text-zinc-400">
-                    Academic Standing (GPA)
-                  </label>
-                  <select
-                    value={gpaTier}
-                    onChange={(e) => onGpaTierChange?.(e.target.value)}
-                    className="w-full px-2 py-1.5 text-xs rounded-lg border border-zinc-200/80 dark:border-white/10 bg-zinc-50 dark:bg-zinc-900 text-zinc-800 dark:text-zinc-200 focus:outline-none"
-                  >
-                    <option value="">All Academic Standings</option>
-                    <option value="deans_list">Dean&apos;s List (GPA ≥ 3.50)</option>
-                    <option value="good_standing">Good Standing (GPA 2.50 – 3.49)</option>
-                    <option value="probation">Academic Probation (GPA &lt; 2.00)</option>
-                  </select>
-                </div>
-
-                {/* 3. Soft-Archived Toggle */}
-                <div className="pt-2 border-t border-zinc-100 dark:border-white/5 flex items-center justify-between">
-                  <div>
-                    <div className="text-xs font-medium text-zinc-900 dark:text-zinc-100">
-                      Include Archived
-                    </div>
-                    <div className="text-[10px] text-zinc-500">
-                      Show soft-archived student dossiers
-                    </div>
-                  </div>
-                  <button
-                    type="button"
-                    role="switch"
-                    aria-checked={includeArchived}
-                    onClick={() => onIncludeArchivedChange(!includeArchived)}
-                    className={`w-8 h-4.5 rounded-full p-0.5 transition-colors cursor-pointer ${
-                      includeArchived ? "bg-amber-500" : "bg-zinc-200 dark:bg-zinc-700"
-                    }`}
-                  >
-                    <div
-                      className={`w-3.5 h-3.5 rounded-full bg-white shadow-xs transition-transform ${
-                        includeArchived ? "translate-x-3.5" : "translate-x-0"
-                      }`}
-                    />
-                  </button>
-                </div>
-
-                {/* Mobile-Only Actions: Refresh & Export (< sm) */}
-                <div className="sm:hidden pt-2 border-t border-zinc-100 dark:border-white/5 flex items-center justify-between gap-2">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      onRefresh();
-                      setIsMoreFiltersOpen(false);
-                    }}
-                    disabled={isLoading}
-                    className="tap-target flex-1 py-1.5 px-2 rounded-lg border border-zinc-200/80 dark:border-white/10 bg-zinc-50 dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300 text-xs font-medium flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-40"
-                  >
-                    <RotateCw className={`w-3.5 h-3.5 ${isLoading ? "animate-spin" : ""}`} />
-                    <span>Sync</span>
-                  </button>
-                  {onExport && (
+                  {/* Mobile-Only Actions: Refresh & Export (< sm) */}
+                  <div className="sm:hidden pt-2 border-t border-zinc-100 dark:border-white/5 flex items-center justify-between gap-2">
                     <button
                       type="button"
                       onClick={() => {
-                        onExport();
+                        onRefresh();
                         setIsMoreFiltersOpen(false);
                       }}
-                      disabled={isExporting}
+                      disabled={isLoading}
                       className="tap-target flex-1 py-1.5 px-2 rounded-lg border border-zinc-200/80 dark:border-white/10 bg-zinc-50 dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300 text-xs font-medium flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-40"
                     >
-                      <Download className={`w-3.5 h-3.5 ${isExporting ? "animate-pulse" : ""}`} />
-                      <span>Export CSV</span>
+                      <RotateCw className={`w-3.5 h-3.5 ${isLoading ? "animate-spin" : ""}`} />
+                      <span>Sync</span>
                     </button>
-                  )}
-                </div>
-              </div>
-            )}
+                    {onExport && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          onExport();
+                          setIsMoreFiltersOpen(false);
+                        }}
+                        disabled={isExporting}
+                        className="tap-target flex-1 py-1.5 px-2 rounded-lg border border-zinc-200/80 dark:border-white/10 bg-zinc-50 dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300 text-xs font-medium flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-40"
+                      >
+                        <Download className={`w-3.5 h-3.5 ${isExporting ? "animate-pulse" : ""}`} />
+                        <span>Export CSV</span>
+                      </button>
+                    )}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         </div>
 
@@ -461,22 +499,13 @@ export function Toolbar({
         <div className="hidden sm:flex items-center gap-1.5 sm:gap-2 shrink-0 border-l border-zinc-200/80 dark:border-white/10 pl-2 sm:pl-2.5">
           {/* Sorting Control */}
           <div className="flex items-center gap-1 shrink-0">
-            <div className="relative inline-flex items-center shrink-0">
-              <select
-                value={sortBy}
-                onChange={(e) => onSortByChange(e.target.value)}
-                aria-label="Sort records by"
-                className="appearance-none w-auto pl-2 pr-6 py-1.5 text-xs rounded-lg border border-zinc-200/80 dark:border-white/10 bg-white/70 dark:bg-zinc-900/70 text-zinc-800 dark:text-zinc-200 focus:outline-none focus:ring-1 focus:ring-zinc-400 cursor-pointer transition-colors truncate"
-              >
-                <option value="createdAt" className="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">Date Enrolled</option>
-                <option value="name" className="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">Full Name</option>
-                <option value="studentId" className="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">Student ID</option>
-                <option value="department" className="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">Department</option>
-                <option value="gpa" className="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">GPA Score</option>
-                <option value="academicYear" className="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">Academic Year</option>
-              </select>
-              <ChevronDown className="w-3 h-3 text-zinc-400 pointer-events-none absolute right-1.5" />
-            </div>
+            <CustomSelect
+              value={sortBy}
+              onChange={onSortByChange}
+              options={sortOptions}
+              align="right"
+              ariaLabel="Sort records by"
+            />
 
             <Tooltip
               content={sortOrder === "asc" ? "Sort Ascending" : "Sort Descending"}

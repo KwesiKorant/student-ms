@@ -236,7 +236,7 @@ export function StudentTable({
                     {initials}
                   </div>
                   <div className="min-w-0">
-                    <div className="font-semibold text-zinc-900 dark:text-zinc-100 text-xs truncate">
+                    <div className="font-sans font-semibold text-zinc-900 dark:text-zinc-100 text-xs truncate">
                       {student.firstName} {student.lastName}
                     </div>
                     <div className="text-[11px] text-zinc-500 dark:text-zinc-400 truncate font-mono">
@@ -397,7 +397,7 @@ export function StudentTable({
                         {initials}
                       </div>
                       <div className="min-w-0">
-                        <div className="font-medium text-zinc-900 dark:text-zinc-100 truncate">
+                        <div className="font-sans font-medium text-zinc-900 dark:text-zinc-100 truncate">
                           {student.firstName} {student.lastName}
                         </div>
                         <div className="text-[11px] text-zinc-500 dark:text-zinc-400 truncate max-w-[130px] lg:max-w-[200px] font-mono">

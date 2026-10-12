@@ -1,8 +1,33 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: 'Chillax';
+  src: url('/fonts/Chillax-Variable.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/Inter-VariableFont_opsz,wght.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@theme {
+  --font-sans: 'Inter', var(--font-inter), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-display: 'Chillax', var(--font-chillax), var(--font-sans);
+  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
+  --font-sans: 'Inter', var(--font-inter), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-display: 'Chillax', var(--font-chillax), var(--font-sans);
+
   --background: #fafafa; /* zinc-50 */
   --foreground: #09090b; /* zinc-950 */
   --surface: #ffffff;
@@ -15,6 +40,20 @@
   /* Snappy spring easing token */
   --spring-snappy: cubic-bezier(0.23, 1, 0.32, 1);
   --spring-smooth: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.font-display {
+  font-family: var(--font-display) !important;
+  letter-spacing: -0.025em;
+}
+
+.font-sans {
+  font-family: var(--font-sans) !important;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  letter-spacing: -0.025em;
 }
 
 .dark {
@@ -30,9 +69,11 @@
 
 html {
   scroll-behavior: smooth;
+  font-family: var(--font-sans);
 }
 
 body {
+  font-family: var(--font-sans);
   background-color: var(--background);
   color: var(--foreground);
   font-feature-settings: "cv02", "cv03", "cv04", "cv11";

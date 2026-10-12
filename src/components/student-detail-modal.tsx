@@ -142,7 +142,7 @@ export function StudentDetailModal({
             </div>
             <div>
               <div className="flex items-center gap-2 flex-wrap">
-                <h2 id="detail-modal-title" className="text-base font-bold tracking-tight">
+                <h2 id="detail-modal-title" className="font-sans text-base font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">
                   {student.firstName} {student.lastName}
                 </h2>
                 {getStatusBadge(student.status, student.isArchived)}

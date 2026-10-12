@@ -159,7 +159,7 @@ function LoginFormContent() {
               A
             </div>
             <div className="flex items-center gap-2">
-              <span className="font-semibold text-xs tracking-tight text-zinc-900 dark:text-white uppercase">
+              <span className="font-display font-bold text-xs tracking-tight text-zinc-900 dark:text-white uppercase">
                 ARCFIELD
               </span>
               <span className="text-zinc-300 dark:text-zinc-800">/</span>
@@ -183,7 +183,7 @@ function LoginFormContent() {
               <TextReveal
                 as="h1"
                 delay={0.08}
-                className="text-xl sm:text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50"
+                className="font-display text-xl sm:text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50"
               >
                 Institutional Authentication
               </TextReveal>

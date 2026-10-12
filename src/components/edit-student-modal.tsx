@@ -175,7 +175,7 @@ export function EditStudentModal({
               <Edit2 className="w-4 h-4" />
             </div>
             <div>
-              <h2 id="edit-modal-title" className="text-sm font-semibold tracking-tight">
+              <h2 id="edit-modal-title" className="font-display text-sm font-semibold tracking-tight">
                 Edit Student Profile
               </h2>
               <p className="text-xs text-zinc-500 dark:text-zinc-400 font-mono">

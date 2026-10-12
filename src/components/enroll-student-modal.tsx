@@ -185,7 +185,7 @@ export function EnrollStudentModal({
               <UserPlus className="w-4 h-4" />
             </div>
             <div>
-              <h2 id="enroll-modal-title" className="text-sm font-semibold tracking-tight">
+              <h2 id="enroll-modal-title" className="font-display text-sm font-semibold tracking-tight">
                 Enroll New Student
               </h2>
               <p className="text-xs text-zinc-500 dark:text-zinc-400">

@@ -2,7 +2,14 @@
 
 import * as React from "react";
 import { PaginationMeta } from "@/types/student";
-import { ChevronLeft, ChevronRight, ChevronDown } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { CustomSelect } from "@/components/ui/custom-select";
+
+const limitOptions = [
+  { value: 10, label: "10" },
+  { value: 25, label: "25" },
+  { value: 50, label: "50" },
+];
 
 interface PaginationProps {
   pagination: PaginationMeta;
@@ -39,19 +46,14 @@ export function Pagination({
         {/* Page size dropdown */}
         <div className="flex items-center gap-1.5 font-mono">
           <span>Rows:</span>
-          <div className="relative inline-flex items-center">
-            <select
-              value={limit}
-              onChange={(e) => onLimitChange(Number(e.target.value))}
-              aria-label="Records per page"
-              className="appearance-none pl-2.5 pr-6 py-1.5 text-xs rounded border border-zinc-200 dark:border-white/10 bg-white dark:bg-zinc-900 text-zinc-800 dark:text-zinc-200 focus:outline-none focus:ring-1 focus:ring-zinc-400 cursor-pointer min-h-[36px]"
-            >
-              <option value={10} className="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">10</option>
-              <option value={25} className="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">25</option>
-              <option value={50} className="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">50</option>
-            </select>
-            <ChevronDown className="w-3 h-3 text-zinc-400 pointer-events-none absolute right-1.5" />
-          </div>
+          <CustomSelect
+            value={limit}
+            onChange={(val) => onLimitChange(Number(val))}
+            options={limitOptions}
+            ariaLabel="Records per page"
+            triggerClassName="min-h-[36px] font-mono"
+            align="right"
+          />
         </div>
 
         {/* Page Controls */}

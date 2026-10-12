@@ -100,7 +100,7 @@ export function Header({ onOpenEnrollModal, showEnrollButton = false }: HeaderPr
               A
             </div>
             <div className="flex items-center gap-2 min-w-0">
-              <span className="font-semibold text-xs tracking-tight text-zinc-900 dark:text-zinc-100">
+              <span className="font-display font-bold text-xs tracking-tight text-zinc-900 dark:text-zinc-100">
                 ARCFIELD
               </span>
               <span className="text-zinc-300 dark:text-zinc-700">/</span>
@@ -181,14 +181,14 @@ export function Header({ onOpenEnrollModal, showEnrollButton = false }: HeaderPr
                       {/* Divider */}
                       <div className="h-px bg-zinc-100 dark:border-t dark:border-white/5" />
 
-                      {/* Standard-Color Visible Logout Button */}
+                      {/* Standard Conventional Sign Out Button (Centered & Semantic Red/Rose) */}
                       <button
                         type="button"
                         onClick={handleSignOut}
-                        className="tap-target w-full py-2 px-3 rounded-xl text-xs font-semibold text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 dark:hover:bg-rose-900/60 border border-rose-200/80 dark:border-rose-800/40 flex items-center justify-center gap-2 cursor-pointer transition-colors shadow-xs"
+                        className="tap-target w-full py-2 px-3 rounded-xl text-xs font-medium text-rose-600 dark:text-rose-400 bg-rose-50/70 dark:bg-rose-950/30 hover:bg-rose-100/90 dark:hover:bg-rose-900/40 border border-rose-200/70 dark:border-rose-800/40 flex items-center justify-center gap-2 cursor-pointer transition-colors shadow-xs"
                       >
-                        <LogOut className="w-3.5 h-3.5" />
-                        <span>Sign Out of Arcfield</span>
+                        <LogOut className="w-3.5 h-3.5 shrink-0" />
+                        <span>Sign out</span>
                       </button>
                     </motion.div>
                   )}

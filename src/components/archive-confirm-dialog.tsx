@@ -132,7 +132,7 @@ export function ArchiveConfirmDialog({
               )}
             </div>
             <div>
-              <h2 id="archive-dialog-title" className="text-sm font-semibold tracking-tight">
+              <h2 id="archive-dialog-title" className="font-display text-sm font-semibold tracking-tight">
                 {isHardDelete ? "Confirm Permanent Deletion" : "Archive Student Record"}
               </h2>
               <p className="text-xs text-zinc-500 dark:text-zinc-400">
@@ -153,7 +153,7 @@ export function ArchiveConfirmDialog({
         {/* Student Summary Callout */}
         <div className="mt-4 p-3 rounded-lg border border-zinc-200 dark:border-white/10 bg-zinc-50/70 dark:bg-zinc-900/80 text-xs space-y-1">
           <div className="flex items-center justify-between font-mono">
-            <span className="font-semibold text-zinc-900 dark:text-zinc-100">
+            <span className="font-sans font-semibold text-zinc-900 dark:text-zinc-100">
               {student.firstName} {student.lastName}
             </span>
             <span className="px-1.5 py-0.5 rounded bg-zinc-200/60 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 text-[10px]">

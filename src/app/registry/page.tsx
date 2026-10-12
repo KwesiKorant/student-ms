@@ -422,7 +422,7 @@ export default function StudentManagementPortal() {
                 <TextReveal
                   as="h1"
                   delay={0.08}
-                  className="text-xl sm:text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50"
+                  className="font-display text-xl sm:text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50"
                 >
                   Student Directory
                 </TextReveal>
