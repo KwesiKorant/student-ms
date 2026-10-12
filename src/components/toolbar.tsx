@@ -307,7 +307,7 @@ export function Toolbar({
             {/* "More Filters" Floating Popover (Unclipped & High Elevation) */}
             {isMoreFiltersOpen && (
               <div
-                className="absolute top-full left-0 mt-2 w-72 z-50 rounded-xl shadow-2xl bg-white dark:bg-[#121215] border border-zinc-200/90 dark:border-white/15 p-3.5 space-y-3.5 animate-modal-enter text-xs"
+                className="absolute top-full left-0 mt-2 w-72 max-w-[calc(100vw-2.5rem)] z-50 rounded-xl shadow-2xl bg-white dark:bg-[#121215] border border-zinc-200/90 dark:border-white/15 p-3.5 space-y-3.5 animate-modal-enter text-xs"
               >
                 <div className="flex items-center justify-between pb-2 border-b border-zinc-100 dark:border-white/5">
                   <span className="font-semibold text-zinc-900 dark:text-zinc-100 font-mono text-[11px] uppercase tracking-wider">

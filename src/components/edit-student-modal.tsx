@@ -141,7 +141,7 @@ export function EditStudentModal({
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.16 }}
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto overscroll-contain"
+      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 overflow-y-auto overscroll-contain"
     >
       {/* Backdrop - strictly zero blur for compositor efficiency */}
       <motion.div
@@ -153,18 +153,21 @@ export function EditStudentModal({
         className="fixed inset-0 bg-black/75"
       />
 
-      {/* Modal Dialog Card - fully opaque in light and dark mode to prevent any text bleed */}
+      {/* Modal Dialog Card - bottom-sheet on mobile, centered card on desktop */}
       <motion.div
-        initial={{ opacity: 0, scale: 0.96, y: 8 }}
+        initial={{ opacity: 0, scale: 0.98, y: 16 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.97, y: 6 }}
+        exit={{ opacity: 0, scale: 0.98, y: 12 }}
         transition={{
           type: "spring",
           stiffness: 380,
           damping: 30,
         }}
-        className="relative w-full max-w-lg rounded-2xl bg-white dark:bg-[#111114] border border-zinc-200/90 dark:border-white/10 shadow-2xl p-6 z-10 text-zinc-900 dark:text-zinc-100 isolated-card my-8"
+        className="relative w-full max-w-lg rounded-t-3xl sm:rounded-2xl bg-white dark:bg-[#111114] border-t sm:border border-zinc-200/90 dark:border-white/10 shadow-2xl p-5 sm:p-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))] sm:pb-6 z-10 text-zinc-900 dark:text-zinc-100 isolated-card my-0 sm:my-8 max-h-[92dvh] sm:max-h-[85vh] overflow-y-auto overscroll-contain"
       >
+        {/* Mobile Visual Drag Handle */}
+        <div className="sm:hidden w-10 h-1 bg-zinc-300 dark:bg-zinc-700 rounded-full mx-auto mb-3 shrink-0" aria-hidden="true" />
+
         {/* Header */}
         <div className="flex items-center justify-between pb-4 border-b border-zinc-100 dark:border-white/5">
           <div className="flex items-center gap-2.5">

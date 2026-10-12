@@ -152,7 +152,7 @@ export function Header({ onOpenEnrollModal, showEnrollButton = false }: HeaderPr
                         stiffness: 350,
                         damping: 28,
                       }}
-                      className="absolute right-0 top-full mt-2 w-64 z-50 rounded-2xl shadow-2xl dark:shadow-[0_10px_20px_-4px_rgba(255,255,255,0.04),0_4px_8px_-2px_rgba(255,255,255,0.02),0_16px_32px_rgba(0,0,0,0.8)] bg-white dark:bg-[#121215] border border-zinc-200/90 dark:border-white/15 p-3.5 space-y-3 text-xs"
+                      className="absolute right-0 top-full mt-2 w-64 max-w-[calc(100vw-2rem)] z-50 rounded-2xl shadow-2xl dark:shadow-[0_10px_20px_-4px_rgba(255,255,255,0.04),0_4px_8px_-2px_rgba(255,255,255,0.02),0_16px_32px_rgba(0,0,0,0.8)] bg-white dark:bg-[#121215] border border-zinc-200/90 dark:border-white/15 p-3.5 space-y-3 text-xs"
                     >
                       {/* Identity Header */}
                       <div className="space-y-1">

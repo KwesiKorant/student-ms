@@ -208,17 +208,139 @@ export function StudentTable({
 
   return (
     <div className="w-full rounded-xl glass-card overflow-hidden isolated-card">
-      <div className="overflow-x-auto">
+      {/* Mobile Card List View (< sm: 360px - 639px) */}
+      <div className="block sm:hidden divide-y divide-zinc-100 dark:divide-white/5">
+        {students.map((student) => {
+          const initials = `${student.firstName[0] || ""}${student.lastName[0] || ""}`.toUpperCase();
+
+          return (
+            <div
+              key={`card-${student.id}`}
+              tabIndex={0}
+              role="button"
+              onClick={() => onViewStudent(student)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  onViewStudent(student);
+                }
+              }}
+              className={`p-3.5 space-y-2.5 active:bg-black/[0.04] dark:active:bg-white/[0.04] transition-colors cursor-pointer select-none ${
+                student.isArchived ? "opacity-70 bg-zinc-50/40 dark:bg-zinc-950/20" : ""
+              }`}
+            >
+              {/* Card Header: Initials + Name + Status */}
+              <div className="flex items-start justify-between gap-2">
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <div className="w-8 h-8 rounded-full bg-zinc-100 dark:bg-zinc-800 border border-zinc-200/80 dark:border-white/10 flex items-center justify-center font-mono text-[10px] font-semibold text-zinc-700 dark:text-zinc-300 shrink-0">
+                    {initials}
+                  </div>
+                  <div className="min-w-0">
+                    <div className="font-semibold text-zinc-900 dark:text-zinc-100 text-xs truncate">
+                      {student.firstName} {student.lastName}
+                    </div>
+                    <div className="text-[11px] text-zinc-500 dark:text-zinc-400 truncate font-mono">
+                      {student.email}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="shrink-0">
+                  {getStatusBadge(student.status, student.isArchived)}
+                </div>
+              </div>
+
+              {/* Card Metadata Chips: ID + Department + Year + GPA */}
+              <div className="flex flex-wrap items-center gap-2 text-[11px] pt-0.5">
+                <div className="inline-flex items-center gap-1 font-mono text-zinc-800 dark:text-zinc-200 bg-zinc-100/80 dark:bg-zinc-800/80 px-1.5 py-0.5 rounded border border-zinc-200/60 dark:border-white/10">
+                  <span className="font-semibold">{student.studentId}</span>
+                  <button
+                    type="button"
+                    onClick={(e) => copyToClipboard(student.studentId, e)}
+                    aria-label="Copy student ID"
+                    className="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 p-0.5 cursor-pointer"
+                  >
+                    {copiedId === student.studentId ? (
+                      <Check className="w-2.5 h-2.5 text-emerald-500" />
+                    ) : (
+                      <Copy className="w-2.5 h-2.5" />
+                    )}
+                  </button>
+                </div>
+
+                <span className="px-1.5 py-0.5 rounded font-mono font-bold text-[10px] bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-200/80 dark:border-white/10">
+                  {student.department?.code || "GEN"}
+                </span>
+
+                <span className="font-mono text-zinc-500 dark:text-zinc-400">
+                  Yr {student.academicYear}
+                </span>
+
+                <div className="ml-auto">
+                  {getGpaBadge(student.gpa)}
+                </div>
+              </div>
+
+              {/* Card Actions Bar */}
+              <div
+                className="flex items-center justify-end gap-1.5 pt-1 border-t border-zinc-100/60 dark:border-white/5"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <button
+                  type="button"
+                  onClick={() => onViewStudent(student)}
+                  className="tap-target inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-medium text-zinc-600 dark:text-zinc-300 bg-zinc-100/70 dark:bg-zinc-800/70 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors cursor-pointer"
+                >
+                  <Eye className="w-3 h-3" />
+                  <span>Inspect</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => onEditStudent(student)}
+                  className="tap-target inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-medium text-zinc-600 dark:text-zinc-300 bg-zinc-100/70 dark:bg-zinc-800/70 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors cursor-pointer"
+                >
+                  <Edit2 className="w-3 h-3" />
+                  <span>Edit</span>
+                </button>
+
+                {student.isArchived ? (
+                  <button
+                    type="button"
+                    onClick={() => onRestoreStudent(student)}
+                    className="tap-target inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-medium text-amber-600 dark:text-amber-400 bg-amber-500/10 hover:bg-amber-500/20 transition-colors cursor-pointer"
+                  >
+                    <RotateCcw className="w-3 h-3" />
+                    <span>Restore</span>
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => onArchiveStudent(student)}
+                    className="tap-target inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-medium text-rose-600 dark:text-rose-400 bg-rose-500/10 hover:bg-rose-500/20 transition-colors cursor-pointer"
+                  >
+                    <Archive className="w-3 h-3" />
+                    <span>Archive</span>
+                  </button>
+                )}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Desktop & Tablet Table View (>= sm) */}
+      <div className="hidden sm:block overflow-x-auto">
         <table className="w-full text-left border-collapse">
           <thead>
             <tr className="border-b border-zinc-200/80 dark:border-white/10 bg-zinc-50/50 dark:bg-white/[0.02] text-[10px] font-mono tracking-wider uppercase text-zinc-500 dark:text-zinc-400">
-              {renderSortHeader("Student ID", "studentId")}
-              {renderSortHeader("Candidate Profile", "name")}
-              {renderSortHeader("Department", "department", "hidden md:table-cell")}
-              {renderSortHeader("Year", "academicYear", "hidden sm:table-cell")}
-              {renderSortHeader("GPA", "gpa")}
-              <th className="py-3 px-4">Status</th>
-              <th className="py-3 px-4 text-right">Actions</th>
+              {renderSortHeader("Student ID", "studentId", "py-3 px-3 lg:px-4")}
+              {renderSortHeader("Candidate Profile", "name", "py-3 px-3 lg:px-4")}
+              {renderSortHeader("Department", "department", "hidden md:table-cell py-3 px-3 lg:px-4")}
+              {renderSortHeader("Year", "academicYear", "hidden sm:table-cell py-3 px-3 lg:px-4")}
+              {renderSortHeader("GPA", "gpa", "py-3 px-3 lg:px-4")}
+              <th className="py-3 px-3 lg:px-4">Status</th>
+              <th className="py-3 px-3 lg:px-4 text-right">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-zinc-100 dark:divide-white/5 text-xs">
@@ -242,7 +364,7 @@ export function StudentTable({
                   }`}
                 >
                   {/* Student ID */}
-                  <td className="py-3 px-4 font-mono whitespace-nowrap">
+                  <td className="py-3 px-3 lg:px-4 font-mono whitespace-nowrap">
                     <div className="inline-flex items-center gap-1.5">
                       <span className="font-semibold text-zinc-800 dark:text-zinc-200">
                         {student.studentId}
@@ -269,8 +391,8 @@ export function StudentTable({
                   </td>
 
                   {/* Student Profile (Avatar + Name + Email) */}
-                  <td className="py-3 px-4">
-                    <div className="flex items-center gap-2.5 min-w-[160px]">
+                  <td className="py-3 px-3 lg:px-4">
+                    <div className="flex items-center gap-2.5 min-w-[140px] lg:min-w-[160px]">
                       <div className="w-7 h-7 rounded-full bg-zinc-100 dark:bg-zinc-800 border border-zinc-200/80 dark:border-white/10 flex items-center justify-center font-mono text-[10px] font-semibold text-zinc-700 dark:text-zinc-300 shrink-0">
                         {initials}
                       </div>
@@ -286,34 +408,34 @@ export function StudentTable({
                   </td>
 
                   {/* Department */}
-                  <td className="py-3 px-4 hidden md:table-cell whitespace-nowrap">
+                  <td className="py-3 px-3 lg:px-4 hidden md:table-cell whitespace-nowrap">
                     <div className="inline-flex items-center gap-1.5">
                       <span className="px-1.5 py-0.2 rounded text-[10px] font-mono font-bold bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-200/80 dark:border-white/10">
                         {student.department?.code || "GEN"}
                       </span>
-                      <span className="text-zinc-600 dark:text-zinc-300 text-xs truncate max-w-[150px]">
+                      <span className="text-zinc-600 dark:text-zinc-300 text-xs truncate max-w-[100px] lg:max-w-[150px]">
                         {student.department?.name || "General"}
                       </span>
                     </div>
                   </td>
 
                   {/* Academic Year */}
-                  <td className="py-3 px-4 hidden sm:table-cell whitespace-nowrap font-mono text-zinc-600 dark:text-zinc-300">
+                  <td className="py-3 px-3 lg:px-4 hidden sm:table-cell whitespace-nowrap font-mono text-zinc-600 dark:text-zinc-300">
                     Year {student.academicYear}
                   </td>
 
                   {/* GPA */}
-                  <td className="py-3 px-4 whitespace-nowrap font-mono">
+                  <td className="py-3 px-3 lg:px-4 whitespace-nowrap font-mono">
                     {getGpaBadge(student.gpa)}
                   </td>
 
                   {/* Status */}
-                  <td className="py-3 px-4 whitespace-nowrap">
+                  <td className="py-3 px-3 lg:px-4 whitespace-nowrap">
                     {getStatusBadge(student.status, student.isArchived)}
                   </td>
 
                   {/* Actions Column */}
-                  <td className="py-3 px-4 text-right whitespace-nowrap">
+                  <td className="py-3 px-3 lg:px-4 text-right whitespace-nowrap">
                     <div
                       className="inline-flex items-center gap-0.5"
                       onClick={(e) => e.stopPropagation()}
