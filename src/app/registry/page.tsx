@@ -5,6 +5,7 @@ import { Student, Department, PaginationMeta } from "@/types/student";
 import { Header } from "@/components/header";
 import { Toolbar, ActiveFilterChips } from "@/components/toolbar";
 import { ExpandingSearchDock } from "@/components/ui/expanding-search-dock";
+import { TextReveal } from "@/components/ui/text-reveal";
 import { StudentTable } from "@/components/student-table";
 import { Pagination } from "@/components/pagination";
 import { EnrollStudentModal } from "@/components/enroll-student-modal";
@@ -410,16 +411,27 @@ export default function StudentManagementPortal() {
           {/* Minimalist Hero Section */}
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-1">
             <div>
-              <h1 className="text-xl sm:text-2xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50 animate-text-reveal">
+              <TextReveal
+                as="h1"
+                delay={0.06}
+                className="text-xl sm:text-2xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50"
+              >
                 Student Directory
-              </h1>
-              <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5 max-w-xl leading-relaxed animate-text-reveal-stagger-1">
+              </TextReveal>
+              <TextReveal
+                as="p"
+                delay={0.14}
+                className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5 max-w-xl leading-relaxed"
+              >
                 Institutional academic records, departmental divisions, and lifecycle registry.
-              </p>
+              </TextReveal>
             </div>
 
             {/* Consolidated Institutional Status Strip */}
-            <div className="flex flex-wrap items-center gap-2 text-xs font-mono text-zinc-500 dark:text-zinc-400 shrink-0 animate-text-reveal-stagger-2">
+            <TextReveal
+              delay={0.22}
+              className="flex flex-wrap items-center gap-2 text-xs font-mono text-zinc-500 dark:text-zinc-400 shrink-0"
+            >
               <div className="px-2.5 py-1 rounded-md glass-card-subtle flex items-center gap-1.5 border border-zinc-200/60 dark:border-white/5">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
                 <span className="text-zinc-400 text-[10px]">ACTIVE</span>
@@ -440,7 +452,7 @@ export default function StudentManagementPortal() {
                   <span className="font-semibold">{metrics.archived}</span>
                 </div>
               )}
-            </div>
+            </TextReveal>
           </div>
 
           {/* Controls Strip: Separated Search Dock & Filter Toolbar (Option C) */}

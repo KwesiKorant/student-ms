@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { EdgeCornerFrame } from "@/components/ui/edge-corner-frame";
+import { TextReveal } from "@/components/ui/text-reveal";
 import { ThemeToggle } from "@/components/theme-toggle";
 import {
   Lock,
@@ -178,16 +179,26 @@ function LoginFormContent() {
           <EdgeCornerFrame isFocused={isFocused}>
             {/* Header Badge & Title */}
             <div className="text-center mb-8">
-              <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-mono font-medium tracking-wide bg-zinc-200/60 dark:bg-zinc-800/60 text-zinc-600 dark:text-zinc-400 mb-3 border border-zinc-300/40 dark:border-zinc-700/40">
-                <ShieldCheck className="w-3 h-3 text-emerald-500" />
-                <span>SECURE_GATEWAY · v2.4</span>
-              </div>
-              <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
+              <TextReveal delay={0.04} className="inline-block mb-3">
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-mono font-medium tracking-wide bg-zinc-200/60 dark:bg-zinc-800/60 text-zinc-600 dark:text-zinc-400 border border-zinc-300/40 dark:border-zinc-700/40">
+                  <ShieldCheck className="w-3 h-3 text-emerald-500" />
+                  <span>SECURE_GATEWAY · v2.4</span>
+                </div>
+              </TextReveal>
+              <TextReveal
+                as="h1"
+                delay={0.12}
+                className="text-xl sm:text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50"
+              >
                 Institutional Authentication
-              </h1>
-              <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">
+              </TextReveal>
+              <TextReveal
+                as="p"
+                delay={0.2}
+                className="text-xs text-zinc-500 dark:text-zinc-400 mt-1"
+              >
                 Academic records database & student lifecycle management
-              </p>
+              </TextReveal>
             </div>
 
             {/* Mode Switcher Pills (Fluid spring transition) */}
