@@ -12,6 +12,8 @@ import { EditStudentModal } from "@/components/edit-student-modal";
 import { ArchiveConfirmDialog } from "@/components/archive-confirm-dialog";
 import { useToast } from "@/components/ui/toast";
 import { useSearchParams } from "next/navigation";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useStudentRealtime } from "@/hooks/use-student-realtime";
 
 function EnrollUrlWatcher({ onOpen }: { onOpen: () => void }) {
   const searchParams = useSearchParams();
@@ -28,17 +30,7 @@ function EnrollUrlWatcher({ onOpen }: { onOpen: () => void }) {
 
 export default function StudentManagementPortal() {
   const { toast } = useToast();
-
-  // Data States
-  const [students, setStudents] = React.useState<Student[]>([]);
-  const [departments, setDepartments] = React.useState<Department[]>([]);
-  const [pagination, setPagination] = React.useState<PaginationMeta>({
-    totalRecords: 0,
-    page: 1,
-    limit: 10,
-    totalPages: 1,
-  });
-  const [isLoading, setIsLoading] = React.useState(true);
+  const queryClient = useQueryClient();
 
   // Filter & Query States
   const [search, setSearch] = React.useState("");
@@ -49,20 +41,110 @@ export default function StudentManagementPortal() {
   const [sortOrder, setSortOrder] = React.useState<"asc" | "desc">("desc");
   const [currentPage, setCurrentPage] = React.useState(1);
   const [pageSize, setPageSize] = React.useState(10);
-  const [refreshKey, setRefreshKey] = React.useState(0);
-
-  // Summary Metrics
-  const [metrics, setMetrics] = React.useState({
-    total: 0,
-    active: 0,
-    archived: 0,
-  });
 
   // Modal States
   const [isEnrollModalOpen, setIsEnrollModalOpen] = React.useState(false);
   const [detailStudent, setDetailStudent] = React.useState<Student | null>(null);
   const [editStudent, setEditStudent] = React.useState<Student | null>(null);
   const [archiveStudent, setArchiveStudent] = React.useState<Student | null>(null);
+
+  // Supabase Realtime WebSocket Sync: invalidate cache on any PostgreSQL CDC event
+  const handleRealtimeChange = React.useCallback(() => {
+    queryClient.invalidateQueries({ queryKey: ["students"] });
+    queryClient.invalidateQueries({ queryKey: ["census"] });
+  }, [queryClient]);
+
+  const { isConnected: isRealtimeConnected } = useStudentRealtime(handleRealtimeChange);
+
+  // TanStack Query: Fetch Departments (cached for 15 minutes)
+  const { data: departments = [] } = useQuery<Department[]>({
+    queryKey: ["departments"],
+    queryFn: async () => {
+      const res = await fetch("/api/v1/departments");
+      const json = await res.json();
+      return json.success && Array.isArray(json.data) ? json.data : [];
+    },
+    staleTime: 1000 * 60 * 15,
+  });
+
+  // TanStack Query: Fetch High-Level Census Metrics
+  const { data: metrics = { total: 0, active: 0, archived: 0 } } = useQuery({
+    queryKey: ["census"],
+    queryFn: async () => {
+      const [allRes, archivedRes] = await Promise.all([
+        fetch("/api/v1/students?includeArchived=true&limit=1"),
+        fetch("/api/v1/students?includeArchived=true&status=INACTIVE&limit=1"),
+      ]);
+      const allJson = await allRes.json();
+      const archJson = await archivedRes.json();
+      return {
+        total: allJson.pagination?.totalRecords ?? 0,
+        active: allJson.pagination?.totalRecords ?? 0,
+        archived: archJson.pagination?.totalRecords ?? 0,
+      };
+    },
+    staleTime: 1000 * 60,
+  });
+
+  // Query Parameters Bundle
+  const queryParams = React.useMemo(
+    () => ({
+      search: search.trim(),
+      departmentId,
+      status,
+      includeArchived,
+      sortBy,
+      sortOrder,
+      page: currentPage,
+      limit: pageSize,
+    }),
+    [search, departmentId, status, includeArchived, sortBy, sortOrder, currentPage, pageSize]
+  );
+
+  // TanStack Query: Fetch Students with smooth placeholderData
+  const {
+    data: studentsResult,
+    isLoading,
+    isFetching,
+  } = useQuery({
+    queryKey: ["students", queryParams],
+    queryFn: async () => {
+      const params = new URLSearchParams();
+      if (queryParams.search) params.set("search", queryParams.search);
+      if (queryParams.departmentId) params.set("departmentId", queryParams.departmentId);
+      if (queryParams.status) params.set("status", queryParams.status);
+      if (queryParams.includeArchived) params.set("includeArchived", "true");
+      params.set("sortBy", queryParams.sortBy);
+      params.set("sortOrder", queryParams.sortOrder);
+      params.set("page", String(queryParams.page));
+      params.set("limit", String(queryParams.limit));
+
+      const res = await fetch(`/api/v1/students?${params.toString()}`);
+      const json = await res.json();
+      if (!res.ok || !json.success) {
+        throw new Error("Failed to load students");
+      }
+      return {
+        students: (json.data ?? []) as Student[],
+        pagination: (json.pagination ?? {
+          totalRecords: 0,
+          page: queryParams.page,
+          limit: queryParams.limit,
+          totalPages: 1,
+        }) as PaginationMeta,
+      };
+    },
+    placeholderData: (previousData) => previousData,
+    staleTime: 1000 * 30, // 30s fresh cache
+  });
+
+  const students = studentsResult?.students ?? [];
+  const pagination = studentsResult?.pagination ?? {
+    totalRecords: 0,
+    page: currentPage,
+    limit: pageSize,
+    totalPages: 1,
+  };
 
   const handleOpenEnrollModal = React.useCallback(() => {
     setIsEnrollModalOpen(true);
@@ -74,143 +156,6 @@ export default function StudentManagementPortal() {
       const url = new URL(window.location.href);
       url.searchParams.delete("enroll");
       window.history.replaceState(null, "", url.pathname + (url.search ? url.search : ""));
-    }
-  }, []);
-
-  // Automatically open enrollment modal if ?enroll=true or backup session flag is present
-  React.useEffect(() => {
-    if (typeof window === "undefined") return;
-    const params = new URLSearchParams(window.location.search);
-    let autoEnroll = params.get("enroll") === "true";
-    try {
-      if (sessionStorage.getItem("arcfield_auto_enroll") === "true") {
-        sessionStorage.removeItem("arcfield_auto_enroll");
-        autoEnroll = true;
-      }
-    } catch {}
-
-    if (autoEnroll) {
-      const timer = setTimeout(() => {
-        setIsEnrollModalOpen(true);
-      }, 20);
-      return () => clearTimeout(timer);
-    }
-  }, []);
-
-  // Fetch Departments on Mount
-  React.useEffect(() => {
-    async function loadDepartments() {
-      try {
-        const res = await fetch("/api/v1/departments");
-        const json = await res.json();
-        if (json.success && Array.isArray(json.data)) {
-          setDepartments(json.data);
-        }
-      } catch (err) {
-        console.error("Failed to fetch departments:", err);
-      }
-    }
-    loadDepartments();
-  }, []);
-
-  // Fetch Students Query
-  React.useEffect(() => {
-    let ignore = false;
-
-    async function loadStudents() {
-      try {
-        const params = new URLSearchParams();
-        if (search.trim()) params.set("search", search.trim());
-        if (departmentId) params.set("departmentId", departmentId);
-        if (status) params.set("status", status);
-        if (includeArchived) params.set("includeArchived", "true");
-        params.set("sortBy", sortBy);
-        params.set("sortOrder", sortOrder);
-        params.set("page", String(currentPage));
-        params.set("limit", String(pageSize));
-
-        const res = await fetch(`/api/v1/students?${params.toString()}`);
-        const json = await res.json();
-
-        if (!ignore && res.ok && json.success) {
-          setStudents(json.data);
-          if (json.pagination) {
-            setPagination(json.pagination);
-          }
-        }
-      } catch (err) {
-        console.error("Failed to fetch students:", err);
-      } finally {
-        if (!ignore) {
-          setIsLoading(false);
-        }
-      }
-    }
-
-    loadStudents();
-
-    return () => {
-      ignore = true;
-    };
-  }, [
-    search,
-    departmentId,
-    status,
-    includeArchived,
-    sortBy,
-    sortOrder,
-    currentPage,
-    pageSize,
-    refreshKey,
-  ]);
-
-  // Load High-Level Metrics (counts) on mount
-  React.useEffect(() => {
-    let isSubscribed = true;
-    async function loadMetrics() {
-      try {
-        const [allRes, archivedRes] = await Promise.all([
-          fetch("/api/v1/students?includeArchived=true&limit=1"),
-          fetch("/api/v1/students?includeArchived=true&status=INACTIVE&limit=1"),
-        ]);
-        const allJson = await allRes.json();
-        const archJson = await archivedRes.json();
-
-        if (isSubscribed && allJson.pagination) {
-          setMetrics({
-            total: allJson.pagination.totalRecords,
-            active: allJson.pagination.totalRecords,
-            archived: archJson.pagination?.totalRecords ?? 0,
-          });
-        }
-      } catch {
-        // Quiet fail for metrics
-      }
-    }
-    loadMetrics();
-    return () => {
-      isSubscribed = false;
-    };
-  }, []);
-
-  const refreshMetrics = React.useCallback(async () => {
-    try {
-      const [allRes, archivedRes] = await Promise.all([
-        fetch("/api/v1/students?includeArchived=true&limit=1"),
-        fetch("/api/v1/students?includeArchived=true&status=INACTIVE&limit=1"),
-      ]);
-      const allJson = await allRes.json();
-      const archJson = await archivedRes.json();
-
-      if (allJson.pagination) {
-        setMetrics({
-          total: allJson.pagination.totalRecords,
-          active: allJson.pagination.totalRecords,
-          archived: archJson.pagination?.totalRecords ?? 0,
-        });
-      }
-    } catch {
-      // Quiet fail for metrics
     }
   }, []);
 
@@ -255,51 +200,26 @@ export default function StudentManagementPortal() {
     setCurrentPage(1);
   };
 
-  // Modal Handlers
-  const handleStudentCreated = (newStudent: Student) => {
-    setStudents((prev) => [newStudent, ...prev]);
-    setPagination((prev) => ({
-      ...prev,
-      totalRecords: prev.totalRecords + 1,
-    }));
-    refreshMetrics();
+  // Mutation Handlers: update TanStack Query cache
+  const handleStudentCreated = () => {
+    queryClient.invalidateQueries({ queryKey: ["students"] });
+    queryClient.invalidateQueries({ queryKey: ["census"] });
   };
 
   const handleStudentUpdated = (updated: Student) => {
-    setStudents((prev) =>
-      prev.map((s) => (s.id === updated.id ? updated : s))
-    );
+    queryClient.invalidateQueries({ queryKey: ["students"] });
+    queryClient.invalidateQueries({ queryKey: ["census"] });
     if (detailStudent?.id === updated.id) {
       setDetailStudent(updated);
     }
   };
 
-  const handleStudentArchived = (
-    targetStudent: Student,
-    isHardDeleted: boolean
-  ) => {
-    if (isHardDeleted) {
-      setStudents((prev) => prev.filter((s) => s.id !== targetStudent.id));
-      setPagination((prev) => ({
-        ...prev,
-        totalRecords: Math.max(0, prev.totalRecords - 1),
-      }));
-    } else {
-      if (!includeArchived) {
-        setStudents((prev) => prev.filter((s) => s.id !== targetStudent.id));
-        setPagination((prev) => ({
-          ...prev,
-          totalRecords: Math.max(0, prev.totalRecords - 1),
-        }));
-      } else {
-        setStudents((prev) =>
-          prev.map((s) =>
-            s.id === targetStudent.id ? { ...s, isArchived: true } : s
-          )
-        );
-      }
+  const handleStudentArchived = (targetStudent: Student) => {
+    queryClient.invalidateQueries({ queryKey: ["students"] });
+    queryClient.invalidateQueries({ queryKey: ["census"] });
+    if (detailStudent?.id === targetStudent.id) {
+      setDetailStudent(null);
     }
-    refreshMetrics();
   };
 
   const handleRestoreStudent = async (student: Student) => {
@@ -324,8 +244,8 @@ export default function StudentManagementPortal() {
         description: `Student ${student.firstName} ${student.lastName} returned to active cohort.`,
       });
 
-      handleStudentUpdated(data.data);
-      refreshMetrics();
+      queryClient.invalidateQueries({ queryKey: ["students"] });
+      queryClient.invalidateQueries({ queryKey: ["census"] });
     } catch {
       toast({
         type: "error",
@@ -349,32 +269,40 @@ export default function StudentManagementPortal() {
     status !== "" ||
     includeArchived;
 
+  // RFC-4180 CSV Export Generator
   const [isExporting, setIsExporting] = React.useState(false);
 
   const handleExportCSV = React.useCallback(async () => {
-    setIsExporting(true);
     try {
+      setIsExporting(true);
       const params = new URLSearchParams();
       if (search.trim()) params.set("search", search.trim());
       if (departmentId) params.set("departmentId", departmentId);
       if (status) params.set("status", status);
       if (includeArchived) params.set("includeArchived", "true");
-      params.set("sortBy", sortBy);
-      params.set("sortOrder", sortOrder);
-      params.set("page", "1");
       params.set("limit", "1000");
 
       const res = await fetch(`/api/v1/students?${params.toString()}`);
       const json = await res.json();
-      const recordsToExport: Student[] =
-        json.success && Array.isArray(json.data) ? json.data : students;
 
-      if (recordsToExport.length === 0) {
+      if (!res.ok || !json.success || !Array.isArray(json.data)) {
+        toast({
+          type: "error",
+          title: "Export Failed",
+          description: "Could not retrieve records for CSV generation.",
+        });
+        setIsExporting(false);
+        return;
+      }
+
+      const records: Student[] = json.data;
+      if (records.length === 0) {
         toast({
           type: "info",
-          title: "No Records to Export",
-          description: "There are no student profiles matching the current filter criteria.",
+          title: "No Records",
+          description: "No student records match the export criteria.",
         });
+        setIsExporting(false);
         return;
       }
 
@@ -382,59 +310,47 @@ export default function StudentManagementPortal() {
         "Student ID",
         "First Name",
         "Last Name",
-        "Email",
-        "Phone",
-        "Date of Birth",
-        "Department",
+        "Institutional Email",
+        "Department Code",
+        "Department Name",
         "Academic Year",
-        "GPA",
-        "Status",
+        "Cumulative GPA",
+        "Enrollment Status",
         "Archived",
-        "Date Enrolled",
+        "Enrolled Date",
       ];
 
-      const escapeCSV = (val: unknown) => {
-        if (val === null || val === undefined) return '""';
-        const str = String(val).replace(/"/g, '""');
+      const escapeCSV = (value: string | number | null | undefined): string => {
+        if (value === null || value === undefined) return '""';
+        const str = String(value);
+        if (str.includes('"') || str.includes(",") || str.includes("\n") || str.includes("\r")) {
+          return `"${str.replace(/"/g, '""')}"`;
+        }
         return `"${str}"`;
       };
 
-      const rows = recordsToExport.map((s) => [
+      const rows = records.map((s) => [
         escapeCSV(s.studentId),
         escapeCSV(s.firstName),
         escapeCSV(s.lastName),
         escapeCSV(s.email),
-        escapeCSV(s.phone || "N/A"),
-        escapeCSV(s.dateOfBirth || "N/A"),
-        escapeCSV(
-          s.department?.name ||
-            departments.find((d) => d.id === s.departmentId)?.name ||
-            s.departmentId
-        ),
+        escapeCSV(s.department?.code || ""),
+        escapeCSV(s.department?.name || ""),
         escapeCSV(s.academicYear),
-        escapeCSV(
-          s.gpa !== null && s.gpa !== undefined ? s.gpa.toFixed(2) : "N/A"
-        ),
+        escapeCSV(s.gpa != null ? s.gpa.toFixed(2) : "N/A"),
         escapeCSV(s.status),
         escapeCSV(s.isArchived ? "Yes" : "No"),
         escapeCSV(new Date(s.createdAt).toISOString().split("T")[0]),
       ]);
 
-      const csvContent =
-        "\uFEFF" +
-        [
-          headers.map(escapeCSV).join(","),
-          ...rows.map((r) => r.join(",")),
-        ].join("\r\n");
-
-      const blob = new Blob([csvContent], {
-        type: "text/csv;charset=utf-8;",
-      });
+      const csvContent = "\uFEFF" + [headers.join(","), ...rows.map((r) => r.join(","))].join("\r\n");
+      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
-      const dateStr = new Date().toISOString().split("T")[0];
+      const timestamp = new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19);
+
       link.setAttribute("href", url);
-      link.setAttribute("download", `arcfield-student-registry-${dateStr}.csv`);
+      link.setAttribute("download", `arcfield_students_${timestamp}.csv`);
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -442,41 +358,32 @@ export default function StudentManagementPortal() {
 
       toast({
         type: "success",
-        title: "Registry Exported",
-        description: `Successfully exported ${recordsToExport.length} student records to CSV.`,
+        title: "Export Completed",
+        description: `Exported ${records.length} records.`,
       });
     } catch {
       toast({
         type: "error",
         title: "Export Failed",
-        description: "An error occurred while compiling the registry export.",
+        description: "An unexpected error occurred during CSV generation.",
       });
     } finally {
       setIsExporting(false);
     }
-  }, [
-    search,
-    departmentId,
-    status,
-    includeArchived,
-    sortBy,
-    sortOrder,
-    students,
-    departments,
-    toast,
-  ]);
+  }, [search, departmentId, status, includeArchived, toast]);
 
   return (
     <>
       <React.Suspense fallback={null}>
         <EnrollUrlWatcher onOpen={handleOpenEnrollModal} />
       </React.Suspense>
-      <div className="min-h-screen flex flex-col bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 transition-colors">
-        {/* Institutional Top Navigation Header */}
+
+      <div className="min-h-screen flex flex-col bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 transition-colors duration-150">
+        {/* Header with Live Census & Auth User Session */}
         <Header
           onOpenEnrollModal={handleOpenEnrollModal}
-          totalStudents={pagination.totalRecords}
-          activeStudents={pagination.totalRecords}
+          totalStudents={metrics.total}
+          activeStudents={metrics.active}
           archivedStudents={metrics.archived}
         />
 
@@ -523,13 +430,14 @@ export default function StudentManagementPortal() {
               onSortOrderChange={handleSortOrderChange}
               departments={departments}
               onRefresh={() => {
-                setIsLoading(true);
-                setRefreshKey((k) => k + 1);
+                queryClient.invalidateQueries({ queryKey: ["students"] });
+                queryClient.invalidateQueries({ queryKey: ["census"] });
               }}
-              isLoading={isLoading}
+              isLoading={isLoading || isFetching}
               onResetFilters={handleResetFilters}
               onExport={handleExportCSV}
               isExporting={isExporting}
+              isLiveSync={isRealtimeConnected}
             />
           </section>
 
@@ -554,12 +462,8 @@ export default function StudentManagementPortal() {
             {students.length > 0 && (
               <Pagination
                 pagination={pagination}
-                onPageChange={(p) => {
-                  setIsLoading(true);
-                  setCurrentPage(p);
-                }}
+                onPageChange={(p) => setCurrentPage(p)}
                 onLimitChange={(l) => {
-                  setIsLoading(true);
                   setPageSize(l);
                   setCurrentPage(1);
                 }}
@@ -570,58 +474,58 @@ export default function StudentManagementPortal() {
           {/* Minimalist Institutional Footer */}
           <footer className="pt-8 pb-4 border-t border-zinc-200/60 dark:border-white/5 flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] font-mono text-zinc-400 dark:text-zinc-500">
             <span>ARCFIELD SYSTEMS · ACADEMIC REGISTRY</span>
-            <span>SYSTEM ENCRYPTED · PARALLEL PERSISTENCE</span>
+            <span>SYSTEM ENCRYPTED · PARALLEL PERSISTENCE · REALTIME CDC</span>
           </footer>
         </main>
 
-      {/* Modals & Dialogs (Mounted conditionally for clean lifecycle and zero state loops) */}
-      {isEnrollModalOpen && (
-        <EnrollStudentModal
-          isOpen={true}
-          onClose={handleCloseEnrollModal}
-          departments={departments}
-          onStudentCreated={handleStudentCreated}
-        />
-      )}
+        {/* Modals & Dialogs */}
+        {isEnrollModalOpen && (
+          <EnrollStudentModal
+            isOpen={true}
+            onClose={handleCloseEnrollModal}
+            departments={departments}
+            onStudentCreated={handleStudentCreated}
+          />
+        )}
 
-      {detailStudent && (
-        <StudentDetailModal
-          key={detailStudent.id}
-          student={detailStudent}
-          isOpen={true}
-          onClose={() => setDetailStudent(null)}
-          onEdit={(student) => {
-            setDetailStudent(null);
-            setEditStudent(student);
-          }}
-          onArchive={(student) => {
-            setDetailStudent(null);
-            setArchiveStudent(student);
-          }}
-          onRestore={handleRestoreStudent}
-        />
-      )}
+        {detailStudent && (
+          <StudentDetailModal
+            key={detailStudent.id}
+            student={detailStudent}
+            isOpen={true}
+            onClose={() => setDetailStudent(null)}
+            onEdit={(student) => {
+              setDetailStudent(null);
+              setEditStudent(student);
+            }}
+            onArchive={(student) => {
+              setDetailStudent(null);
+              setArchiveStudent(student);
+            }}
+            onRestore={handleRestoreStudent}
+          />
+        )}
 
-      {editStudent && (
-        <EditStudentModal
-          key={editStudent.id}
-          student={editStudent}
-          isOpen={true}
-          onClose={() => setEditStudent(null)}
-          departments={departments}
-          onStudentUpdated={handleStudentUpdated}
-        />
-      )}
+        {editStudent && (
+          <EditStudentModal
+            key={editStudent.id}
+            student={editStudent}
+            isOpen={true}
+            onClose={() => setEditStudent(null)}
+            departments={departments}
+            onStudentUpdated={handleStudentUpdated}
+          />
+        )}
 
-      {archiveStudent && (
-        <ArchiveConfirmDialog
-          key={archiveStudent.id}
-          student={archiveStudent}
-          isOpen={true}
-          onClose={() => setArchiveStudent(null)}
-          onArchived={handleStudentArchived}
-        />
-      )}
+        {archiveStudent && (
+          <ArchiveConfirmDialog
+            key={archiveStudent.id}
+            student={archiveStudent}
+            isOpen={true}
+            onClose={() => setArchiveStudent(null)}
+            onArchived={handleStudentArchived}
+          />
+        )}
       </div>
     </>
   );

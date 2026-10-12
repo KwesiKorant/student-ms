@@ -33,6 +33,7 @@ interface ToolbarProps {
   onResetFilters: () => void;
   onExport?: () => void;
   isExporting?: boolean;
+  isLiveSync?: boolean;
 }
 
 export function Toolbar({
@@ -54,6 +55,7 @@ export function Toolbar({
   onResetFilters,
   onExport,
   isExporting = false,
+  isLiveSync = false,
 }: ToolbarProps) {
   const searchInputRef = React.useRef<HTMLInputElement>(null);
 
@@ -261,6 +263,17 @@ export function Toolbar({
 
           {/* Section Divider 2 */}
           <div className="hidden sm:block h-4 w-px bg-zinc-200/80 dark:bg-white/10" aria-hidden="true" />
+
+          {/* Realtime Live Sync Indicator */}
+          {isLiveSync && (
+            <div
+              className="hidden lg:inline-flex items-center gap-1.5 px-2 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-[10px] font-mono tracking-tight"
+              title="Connected to Supabase Realtime WebSocket"
+            >
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              <span>Live Sync</span>
+            </div>
+          )}
 
           {/* Section 3: Data Actions (Refresh, Export) */}
           <Tooltip
