@@ -7,14 +7,17 @@ An institutional academic records registry and student lifecycle management port
 
 ## ⚡ Tech Stack & Architecture
 
-- **Framework:** Next.js 16.4 (App Router with Turbopack)
+- **Framework:** Next.js 16.4 (App Router with Turbopack, `proxy.ts` request gateway)
 - **Language:** TypeScript 5.x
 - **Styling:** Tailwind CSS (Institutional `zinc-950` / `zinc-50` multi-theme engine)
-- **Database & ORM:** Prisma ORM 6.x with SQLite (`file:./dev.db`) for zero-config evaluation (PostgreSQL-ready schema)
+- **Database & ORM:** Prisma ORM 6.x connected to Supabase PostgreSQL 17 with Supavisor connection pooling (port 6543) and direct connection (port 5432)
+- **Security & Compliance:** Database-level Row Level Security (RLS) role enforcement and FERPA immutable append-only audit trigger
+- **Authentication:** Supabase Auth with `@supabase/ssr` session management and cardless optical Edge Corner Frame design
+- **Real-Time CDC:** Supabase Realtime WebSocket publication paired with TanStack Query v5 for live directory synchronization
 - **Theme Engine:** `next-themes` (Dark, Light, and System modes with zero flash of unstyled content)
 - **Icons:** `lucide-react`
 - **Validation:** Zod schemas with `.strip()` boundary defense against mass-assignment
-- **Rate Limiting:** In-memory sliding-window IP rate limiter (60 reads/min, 20 mutations/min)
+- **Rate Limiting:** Sliding-window IP rate limiter (60 reads/min, 20 mutations/min)
 - **Export Engine:** Native RFC-4180 CSV generator with UTF-8 BOM (`\uFEFF`)
 - **Compositor Standards:** Zero reflow motion protocol mutating exclusively hardware-accelerated `transform` and `opacity`
 
@@ -32,8 +35,12 @@ An institutional academic records registry and student lifecycle management port
 git clone https://github.com/KwesiKorant/student-ms.git
 cd student-ms
 
-# Install dependencies
+# Install dependencies (automatically runs postinstall: prisma generate)
 npm install
+
+# Configure environment variables (copy from .env.example)
+cp .env.example .env
+# Edit .env with your Supabase credentials (DATABASE_URL, DIRECT_URL, NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY)
 
 # Push relational schema & seed with 20 diverse student records & audit logs
 npm run db:setup
@@ -181,13 +188,13 @@ npm test
 ## 🗄️ Database Management Scripts
 
 ```bash
-# Setup: push Prisma schema to SQLite and seed initial 20 students
+# Setup: push Prisma schema to PostgreSQL and seed initial 20 students
 npm run db:setup
 
 # Seed: re-populate departments and students
 npm run db:seed
 
-# Reset: wipe local database completely and restore pristine 20-student cohort
+# Reset: reset database schema and restore pristine 20-student cohort
 npm run db:reset
 ```
 
