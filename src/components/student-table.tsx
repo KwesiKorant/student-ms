@@ -152,10 +152,10 @@ export function StudentTable({
         <div className="w-10 h-10 mx-auto mb-3 rounded-xl bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-400">
           <AlertCircle className="w-5 h-5" />
         </div>
-        <h3 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+        <h3 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100 animate-text-reveal">
           No matching records in registry
         </h3>
-        <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1 max-w-sm mx-auto">
+        <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1 max-w-sm mx-auto animate-text-reveal-stagger-1">
           No student profiles match your search or filter configuration. Reset filters or enroll a new candidate.
         </p>
         <div className="mt-4 flex flex-wrap items-center justify-center gap-2">

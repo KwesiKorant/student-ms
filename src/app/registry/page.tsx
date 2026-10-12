@@ -408,18 +408,18 @@ export default function StudentManagementPortal() {
         {/* Main Content Area */}
         <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-5">
           {/* Minimalist Hero Section */}
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-1 animate-text-reveal">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-1">
             <div>
-              <h1 className="text-xl sm:text-2xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
+              <h1 className="text-xl sm:text-2xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50 animate-text-reveal">
                 Student Directory
               </h1>
-              <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5 max-w-xl leading-relaxed">
+              <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5 max-w-xl leading-relaxed animate-text-reveal-stagger-1">
                 Institutional academic records, departmental divisions, and lifecycle registry.
               </p>
             </div>
 
             {/* Consolidated Institutional Status Strip */}
-            <div className="flex flex-wrap items-center gap-2 text-xs font-mono text-zinc-500 dark:text-zinc-400 shrink-0">
+            <div className="flex flex-wrap items-center gap-2 text-xs font-mono text-zinc-500 dark:text-zinc-400 shrink-0 animate-text-reveal-stagger-2">
               <div className="px-2.5 py-1 rounded-md glass-card-subtle flex items-center gap-1.5 border border-zinc-200/60 dark:border-white/5">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
                 <span className="text-zinc-400 text-[10px]">ACTIVE</span>
