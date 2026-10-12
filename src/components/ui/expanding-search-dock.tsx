@@ -133,7 +133,7 @@ export function ExpandingSearchDock({
             }}
             whileTap={{ scale: 0.97 }}
             onClick={handleExpand}
-            className="group relative flex items-center justify-between sm:justify-center h-10 w-full sm:w-10 px-3.5 sm:px-0 rounded-full border border-zinc-200/90 dark:border-white/10 bg-white/80 dark:bg-zinc-900 backdrop-blur-md dark:backdrop-blur-none text-zinc-500 dark:text-zinc-400 shadow-[0_4px_16px_-2px_rgba(0,0,0,0.1),0_2px_4px_-1px_rgba(0,0,0,0.06)] hover:shadow-[0_6px_20px_-2px_rgba(0,0,0,0.14)] dark:shadow-[0_6px_12px_-3px_rgba(255,255,255,0.04),0_2px_4px_-1px_rgba(255,255,255,0.02)] dark:hover:shadow-[0_8px_16px_-3px_rgba(255,255,255,0.06),0_3px_6px_-1px_rgba(255,255,255,0.03)] hover:border-zinc-300 dark:hover:border-white/25 hover:text-zinc-900 dark:hover:text-zinc-100 transition-all cursor-pointer select-none"
+            className="group relative flex items-center justify-between sm:justify-center h-10 w-full sm:w-10 px-3.5 sm:px-0 rounded-2xl sm:rounded-full border border-zinc-200/90 dark:border-white/10 bg-white/80 dark:bg-zinc-900 backdrop-blur-md dark:backdrop-blur-none text-zinc-500 dark:text-zinc-400 shadow-[0_4px_16px_-2px_rgba(0,0,0,0.1),0_2px_4px_-1px_rgba(0,0,0,0.06)] hover:shadow-[0_6px_20px_-2px_rgba(0,0,0,0.14)] dark:shadow-[0_6px_12px_-3px_rgba(255,255,255,0.04),0_2px_4px_-1px_rgba(255,255,255,0.02)] dark:hover:shadow-[0_8px_16px_-3px_rgba(255,255,255,0.06),0_3px_6px_-1px_rgba(255,255,255,0.03)] hover:border-zinc-300 dark:hover:border-white/25 hover:text-zinc-900 dark:hover:text-zinc-100 transition-all cursor-pointer select-none"
             title="Search registry (/ or ⌘K)"
             aria-label="Search registry"
           >
@@ -158,7 +158,7 @@ export function ExpandingSearchDock({
               stiffness: 350,
               damping: 28,
             }}
-            className="relative flex items-center h-10 w-full sm:w-72 max-w-[calc(100vw-2.5rem)] sm:max-w-none rounded-full border border-zinc-300 dark:border-white/20 bg-white/95 dark:bg-zinc-900 backdrop-blur-md dark:backdrop-blur-none shadow-[0_10px_30px_-4px_rgba(0,0,0,0.12),0_4px_10px_-2px_rgba(0,0,0,0.06)] dark:shadow-[0_8px_16px_-3px_rgba(255,255,255,0.05),0_2px_6px_-1px_rgba(255,255,255,0.02)] overflow-hidden"
+            className="relative flex items-center h-10 w-full sm:w-72 max-w-[calc(100vw-2.5rem)] sm:max-w-none rounded-2xl sm:rounded-full border border-zinc-300 dark:border-white/20 bg-white/95 dark:bg-zinc-900 backdrop-blur-md dark:backdrop-blur-none shadow-[0_10px_30px_-4px_rgba(0,0,0,0.12),0_4px_10px_-2px_rgba(0,0,0,0.06)] dark:shadow-[0_8px_16px_-3px_rgba(255,255,255,0.05),0_2px_6px_-1px_rgba(255,255,255,0.02)] overflow-hidden"
           >
             <div className="pl-3.5 pr-1.5 flex items-center pointer-events-none text-zinc-400">
               <Search className="w-4 h-4" />

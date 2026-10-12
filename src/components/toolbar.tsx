@@ -235,17 +235,17 @@ export function Toolbar({
 
   return (
     <div className="w-full space-y-2 relative z-20 overflow-visible">
-      {/* Primary Toolbar Container (Harmonized with Search Dock Design Structure) */}
-      <div className="relative flex flex-col md:flex-row items-stretch md:items-center justify-between gap-2.5 p-1.5 sm:p-2 rounded-2xl border border-zinc-200/90 dark:border-white/10 hover:border-zinc-300/90 dark:hover:border-white/20 bg-white/80 dark:bg-zinc-900 backdrop-blur-md dark:backdrop-blur-none shadow-[0_4px_16px_-2px_rgba(0,0,0,0.08),0_2px_4px_-1px_rgba(0,0,0,0.04)] dark:shadow-[0_8px_16px_-3px_rgba(255,255,255,0.04),0_2px_6px_-1px_rgba(255,255,255,0.02)] transition-all overflow-visible min-h-10">
+      {/* Primary Toolbar Container (Unified Single Row Across Mobile, Tablet & Desktop) */}
+      <div className="relative flex flex-row items-center justify-between gap-1.5 sm:gap-2 p-1.5 sm:p-2 rounded-2xl border border-zinc-200/90 dark:border-white/10 hover:border-zinc-300/90 dark:hover:border-white/20 bg-white/80 dark:bg-zinc-900 backdrop-blur-md dark:backdrop-blur-none shadow-[0_4px_16px_-2px_rgba(0,0,0,0.08),0_2px_4px_-1px_rgba(0,0,0,0.04)] dark:shadow-[0_8px_16px_-3px_rgba(255,255,255,0.04),0_2px_6px_-1px_rgba(255,255,255,0.02)] transition-all overflow-visible min-h-10">
         {/* Left Section: Direct Parametric Filters */}
-        <div className="flex flex-wrap items-center gap-2 flex-1 min-w-0 overflow-visible">
+        <div className="flex flex-nowrap items-center gap-1.5 sm:gap-2 flex-1 min-w-0 overflow-visible">
           {/* Primary Filter 1: Department */}
-          <div className="relative inline-flex items-center">
+          <div className="relative inline-flex items-center min-w-0 flex-1 sm:flex-initial">
             <select
               value={departmentId}
               onChange={(e) => onDepartmentChange(e.target.value)}
               aria-label="Filter by department"
-              className="appearance-none pl-2.5 pr-7 py-1.5 text-xs rounded-lg border border-zinc-200/80 dark:border-white/10 bg-white/70 dark:bg-zinc-900/70 text-zinc-800 dark:text-zinc-200 focus:outline-none focus:ring-1 focus:ring-zinc-400 cursor-pointer transition-colors"
+              className="appearance-none w-full sm:w-36 lg:w-auto pl-2 sm:pl-2.5 pr-5 sm:pr-6 py-1.5 text-xs rounded-lg border border-zinc-200/80 dark:border-white/10 bg-white/70 dark:bg-zinc-900/70 text-zinc-800 dark:text-zinc-200 focus:outline-none focus:ring-1 focus:ring-zinc-400 cursor-pointer transition-colors truncate"
             >
               <option value="" className="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">
                 All Departments
@@ -256,11 +256,11 @@ export function Toolbar({
                 </option>
               ))}
             </select>
-            <ChevronDown className="w-3 h-3 text-zinc-400 pointer-events-none absolute right-2" />
+            <ChevronDown className="w-3 h-3 text-zinc-400 pointer-events-none absolute right-1.5" />
           </div>
 
           {/* Primary Filter 2: Academic Year */}
-          <div className="relative inline-flex items-center">
+          <div className="relative inline-flex items-center shrink-0">
             <select
               value={academicYear}
               onChange={(e) => {
@@ -268,26 +268,26 @@ export function Toolbar({
                 onAcademicYearChange?.(val);
               }}
               aria-label="Filter by academic year"
-              className="appearance-none pl-2.5 pr-7 py-1.5 text-xs rounded-lg border border-zinc-200/80 dark:border-white/10 bg-white/70 dark:bg-zinc-900/70 text-zinc-800 dark:text-zinc-200 focus:outline-none focus:ring-1 focus:ring-zinc-400 cursor-pointer transition-colors"
+              className="appearance-none w-20 sm:w-auto pl-2 pr-5 sm:pr-6 py-1.5 text-xs rounded-lg border border-zinc-200/80 dark:border-white/10 bg-white/70 dark:bg-zinc-900/70 text-zinc-800 dark:text-zinc-200 focus:outline-none focus:ring-1 focus:ring-zinc-400 cursor-pointer transition-colors"
             >
               <option value="" className="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">
                 All Years
               </option>
-              <option value={1} className="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">Year 1 (Freshman)</option>
-              <option value={2} className="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">Year 2 (Sophomore)</option>
-              <option value={3} className="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">Year 3 (Junior)</option>
-              <option value={4} className="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">Year 4 (Senior)</option>
+              <option value={1} className="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">Year 1</option>
+              <option value={2} className="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">Year 2</option>
+              <option value={3} className="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">Year 3</option>
+              <option value={4} className="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">Year 4</option>
             </select>
-            <ChevronDown className="w-3 h-3 text-zinc-400 pointer-events-none absolute right-2" />
+            <ChevronDown className="w-3 h-3 text-zinc-400 pointer-events-none absolute right-1.5" />
           </div>
 
           {/* Primary Filter 3: "More Filters" Popover Trigger */}
-          <div className="relative inline-flex items-center" ref={moreFiltersRef}>
+          <div className="relative inline-flex items-center shrink-0" ref={moreFiltersRef}>
             <button
               type="button"
               onClick={() => setIsMoreFiltersOpen((prev) => !prev)}
               aria-expanded={isMoreFiltersOpen}
-              className={`tap-target inline-flex items-center gap-1.5 px-2.5 py-1.5 text-xs rounded-lg border cursor-pointer select-none transition-colors ${
+              className={`tap-target inline-flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-1.5 text-xs rounded-lg border cursor-pointer select-none transition-colors ${
                 advancedFilterCount > 0
                   ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-950 border-zinc-900 dark:border-zinc-100 font-medium"
                   : "bg-white/70 dark:bg-zinc-900/70 border-zinc-200/80 dark:border-white/10 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200"
@@ -307,11 +307,11 @@ export function Toolbar({
             {/* "More Filters" Floating Popover (Unclipped & High Elevation) */}
             {isMoreFiltersOpen && (
               <div
-                className="absolute top-full left-0 mt-2 w-72 max-w-[calc(100vw-2.5rem)] z-50 rounded-xl shadow-2xl bg-white dark:bg-[#121215] border border-zinc-200/90 dark:border-white/15 p-3.5 space-y-3.5 animate-modal-enter text-xs"
+                className="absolute top-full right-0 sm:right-auto sm:left-0 mt-2 w-72 sm:w-80 max-w-[calc(100vw-2rem)] z-50 rounded-xl shadow-2xl bg-white dark:bg-[#121215] border border-zinc-200/90 dark:border-white/15 p-3.5 space-y-3.5 animate-modal-enter text-xs"
               >
                 <div className="flex items-center justify-between pb-2 border-b border-zinc-100 dark:border-white/5">
                   <span className="font-semibold text-zinc-900 dark:text-zinc-100 font-mono text-[11px] uppercase tracking-wider">
-                    Advanced Filters
+                    Filters & Options
                   </span>
                   {advancedFilterCount > 0 && (
                     <button
@@ -323,9 +323,42 @@ export function Toolbar({
                       }}
                       className="text-[11px] text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 cursor-pointer font-mono"
                     >
-                      Clear
+                      Reset All
                     </button>
                   )}
+                </div>
+
+                {/* Mobile-Only Sorting Controls (< sm) */}
+                <div className="sm:hidden space-y-2 pb-2 border-b border-zinc-100 dark:border-white/5">
+                  <label className="text-[11px] font-medium text-zinc-500 dark:text-zinc-400">
+                    Sort Records
+                  </label>
+                  <div className="flex items-center gap-1.5">
+                    <div className="relative inline-flex items-center flex-1 min-w-0">
+                      <select
+                        value={sortBy}
+                        onChange={(e) => onSortByChange(e.target.value)}
+                        aria-label="Sort records by"
+                        className="appearance-none w-full pl-2 pr-6 py-1.5 text-xs rounded-lg border border-zinc-200/80 dark:border-white/10 bg-zinc-50 dark:bg-zinc-900 text-zinc-800 dark:text-zinc-200 focus:outline-none truncate"
+                      >
+                        <option value="createdAt" className="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">Date Enrolled</option>
+                        <option value="name" className="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">Full Name</option>
+                        <option value="studentId" className="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">Student ID</option>
+                        <option value="department" className="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">Department</option>
+                        <option value="gpa" className="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">GPA Score</option>
+                        <option value="academicYear" className="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">Academic Year</option>
+                      </select>
+                      <ChevronDown className="w-3 h-3 text-zinc-400 pointer-events-none absolute right-1.5" />
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => onSortOrderChange(sortOrder === "asc" ? "desc" : "asc")}
+                      aria-label="Toggle sort order"
+                      className="tap-target p-1.5 rounded-lg border border-zinc-200/80 dark:border-white/10 bg-zinc-50 dark:bg-zinc-900 text-zinc-600 dark:text-zinc-400 cursor-pointer shrink-0"
+                    >
+                      <ArrowUpDown className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
                 </div>
 
                 {/* 1. Status Filter */}
@@ -389,21 +422,51 @@ export function Toolbar({
                     />
                   </button>
                 </div>
+
+                {/* Mobile-Only Actions: Refresh & Export (< sm) */}
+                <div className="sm:hidden pt-2 border-t border-zinc-100 dark:border-white/5 flex items-center justify-between gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      onRefresh();
+                      setIsMoreFiltersOpen(false);
+                    }}
+                    disabled={isLoading}
+                    className="tap-target flex-1 py-1.5 px-2 rounded-lg border border-zinc-200/80 dark:border-white/10 bg-zinc-50 dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300 text-xs font-medium flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-40"
+                  >
+                    <RotateCw className={`w-3.5 h-3.5 ${isLoading ? "animate-spin" : ""}`} />
+                    <span>Sync</span>
+                  </button>
+                  {onExport && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        onExport();
+                        setIsMoreFiltersOpen(false);
+                      }}
+                      disabled={isExporting}
+                      className="tap-target flex-1 py-1.5 px-2 rounded-lg border border-zinc-200/80 dark:border-white/10 bg-zinc-50 dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300 text-xs font-medium flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-40"
+                    >
+                      <Download className={`w-3.5 h-3.5 ${isExporting ? "animate-pulse" : ""}`} />
+                      <span>Export CSV</span>
+                    </button>
+                  )}
+                </div>
               </div>
             )}
           </div>
         </div>
 
-        {/* Right Section: View & Output Controls (Clearly Separated) */}
-        <div className="flex items-center gap-2 shrink-0 border-t md:border-t-0 md:border-l border-zinc-200/80 dark:border-white/10 pt-2 md:pt-0 md:pl-2.5">
+        {/* Right Section: View & Output Controls (Visible on >= sm: Tablet & Desktop) */}
+        <div className="hidden sm:flex items-center gap-1.5 sm:gap-2 shrink-0 border-l border-zinc-200/80 dark:border-white/10 pl-2 sm:pl-2.5">
           {/* Sorting Control */}
-          <div className="flex items-center gap-1">
-            <div className="relative inline-flex items-center">
+          <div className="flex items-center gap-1 shrink-0">
+            <div className="relative inline-flex items-center shrink-0">
               <select
                 value={sortBy}
                 onChange={(e) => onSortByChange(e.target.value)}
                 aria-label="Sort records by"
-                className="appearance-none pl-2 pr-6 py-1.5 text-xs rounded-lg border border-zinc-200/80 dark:border-white/10 bg-white/70 dark:bg-zinc-900/70 text-zinc-800 dark:text-zinc-200 focus:outline-none focus:ring-1 focus:ring-zinc-400 cursor-pointer transition-colors"
+                className="appearance-none w-auto pl-2 pr-6 py-1.5 text-xs rounded-lg border border-zinc-200/80 dark:border-white/10 bg-white/70 dark:bg-zinc-900/70 text-zinc-800 dark:text-zinc-200 focus:outline-none focus:ring-1 focus:ring-zinc-400 cursor-pointer transition-colors truncate"
               >
                 <option value="createdAt" className="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">Date Enrolled</option>
                 <option value="name" className="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">Full Name</option>
@@ -424,58 +487,61 @@ export function Toolbar({
                 type="button"
                 onClick={() => onSortOrderChange(sortOrder === "asc" ? "desc" : "asc")}
                 aria-label="Toggle sort order"
-                className="tap-target p-1.5 rounded-lg border border-zinc-200/80 dark:border-white/10 bg-white/70 dark:bg-zinc-900/70 text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 cursor-pointer transition-colors"
+                className="tap-target p-1.5 rounded-lg border border-zinc-200/80 dark:border-white/10 bg-white/70 dark:bg-zinc-900/70 text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 cursor-pointer transition-colors shrink-0"
               >
                 <ArrowUpDown className="w-3.5 h-3.5" />
               </button>
             </Tooltip>
           </div>
 
-          {/* Realtime Live Sync Badge */}
-          {isLiveSync && (
-            <div
-              className="hidden lg:inline-flex items-center gap-1.5 px-2 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-[10px] font-mono tracking-tight"
-              title="Connected to Supabase Realtime WebSocket"
-            >
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-              <span>Live Sync</span>
-            </div>
-          )}
+          <div className="flex items-center gap-1.5 shrink-0">
+            {/* Realtime Live Sync Badge */}
+            {isLiveSync && (
+              <div
+                className="inline-flex items-center gap-1.5 px-2 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-[10px] font-mono tracking-tight shrink-0"
+                title="Connected to Supabase Realtime WebSocket"
+              >
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                <span className="hidden sm:inline">Live Sync</span>
+                <span className="sm:hidden">Live</span>
+              </div>
+            )}
 
-          {/* Actions: Refresh & Export */}
-          <Tooltip
-            content="Synchronize Registry"
-            subContent="Re-query latest records from database"
-            side="top"
-          >
-            <button
-              type="button"
-              onClick={onRefresh}
-              disabled={isLoading}
-              aria-label="Refresh student directory"
-              className="tap-target p-1.5 rounded-lg border border-zinc-200/80 dark:border-white/10 bg-white/70 dark:bg-zinc-900/70 text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 cursor-pointer transition-colors disabled:opacity-40"
-            >
-              <RotateCw className={`w-3.5 h-3.5 ${isLoading ? "animate-spin text-zinc-800 dark:text-zinc-200" : ""}`} />
-            </button>
-          </Tooltip>
-
-          {onExport && (
+            {/* Actions: Refresh & Export */}
             <Tooltip
-              content="Export Registry"
-              subContent="Download filtered dataset as UTF-8 CSV"
+              content="Synchronize Registry"
+              subContent="Re-query latest records from database"
               side="top"
             >
               <button
                 type="button"
-                onClick={onExport}
-                disabled={isExporting}
-                aria-label="Export student registry to CSV"
+                onClick={onRefresh}
+                disabled={isLoading}
+                aria-label="Refresh student directory"
                 className="tap-target p-1.5 rounded-lg border border-zinc-200/80 dark:border-white/10 bg-white/70 dark:bg-zinc-900/70 text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 cursor-pointer transition-colors disabled:opacity-40"
               >
-                <Download className={`w-3.5 h-3.5 ${isExporting ? "animate-pulse" : ""}`} />
+                <RotateCw className={`w-3.5 h-3.5 ${isLoading ? "animate-spin text-zinc-800 dark:text-zinc-200" : ""}`} />
               </button>
             </Tooltip>
-          )}
+
+            {onExport && (
+              <Tooltip
+                content="Export Registry"
+                subContent="Download filtered dataset as UTF-8 CSV"
+                side="top"
+              >
+                <button
+                  type="button"
+                  onClick={onExport}
+                  disabled={isExporting}
+                  aria-label="Export student registry to CSV"
+                  className="tap-target p-1.5 rounded-lg border border-zinc-200/80 dark:border-white/10 bg-white/70 dark:bg-zinc-900/70 text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 cursor-pointer transition-colors disabled:opacity-40"
+                >
+                  <Download className={`w-3.5 h-3.5 ${isExporting ? "animate-pulse" : ""}`} />
+                </button>
+              </Tooltip>
+            )}
+          </div>
         </div>
       </div>
 

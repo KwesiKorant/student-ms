@@ -88,7 +88,7 @@ export function Header({ onOpenEnrollModal, showEnrollButton = false }: HeaderPr
   };
 
   return (
-    <header className="sticky top-0 z-40 w-full glass-nav transition-colors">
+    <header className="sticky top-0 z-40 w-full bg-zinc-50/98 dark:bg-[#09090b] backdrop-blur-md glass-nav transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-14 gap-4">
           {/* Left: Brand Identity with Link to Landing */}

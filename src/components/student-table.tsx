@@ -182,11 +182,11 @@ export function StudentTable({
     );
   }
 
-  const renderSortHeader = (label: string, field: string, className = "") => {
+  const renderSortHeader = (label: string, field: string, className = "py-2.5 px-2 lg:px-4") => {
     const isCurrent = sortBy === field;
     return (
       <th
-        className={`py-3 px-4 ${className} ${onSort ? "cursor-pointer select-none hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors" : ""}`}
+        className={`${className} ${onSort ? "cursor-pointer select-none hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors" : ""}`}
         onClick={() => onSort?.(field)}
         aria-sort={isCurrent ? (sortOrder === "asc" ? "ascending" : "descending") : undefined}
       >
@@ -281,26 +281,26 @@ export function StudentTable({
                 </div>
               </div>
 
-              {/* Card Actions Bar */}
+              {/* Card Actions Bar - Balanced 3-column touch-friendly grid */}
               <div
-                className="flex items-center justify-end gap-1.5 pt-1 border-t border-zinc-100/60 dark:border-white/5"
+                className="grid grid-cols-3 gap-1.5 pt-2 border-t border-zinc-100/80 dark:border-white/5"
                 onClick={(e) => e.stopPropagation()}
               >
                 <button
                   type="button"
                   onClick={() => onViewStudent(student)}
-                  className="tap-target inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-medium text-zinc-600 dark:text-zinc-300 bg-zinc-100/70 dark:bg-zinc-800/70 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors cursor-pointer"
+                  className="tap-target inline-flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-lg text-xs font-medium text-zinc-700 dark:text-zinc-300 bg-zinc-100/80 dark:bg-zinc-800/80 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors cursor-pointer select-none"
                 >
-                  <Eye className="w-3 h-3" />
+                  <Eye className="w-3.5 h-3.5" />
                   <span>Inspect</span>
                 </button>
 
                 <button
                   type="button"
                   onClick={() => onEditStudent(student)}
-                  className="tap-target inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-medium text-zinc-600 dark:text-zinc-300 bg-zinc-100/70 dark:bg-zinc-800/70 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors cursor-pointer"
+                  className="tap-target inline-flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-lg text-xs font-medium text-zinc-700 dark:text-zinc-300 bg-zinc-100/80 dark:bg-zinc-800/80 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors cursor-pointer select-none"
                 >
-                  <Edit2 className="w-3 h-3" />
+                  <Edit2 className="w-3.5 h-3.5" />
                   <span>Edit</span>
                 </button>
 
@@ -308,18 +308,18 @@ export function StudentTable({
                   <button
                     type="button"
                     onClick={() => onRestoreStudent(student)}
-                    className="tap-target inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-medium text-amber-600 dark:text-amber-400 bg-amber-500/10 hover:bg-amber-500/20 transition-colors cursor-pointer"
+                    className="tap-target inline-flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-lg text-xs font-medium text-amber-600 dark:text-amber-400 bg-amber-500/10 hover:bg-amber-500/20 transition-colors cursor-pointer select-none"
                   >
-                    <RotateCcw className="w-3 h-3" />
+                    <RotateCcw className="w-3.5 h-3.5" />
                     <span>Restore</span>
                   </button>
                 ) : (
                   <button
                     type="button"
                     onClick={() => onArchiveStudent(student)}
-                    className="tap-target inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-medium text-rose-600 dark:text-rose-400 bg-rose-500/10 hover:bg-rose-500/20 transition-colors cursor-pointer"
+                    className="tap-target inline-flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-lg text-xs font-medium text-zinc-700 dark:text-zinc-300 bg-zinc-100/80 dark:bg-zinc-800/80 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-500/10 transition-colors cursor-pointer select-none"
                   >
-                    <Archive className="w-3 h-3" />
+                    <Archive className="w-3.5 h-3.5" />
                     <span>Archive</span>
                   </button>
                 )}
@@ -334,13 +334,13 @@ export function StudentTable({
         <table className="w-full text-left border-collapse">
           <thead>
             <tr className="border-b border-zinc-200/80 dark:border-white/10 bg-zinc-50/50 dark:bg-white/[0.02] text-[10px] font-mono tracking-wider uppercase text-zinc-500 dark:text-zinc-400">
-              {renderSortHeader("Student ID", "studentId", "py-3 px-3 lg:px-4")}
-              {renderSortHeader("Candidate Profile", "name", "py-3 px-3 lg:px-4")}
-              {renderSortHeader("Department", "department", "hidden md:table-cell py-3 px-3 lg:px-4")}
-              {renderSortHeader("Year", "academicYear", "hidden sm:table-cell py-3 px-3 lg:px-4")}
-              {renderSortHeader("GPA", "gpa", "py-3 px-3 lg:px-4")}
-              <th className="py-3 px-3 lg:px-4">Status</th>
-              <th className="py-3 px-3 lg:px-4 text-right">Actions</th>
+              {renderSortHeader("Student ID", "studentId", "py-2.5 px-2.5 lg:px-4")}
+              {renderSortHeader("Candidate Profile", "name", "py-2.5 px-2.5 lg:px-4")}
+              {renderSortHeader("Department", "department", "hidden md:table-cell py-2.5 px-2.5 lg:px-4")}
+              {renderSortHeader("Year", "academicYear", "hidden sm:table-cell py-2.5 px-2.5 lg:px-4")}
+              {renderSortHeader("GPA", "gpa", "py-2.5 px-2.5 lg:px-4")}
+              <th className="py-2.5 px-2.5 lg:px-4">Status</th>
+              <th className="py-2.5 px-2.5 lg:px-4 text-right">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-zinc-100 dark:divide-white/5 text-xs">
@@ -364,7 +364,7 @@ export function StudentTable({
                   }`}
                 >
                   {/* Student ID */}
-                  <td className="py-3 px-3 lg:px-4 font-mono whitespace-nowrap">
+                  <td className="py-2.5 px-2.5 lg:px-4 font-mono whitespace-nowrap">
                     <div className="inline-flex items-center gap-1.5">
                       <span className="font-semibold text-zinc-800 dark:text-zinc-200">
                         {student.studentId}
@@ -391,8 +391,8 @@ export function StudentTable({
                   </td>
 
                   {/* Student Profile (Avatar + Name + Email) */}
-                  <td className="py-3 px-3 lg:px-4">
-                    <div className="flex items-center gap-2.5 min-w-[140px] lg:min-w-[160px]">
+                  <td className="py-2.5 px-2.5 lg:px-4">
+                    <div className="flex items-center gap-2.5 min-w-[120px] lg:min-w-[160px]">
                       <div className="w-7 h-7 rounded-full bg-zinc-100 dark:bg-zinc-800 border border-zinc-200/80 dark:border-white/10 flex items-center justify-center font-mono text-[10px] font-semibold text-zinc-700 dark:text-zinc-300 shrink-0">
                         {initials}
                       </div>
@@ -400,7 +400,7 @@ export function StudentTable({
                         <div className="font-medium text-zinc-900 dark:text-zinc-100 truncate">
                           {student.firstName} {student.lastName}
                         </div>
-                        <div className="text-[11px] text-zinc-500 dark:text-zinc-400 truncate font-mono">
+                        <div className="text-[11px] text-zinc-500 dark:text-zinc-400 truncate max-w-[130px] lg:max-w-[200px] font-mono">
                           {student.email}
                         </div>
                       </div>
@@ -408,34 +408,34 @@ export function StudentTable({
                   </td>
 
                   {/* Department */}
-                  <td className="py-3 px-3 lg:px-4 hidden md:table-cell whitespace-nowrap">
+                  <td className="py-2.5 px-2.5 lg:px-4 hidden md:table-cell whitespace-nowrap">
                     <div className="inline-flex items-center gap-1.5">
                       <span className="px-1.5 py-0.2 rounded text-[10px] font-mono font-bold bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-200/80 dark:border-white/10">
                         {student.department?.code || "GEN"}
                       </span>
-                      <span className="text-zinc-600 dark:text-zinc-300 text-xs truncate max-w-[100px] lg:max-w-[150px]">
+                      <span className="hidden lg:inline text-zinc-600 dark:text-zinc-300 text-xs truncate max-w-[150px]">
                         {student.department?.name || "General"}
                       </span>
                     </div>
                   </td>
 
                   {/* Academic Year */}
-                  <td className="py-3 px-3 lg:px-4 hidden sm:table-cell whitespace-nowrap font-mono text-zinc-600 dark:text-zinc-300">
+                  <td className="py-2.5 px-2.5 lg:px-4 hidden sm:table-cell whitespace-nowrap font-mono text-zinc-600 dark:text-zinc-300">
                     Year {student.academicYear}
                   </td>
 
                   {/* GPA */}
-                  <td className="py-3 px-3 lg:px-4 whitespace-nowrap font-mono">
+                  <td className="py-2.5 px-2.5 lg:px-4 whitespace-nowrap font-mono">
                     {getGpaBadge(student.gpa)}
                   </td>
 
                   {/* Status */}
-                  <td className="py-3 px-3 lg:px-4 whitespace-nowrap">
+                  <td className="py-2.5 px-2.5 lg:px-4 whitespace-nowrap">
                     {getStatusBadge(student.status, student.isArchived)}
                   </td>
 
                   {/* Actions Column */}
-                  <td className="py-3 px-3 lg:px-4 text-right whitespace-nowrap">
+                  <td className="py-2.5 px-2.5 lg:px-4 text-right whitespace-nowrap">
                     <div
                       className="inline-flex items-center gap-0.5"
                       onClick={(e) => e.stopPropagation()}
