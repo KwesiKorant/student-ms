@@ -1,6 +1,12 @@
 # Arcfield Systems — Student Management System (SMS)
 ### Auspify Technologies Full-Stack Internship · Task 2
 
+> **🌐 Live Production Deployment:** **[https://sms-nk.vercel.app](https://sms-nk.vercel.app)**
+>
+> • **Interactive Landing Page:** [https://sms-nk.vercel.app](https://sms-nk.vercel.app)  
+> • **Student Directory Registry:** [https://sms-nk.vercel.app/registry](https://sms-nk.vercel.app/registry)  
+> • **Institutional Auth Portal:** [https://sms-nk.vercel.app/login](https://sms-nk.vercel.app/login)
+
 An institutional academic records registry and student lifecycle management portal engineered with Arcfield Systems' zero-trust security standards, W3C accessibility compliance, and 60/120 FPS compositor motion standards.
 
 ---
@@ -208,9 +214,9 @@ Add the following 4 environment variables in **Project Settings → Environment 
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY`: Supabase anonymous public client key
 
 ### 3. Supabase Auth Configuration
-In your Supabase Dashboard under **Authentication → URL Configuration**, add your Vercel URL:
-- **Site URL:** `https://<your-vercel-domain>.vercel.app`
-- **Redirect URLs:** `https://<your-vercel-domain>.vercel.app/auth/callback`
+In your Supabase Dashboard under **Authentication → URL Configuration**, configure the production URLs:
+- **Site URL:** `https://sms-nk.vercel.app`
+- **Redirect URLs:** `https://sms-nk.vercel.app/auth/callback` and `https://sms-nk.vercel.app/**`
 
 ---
 
