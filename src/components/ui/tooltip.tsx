@@ -151,6 +151,7 @@ export function Tooltip({
   };
 
   const handlePointerEnter = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (e.pointerType === "touch") return;
     openTooltip(e.currentTarget);
   };
 

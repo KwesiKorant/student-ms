@@ -148,10 +148,10 @@ export function ExpandingSearchDock({
         aria-expanded={isExpanded}
         aria-label="Search registry"
         title={!isExpanded ? "Search registry (/ or ⌘K)" : undefined}
-        className={`group relative flex items-center h-10 rounded-2xl sm:rounded-full border backdrop-blur-md dark:backdrop-blur-none select-none overflow-hidden transition-colors duration-200 ${
+        className={`group relative flex items-center h-10 rounded-2xl sm:rounded-full border md:backdrop-blur-md md:dark:backdrop-blur-none select-none overflow-hidden transition-colors duration-200 ${
           isExpanded
-            ? "w-full sm:w-72 border-zinc-300 dark:border-white/20 bg-white/95 dark:bg-zinc-900 shadow-[0_10px_30px_-4px_rgba(0,0,0,0.12),0_4px_10px_-2px_rgba(0,0,0,0.06)] dark:shadow-[0_8px_16px_-3px_rgba(255,255,255,0.05),0_2px_6px_-1px_rgba(255,255,255,0.02)]"
-            : "w-full sm:w-10 border-zinc-200/90 dark:border-white/10 bg-white/80 dark:bg-zinc-900 shadow-[0_4px_16px_-2px_rgba(0,0,0,0.1),0_2px_4px_-1px_rgba(0,0,0,0.06)] hover:shadow-[0_6px_20px_-2px_rgba(0,0,0,0.14)] dark:shadow-[0_6px_12px_-3px_rgba(255,255,255,0.04),0_2px_4px_-1px_rgba(255,255,255,0.02)] dark:hover:shadow-[0_8px_16px_-3px_rgba(255,255,255,0.06)] hover:border-zinc-300 dark:hover:border-white/25 cursor-pointer"
+            ? "w-full sm:w-72 border-zinc-300 dark:border-white/20 bg-white md:bg-white/95 dark:bg-zinc-900 shadow-[0_10px_30px_-4px_rgba(0,0,0,0.12),0_4px_10px_-2px_rgba(0,0,0,0.06)] dark:shadow-[0_8px_16px_-3px_rgba(255,255,255,0.05),0_2px_6px_-1px_rgba(255,255,255,0.02)]"
+            : "w-full sm:w-10 border-zinc-200/90 dark:border-white/10 bg-white md:bg-white/80 dark:bg-zinc-900 shadow-[0_4px_16px_-2px_rgba(0,0,0,0.1),0_2px_4px_-1px_rgba(0,0,0,0.04)] hover:shadow-[0_6px_20px_-2px_rgba(0,0,0,0.14)] dark:shadow-[0_6px_12px_-3px_rgba(255,255,255,0.04),0_2px_4px_-1px_rgba(255,255,255,0.02)] dark:hover:shadow-[0_8px_16px_-3px_rgba(255,255,255,0.06)] hover:border-zinc-300 dark:hover:border-white/25 cursor-pointer"
         }`}
       >
         {/* Leading Search Icon */}

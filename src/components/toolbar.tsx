@@ -295,7 +295,7 @@ export function Toolbar({
   return (
     <div className="w-full space-y-2 relative z-20 overflow-visible">
       {/* Primary Toolbar Container (Unified Single Row Across Mobile, Tablet & Desktop) */}
-      <div className="relative flex flex-row items-center justify-between gap-1.5 sm:gap-2 p-1.5 sm:p-2 rounded-2xl border border-zinc-200/90 dark:border-white/10 hover:border-zinc-300/90 dark:hover:border-white/20 bg-white/80 dark:bg-zinc-900 backdrop-blur-md dark:backdrop-blur-none shadow-[0_4px_16px_-2px_rgba(0,0,0,0.08),0_2px_4px_-1px_rgba(0,0,0,0.04)] dark:shadow-[0_8px_16px_-3px_rgba(255,255,255,0.04),0_2px_6px_-1px_rgba(255,255,255,0.02)] transition-all overflow-visible min-h-10">
+      <div className="relative flex flex-row items-center justify-between gap-1.5 sm:gap-2 p-1.5 sm:p-2 rounded-2xl border border-zinc-200/90 dark:border-white/10 hover:border-zinc-300/90 dark:hover:border-white/20 bg-white dark:bg-zinc-900 md:bg-white/80 md:backdrop-blur-md md:dark:backdrop-blur-none shadow-[0_4px_16px_-2px_rgba(0,0,0,0.08),0_2px_4px_-1px_rgba(0,0,0,0.04)] dark:shadow-[0_8px_16px_-3px_rgba(255,255,255,0.04),0_2px_6px_-1px_rgba(255,255,255,0.02)] transition-all overflow-visible min-h-10">
         {/* Left Section: Direct Parametric Filters */}
         <div className="flex flex-nowrap items-center gap-1.5 sm:gap-2 flex-1 min-w-0 overflow-visible">
           {/* Primary Filter 1: Department */}

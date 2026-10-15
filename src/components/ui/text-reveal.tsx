@@ -1,9 +1,8 @@
 "use client";
 
 import * as React from "react";
-import { motion, type HTMLMotionProps } from "motion/react";
 
-export interface TextRevealProps extends HTMLMotionProps<"div"> {
+export interface TextRevealProps extends React.HTMLAttributes<HTMLElement> {
   children: React.ReactNode;
   delay?: number;
   duration?: number;
@@ -13,28 +12,36 @@ export interface TextRevealProps extends HTMLMotionProps<"div"> {
   as?: "h1" | "h2" | "h3" | "h4" | "p" | "span" | "div" | "section";
 }
 
+/**
+ * High-Performance Compositor-Only Text Reveal
+ * Executes 100% on the GPU compositor thread via native CSS keyframes.
+ * Zero JavaScript main-thread ticks or requestAnimationFrame overhead.
+ */
 export function TextReveal({
   children,
   delay = 0,
-  duration = 0.75,
-  yOffset = 20,
+  duration = 0.45,
+  yOffset = 8,
   scaleOffset = 0.98,
   className = "",
   as = "div",
+  style,
   ...props
 }: TextRevealProps) {
-  const Component = motion[as] as typeof motion.div;
+  const Component = as as React.ElementType;
+
+  const dynamicStyle: React.CSSProperties = {
+    ...style,
+    "--reveal-delay": `${Math.round(delay * 1000)}ms`,
+    "--reveal-duration": `${Math.round(duration * 1000)}ms`,
+    ...(yOffset !== 8 ? { "--reveal-y": `${yOffset}px` } : {}),
+    ...(scaleOffset !== 0.98 ? { "--reveal-scale": scaleOffset } : {}),
+  } as React.CSSProperties;
 
   return (
     <Component
-      initial={{ opacity: 0, y: yOffset, scale: scaleOffset }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      transition={{
-        duration,
-        delay,
-        ease: [0.16, 1, 0.3, 1], // Smooth spatial deceleration curve (fluid momentum)
-      }}
-      className={className}
+      className={`text-reveal-item ${className}`}
+      style={dynamicStyle}
       {...props}
     >
       {children}
