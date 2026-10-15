@@ -44,21 +44,7 @@ export function ThemeToggle() {
 
   const handleThemeChange = (nextTheme: string) => {
     if (nextTheme === currentTheme) return;
-
-    // Zero-overhead GPU crossfade via native View Transitions API
-    const doc = typeof document !== "undefined" ? (document as unknown as { startViewTransition?: (cb: () => void) => void }) : null;
-    const prefersReducedMotion =
-      typeof window !== "undefined" &&
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-    if (!doc?.startViewTransition || prefersReducedMotion) {
-      setTheme(nextTheme);
-      return;
-    }
-
-    doc.startViewTransition(() => {
-      setTheme(nextTheme);
-    });
+    setTheme(nextTheme);
   };
 
   return (

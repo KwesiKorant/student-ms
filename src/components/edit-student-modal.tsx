@@ -6,6 +6,7 @@ import { UpdateStudentSchema, MAX_STUDENT_DOB, MIN_STUDENT_DOB } from "@/lib/val
 import { useToast } from "@/components/ui/toast";
 import { X, Edit2, AlertCircle, Loader2 } from "lucide-react";
 import { useModalDismiss } from "@/hooks/use-modal-dismiss";
+import { useMobileSheetDrag } from "@/hooks/use-mobile-sheet-drag";
 import { motion } from "motion/react";
 
 interface EditStudentModalProps {
@@ -24,6 +25,7 @@ export function EditStudentModal({
   onStudentUpdated,
 }: EditStudentModalProps) {
   const { toast } = useToast();
+  const { isMobile, dragControls, y, backdropOpacity, handleDragEnd } = useMobileSheetDrag(onClose);
 
   const [formData, setFormData] = React.useState({
     firstName: student?.firstName ?? "",
@@ -143,33 +145,64 @@ export function EditStudentModal({
       transition={{ duration: 0.16 }}
       className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 overflow-y-auto overscroll-contain"
     >
-      {/* Backdrop - strictly zero blur for compositor efficiency */}
+      {/* Backdrop - strictly zero blur for compositor efficiency, reactive to drag displacement */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 0.16, ease: "easeOut" }}
+        style={isMobile ? { opacity: backdropOpacity } : undefined}
         onClick={onClose}
         className="fixed inset-0 bg-black/75"
       />
 
-      {/* Modal Dialog Card - bottom-sheet on mobile, centered card on desktop */}
+      {/* Modal Dialog Card - draggable bottom-sheet on mobile, centered card on desktop */}
       <motion.div
-        initial={{ opacity: 0, scale: 0.98, y: 16 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.98, y: 12 }}
+        drag={isMobile ? "y" : false}
+        dragControls={dragControls}
+        dragListener={false}
+        dragConstraints={{ top: 0 }}
+        dragElastic={{ top: 0.05, bottom: 0.75 }}
+        dragSnapToOrigin
+        onDragEnd={handleDragEnd}
+        style={isMobile ? { y } : undefined}
+        initial={isMobile ? { y: "100%", opacity: 1 } : { opacity: 0, scale: 0.98, y: 16 }}
+        animate={isMobile ? { y: 0, opacity: 1 } : { opacity: 1, scale: 1, y: 0 }}
+        exit={isMobile ? { y: "100%", opacity: 0 } : { opacity: 0, scale: 0.98, y: 12 }}
         transition={{
           type: "spring",
-          stiffness: 380,
-          damping: 30,
+          stiffness: 400,
+          damping: 32,
         }}
         className="relative w-full max-w-lg rounded-t-3xl sm:rounded-2xl bg-white dark:bg-[#111114] border-t sm:border border-zinc-200/90 dark:border-white/10 shadow-2xl p-5 sm:p-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))] sm:pb-6 z-10 text-zinc-900 dark:text-zinc-100 isolated-card my-0 sm:my-8 max-h-[92dvh] sm:max-h-[85vh] overflow-y-auto overscroll-contain"
       >
-        {/* Mobile Visual Drag Handle */}
-        <div className="sm:hidden w-10 h-1 bg-zinc-300 dark:bg-zinc-700 rounded-full mx-auto mb-3 shrink-0" aria-hidden="true" />
+        {/* Ergonomic Mobile Drag Handle Zone (Min 44px touch target) */}
+        <div
+          onPointerDown={(e) => {
+            if (isMobile && e.isPrimary) {
+              dragControls.start(e);
+            }
+          }}
+          className="sm:hidden flex items-center justify-center w-full py-3.5 -mt-2 mb-2 cursor-grab active:cursor-grabbing touch-none select-none group"
+          aria-label="Drag down to dismiss"
+          role="button"
+          tabIndex={-1}
+        >
+          <div className="w-12 h-1.5 bg-zinc-300 dark:bg-zinc-700 rounded-full transition-all group-active:bg-zinc-400 dark:group-active:bg-zinc-500 group-active:scale-x-110" />
+        </div>
 
         {/* Header */}
-        <div className="flex items-center justify-between pb-4 border-b border-zinc-100 dark:border-white/5">
+        <div
+          onPointerDown={(e) => {
+            if (isMobile && e.isPrimary) {
+              const target = e.target as HTMLElement;
+              if (!target.closest("button") && !target.closest("a") && !target.closest("input")) {
+                dragControls.start(e);
+              }
+            }
+          }}
+          className="flex items-center justify-between pb-4 border-b border-zinc-100 dark:border-white/5 touch-none sm:touch-auto cursor-grab active:cursor-grabbing sm:cursor-default"
+        >
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-lg bg-zinc-100 dark:bg-zinc-800 border border-zinc-200/60 dark:border-white/10 flex items-center justify-center text-zinc-800 dark:text-zinc-200">
               <Edit2 className="w-4 h-4" />

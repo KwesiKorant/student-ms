@@ -70,6 +70,7 @@ h1, h2, h3, h4 {
 html {
   scroll-behavior: smooth;
   font-family: var(--font-sans);
+  scrollbar-gutter: stable;
 }
 
 body {
@@ -266,10 +267,12 @@ body {
   background: radial-gradient(circle at 100% 100%, rgba(0, 0, 0, 0.14) 0%, rgba(0, 0, 0, 0.04) 50%, transparent 75%);
 }
 
-/* Dark Mode: Top ambient shadows omitted; subtle reduced ambient specular shadow on bottom corners only */
-.dark .edge-corner-tl,
-.dark .edge-corner-tr {
-  display: none !important;
+/* Mobile Dark Mode (< 768px): Top ambient shadows omitted for Mali-G52 GPU efficiency */
+@media (max-width: 767px) {
+  .dark .edge-corner-tl,
+  .dark .edge-corner-tr {
+    display: none !important;
+  }
 }
 
 .dark .edge-corner-bl {
@@ -345,6 +348,34 @@ body {
     filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.05));
   }
 
+  .dark .edge-corner-tl {
+    display: block !important;
+    background: conic-gradient(
+      from 90deg at 0% 0%,
+      rgba(255, 255, 255, 0.05) 0deg,
+      rgba(255, 255, 255, 0.01) 45deg,
+      rgba(255, 255, 255, 0.05) 90deg,
+      transparent 90deg
+    );
+    mask-image: radial-gradient(circle at 0% 0%, black 0%, rgba(0, 0, 0, 0.35) 45%, transparent 75%);
+    -webkit-mask-image: radial-gradient(circle at 0% 0%, black 0%, rgba(0, 0, 0, 0.35) 45%, transparent 75%);
+    filter: drop-shadow(0 -4px 10px rgba(255, 255, 255, 0.025));
+  }
+
+  .dark .edge-corner-tr {
+    display: block !important;
+    background: conic-gradient(
+      from 180deg at 100% 0%,
+      rgba(255, 255, 255, 0.05) 0deg,
+      rgba(255, 255, 255, 0.01) 45deg,
+      rgba(255, 255, 255, 0.05) 90deg,
+      transparent 90deg
+    );
+    mask-image: radial-gradient(circle at 100% 0%, black 0%, rgba(0, 0, 0, 0.35) 45%, transparent 75%);
+    -webkit-mask-image: radial-gradient(circle at 100% 0%, black 0%, rgba(0, 0, 0, 0.35) 45%, transparent 75%);
+    filter: drop-shadow(0 -4px 10px rgba(255, 255, 255, 0.025));
+  }
+
   .dark .edge-corner-bl {
     background: conic-gradient(
       from 0deg at 0% 100%,
@@ -382,38 +413,7 @@ body {
   transition: opacity 280ms var(--spring-smooth), transform 280ms var(--spring-snappy);
 }
 
-/* Native View Transitions API GPU Crossfade */
-::view-transition-old(root),
-::view-transition-new(root) {
-  animation-duration: 220ms;
-  animation-timing-function: var(--spring-smooth);
-}
 
-::view-transition-old(root) {
-  animation-name: viewTransitionFadeOut;
-}
-
-::view-transition-new(root) {
-  animation-name: viewTransitionFadeIn;
-}
-
-@keyframes viewTransitionFadeOut {
-  from {
-    opacity: 1;
-  }
-  to {
-    opacity: 0;
-  }
-}
-
-@keyframes viewTransitionFadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
 
 /* Respect user's motion preferences */
 @media (prefers-reduced-motion: reduce) {
