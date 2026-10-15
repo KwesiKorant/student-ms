@@ -204,6 +204,7 @@ function LoginFormContent() {
                   onClick={() => {
                     setMode("signin");
                     setErrorMessage(null);
+                    setIsFocused(false);
                   }}
                   className={`relative flex-1 py-1.5 text-xs font-medium rounded-md transition-colors cursor-pointer z-10 ${
                     mode === "signin"
@@ -225,6 +226,7 @@ function LoginFormContent() {
                   onClick={() => {
                     setMode("signup");
                     setErrorMessage(null);
+                    setIsFocused(false);
                   }}
                   className={`relative flex-1 py-1.5 text-xs font-medium rounded-md transition-colors cursor-pointer z-10 ${
                     mode === "signup"
@@ -262,18 +264,18 @@ function LoginFormContent() {
 
             {/* Authentication Form */}
             <TextReveal delay={0.58}>
-              <form onSubmit={handleSubmit} className="space-y-4">
+              <form onSubmit={handleSubmit} className="flex flex-col">
                 <AnimatePresence initial={false}>
                   {mode === "signup" && (
                     <motion.div
                       key="signup-names"
-                      initial={{ opacity: 0, height: 0, y: -6 }}
-                      animate={{ opacity: 1, height: "auto", y: 0 }}
-                      exit={{ opacity: 0, height: 0, y: -6 }}
-                      transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+                      initial={{ opacity: 0, height: 0, marginBottom: 0 }}
+                      animate={{ opacity: 1, height: "auto", marginBottom: 16 }}
+                      exit={{ opacity: 0, height: 0, marginBottom: 0 }}
+                      transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
                       className="overflow-hidden"
                     >
-                      <div className="grid grid-cols-2 gap-3 pb-1">
+                      <div className="grid grid-cols-2 gap-3 pb-0.5">
                         <div>
                           <label className="block text-[11px] font-medium text-zinc-600 dark:text-zinc-400 mb-1">
                             First Name
@@ -284,7 +286,7 @@ function LoginFormContent() {
                               value={firstName}
                               onChange={(e) => setFirstName(e.target.value)}
                               placeholder="Lead"
-                              required
+                              required={mode === "signup"}
                               className="w-full pl-8 pr-3 py-2 text-xs rounded-lg bg-zinc-100/60 dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800 focus:outline-none focus:border-zinc-500 dark:focus:border-zinc-400 transition-colors"
                               onFocus={() => setIsFocused(true)}
                               onBlur={() => setIsFocused(false)}
@@ -301,7 +303,7 @@ function LoginFormContent() {
                             value={lastName}
                             onChange={(e) => setLastName(e.target.value)}
                             placeholder="Registrar"
-                            required
+                            required={mode === "signup"}
                             className="w-full px-3 py-2 text-xs rounded-lg bg-zinc-100/60 dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800 focus:outline-none focus:border-zinc-500 dark:focus:border-zinc-400 transition-colors"
                             onFocus={() => setIsFocused(true)}
                             onBlur={() => setIsFocused(false)}
@@ -312,96 +314,90 @@ function LoginFormContent() {
                   )}
                 </AnimatePresence>
 
-                {/* Email Address */}
-                <div>
-                  <label className="block text-[11px] font-medium text-zinc-600 dark:text-zinc-400 mb-1">
-                    Institutional Email
-                  </label>
-                  <div className="relative">
-                    <input
-                      type="email"
-                      inputMode="email"
-                      autoComplete="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder="name@arcfield.systems"
-                      required
-                      className="w-full pl-8 pr-3 py-2 text-xs rounded-lg bg-zinc-100/60 dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800 focus:outline-none focus:border-zinc-500 dark:focus:border-zinc-400 transition-colors text-zinc-900 dark:text-zinc-100"
-                      onFocus={() => setIsFocused(true)}
-                      onBlur={() => setIsFocused(false)}
-                    />
-                    <Mail className="w-3.5 h-3.5 text-zinc-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
-                  </div>
-                </div>
-
-                {/* Password */}
-                <div>
-                  <div className="flex items-center justify-between mb-1">
-                    <label className="text-[11px] font-medium text-zinc-600 dark:text-zinc-400">
-                      Password
+                <div className="space-y-4">
+                  {/* Email Address */}
+                  <div>
+                    <label className="block text-[11px] font-medium text-zinc-600 dark:text-zinc-400 mb-1">
+                      Institutional Email
                     </label>
+                    <div className="relative">
+                      <input
+                        type="email"
+                        inputMode="email"
+                        autoComplete="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="name@arcfield.systems"
+                        required
+                        className="w-full pl-8 pr-3 py-2 text-xs rounded-lg bg-zinc-100/60 dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800 focus:outline-none focus:border-zinc-500 dark:focus:border-zinc-400 transition-colors text-zinc-900 dark:text-zinc-100"
+                        onFocus={() => setIsFocused(true)}
+                        onBlur={() => setIsFocused(false)}
+                      />
+                      <Mail className="w-3.5 h-3.5 text-zinc-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
+                    </div>
                   </div>
-                  <div className="relative">
-                    <input
-                      type={showPassword ? "text" : "password"}
-                      autoComplete={
-                        mode === "signin" ? "current-password" : "new-password"
-                      }
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      placeholder="••••••••••••"
-                      required
-                      minLength={8}
-                      className="w-full pl-8 pr-9 py-2 text-xs rounded-lg bg-zinc-100/60 dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800 focus:outline-none focus:border-zinc-500 dark:focus:border-zinc-400 transition-colors text-zinc-900 dark:text-zinc-100"
-                      onFocus={() => setIsFocused(true)}
-                      onBlur={() => setIsFocused(false)}
-                    />
-                    <Lock className="w-3.5 h-3.5 text-zinc-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-2.5 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 cursor-pointer"
-                      aria-label={showPassword ? "Hide password" : "Show password"}
-                    >
-                      {showPassword ? (
-                        <EyeOff className="w-3.5 h-3.5" />
-                      ) : (
-                        <Eye className="w-3.5 h-3.5" />
-                      )}
-                    </button>
-                  </div>
-                </div>
 
-                {/* Primary Submit Button */}
-                <button
-                  type="submit"
-                  disabled={isLoading || isDemoLoading}
-                  className="tap-target w-full mt-2 py-2.5 px-4 rounded-lg bg-zinc-900 hover:bg-zinc-800 dark:bg-zinc-100 dark:hover:bg-zinc-200 text-white dark:text-zinc-950 text-xs font-semibold flex items-center justify-center gap-2 cursor-pointer shadow-xs disabled:opacity-50 transition-colors"
-                >
-                  {isLoading ? (
-                    <>
-                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                      <span>Processing...</span>
-                    </>
-                  ) : (
-                    <>
-                      <AnimatePresence mode="wait" initial={false}>
-                        <motion.span
-                          key={mode}
-                          initial={{ opacity: 0, y: 3 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: -3 }}
-                          transition={{ duration: 0.16, ease: "easeOut" }}
-                        >
+                  {/* Password */}
+                  <div>
+                    <div className="flex items-center justify-between mb-1">
+                      <label className="text-[11px] font-medium text-zinc-600 dark:text-zinc-400">
+                        Password
+                      </label>
+                    </div>
+                    <div className="relative">
+                      <input
+                        type={showPassword ? "text" : "password"}
+                        autoComplete={
+                          mode === "signin" ? "current-password" : "new-password"
+                        }
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        placeholder="••••••••••••"
+                        required
+                        minLength={8}
+                        className="w-full pl-8 pr-9 py-2 text-xs rounded-lg bg-zinc-100/60 dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800 focus:outline-none focus:border-zinc-500 dark:focus:border-zinc-400 transition-colors text-zinc-900 dark:text-zinc-100"
+                        onFocus={() => setIsFocused(true)}
+                        onBlur={() => setIsFocused(false)}
+                      />
+                      <Lock className="w-3.5 h-3.5 text-zinc-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-2.5 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 cursor-pointer"
+                        aria-label={showPassword ? "Hide password" : "Show password"}
+                      >
+                        {showPassword ? (
+                          <EyeOff className="w-3.5 h-3.5" />
+                        ) : (
+                          <Eye className="w-3.5 h-3.5" />
+                        )}
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Primary Submit Button */}
+                  <button
+                    type="submit"
+                    disabled={isLoading || isDemoLoading}
+                    className="tap-target w-full mt-2 py-2.5 px-4 rounded-lg bg-zinc-900 hover:bg-zinc-800 dark:bg-zinc-100 dark:hover:bg-zinc-200 text-white dark:text-zinc-950 text-xs font-semibold flex items-center justify-center gap-2 cursor-pointer shadow-xs disabled:opacity-50 transition-colors"
+                  >
+                    {isLoading ? (
+                      <>
+                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                        <span>Processing...</span>
+                      </>
+                    ) : (
+                      <div className="inline-flex items-center justify-center gap-2 min-h-4">
+                        <span>
                           {mode === "signin"
                             ? "Sign In to Registry"
                             : "Create Institutional Account"}
-                        </motion.span>
-                      </AnimatePresence>
-                      <ArrowRight className="w-3.5 h-3.5" />
-                    </>
-                  )}
-                </button>
+                        </span>
+                        <ArrowRight className="w-3.5 h-3.5 shrink-0" />
+                      </div>
+                    )}
+                  </button>
+                </div>
               </form>
             </TextReveal>
 
