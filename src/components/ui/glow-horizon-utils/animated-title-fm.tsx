@@ -60,7 +60,7 @@ export function AnimatedTitleFM({
         <Link
           href="/registry?enroll=true"
           onClick={onEnrollClick}
-          className="tap-target inline-flex items-center gap-2 px-6 py-2.5 sm:py-3 rounded-xl border border-zinc-300 dark:border-white/20 bg-white/90 dark:bg-white/10 text-zinc-900 dark:text-white hover:bg-zinc-100 dark:hover:bg-white/15 font-medium text-xs sm:text-sm shadow-sm cursor-pointer transition-all active:scale-[0.98]"
+          className="tap-target inline-flex items-center gap-2 px-6 py-2.5 sm:py-3 rounded-xl border border-zinc-300 dark:border-white/20 bg-white/80 dark:bg-white/10 backdrop-blur-md text-zinc-900 dark:text-white hover:bg-zinc-100/90 dark:hover:bg-white/15 font-medium text-xs sm:text-sm shadow-sm cursor-pointer transition-all active:scale-[0.98]"
         >
           <GraduationCap className="w-4 h-4 text-zinc-600 dark:text-zinc-300" />
           <span>Enroll</span>
