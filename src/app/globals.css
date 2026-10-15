@@ -220,25 +220,24 @@ body {
   isolation: isolate;
 }
 
-/* 110px x 110px (desktop/tablet) scaled to 60px x 60px on mobile (<640px) */
+/* Optical Edge Corner Shadows (Cardless Dimensional Frame) */
+.edge-corner-frame {
+  position: relative;
+  isolation: isolate;
+}
+
+/* Base (Mobile / Handheld < 768px): 60px x 60px single-pass radial gradients (zero mask/filter overhead for Mali-G52 60 FPS) */
 .edge-corner-shadow {
   position: absolute;
-  width: 110px;
-  height: 110px;
+  width: 60px;
+  height: 60px;
   pointer-events: none;
   z-index: 0;
   contain: layout paint;
   transition: opacity 280ms var(--spring-smooth), transform 280ms var(--spring-snappy);
 }
 
-@media (max-width: 640px) {
-  .edge-corner-shadow {
-    width: 60px;
-    height: 60px;
-  }
-}
-
-/* Light Mode: Single-pass hardware-accelerated radial corner feathering (Zero mask/filter overhead) */
+/* Mobile Light Mode: Single-pass radial corner gradients */
 .edge-corner-tl {
   top: 0;
   left: 0;
@@ -267,19 +266,10 @@ body {
   background: radial-gradient(circle at 100% 100%, rgba(0, 0, 0, 0.14) 0%, rgba(0, 0, 0, 0.04) 50%, transparent 75%);
 }
 
-/* Dark Mode: Full 4-corner ambient luminescence */
-.dark .edge-corner-tl {
-  top: 0;
-  left: 0;
-  border-top-left-radius: 1.25rem;
-  background: radial-gradient(circle at 0% 0%, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.015) 50%, transparent 75%);
-}
-
+/* Dark Mode: Top ambient shadows omitted; subtle reduced ambient specular shadow on bottom corners only */
+.dark .edge-corner-tl,
 .dark .edge-corner-tr {
-  top: 0;
-  right: 0;
-  border-top-right-radius: 1.25rem;
-  background: radial-gradient(circle at 100% 0%, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.015) 50%, transparent 75%);
+  display: none !important;
 }
 
 .dark .edge-corner-bl {
@@ -296,8 +286,8 @@ body {
   background: radial-gradient(circle at 100% 100%, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.015) 50%, transparent 75%);
 }
 
-/* Desktop High-Fidelity Tier: Restore 110px luxury conical graphite fan with precision masks on desktop silicon */
-@media (min-width: 1024px) and (hover: hover) and (pointer: fine) {
+/* Non-Mobile / Desktop High-Fidelity Tier (>= 768px): Exact pre-mobile-optimization luxury conical graphite fan with radial masks and drop-shadows */
+@media (min-width: 768px) {
   .edge-corner-shadow {
     width: 110px;
     height: 110px;
@@ -353,32 +343,6 @@ body {
     mask-image: radial-gradient(circle at 100% 100%, black 0%, rgba(0, 0, 0, 0.4) 45%, transparent 75%);
     -webkit-mask-image: radial-gradient(circle at 100% 100%, black 0%, rgba(0, 0, 0, 0.4) 45%, transparent 75%);
     filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.05));
-  }
-
-  .dark .edge-corner-tl {
-    background: conic-gradient(
-      from 90deg at 0% 0%,
-      rgba(255, 255, 255, 0.05) 0deg,
-      rgba(255, 255, 255, 0.01) 45deg,
-      rgba(255, 255, 255, 0.05) 90deg,
-      transparent 90deg
-    );
-    mask-image: radial-gradient(circle at 0% 0%, black 0%, rgba(0, 0, 0, 0.35) 45%, transparent 75%);
-    -webkit-mask-image: radial-gradient(circle at 0% 0%, black 0%, rgba(0, 0, 0, 0.35) 45%, transparent 75%);
-    filter: drop-shadow(0 -4px 10px rgba(255, 255, 255, 0.025));
-  }
-
-  .dark .edge-corner-tr {
-    background: conic-gradient(
-      from 180deg at 100% 0%,
-      rgba(255, 255, 255, 0.05) 0deg,
-      rgba(255, 255, 255, 0.01) 45deg,
-      rgba(255, 255, 255, 0.05) 90deg,
-      transparent 90deg
-    );
-    mask-image: radial-gradient(circle at 100% 0%, black 0%, rgba(0, 0, 0, 0.35) 45%, transparent 75%);
-    -webkit-mask-image: radial-gradient(circle at 100% 0%, black 0%, rgba(0, 0, 0, 0.35) 45%, transparent 75%);
-    filter: drop-shadow(0 -4px 10px rgba(255, 255, 255, 0.025));
   }
 
   .dark .edge-corner-bl {
