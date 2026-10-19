@@ -168,11 +168,10 @@ export default function GlowHorizonFM({
                 gradientUnits="userSpaceOnUse"
               >
                 <stop offset="0%" stopColor="#fafafa" stopOpacity="1" />
-                <stop offset="75%" stopColor="#fafafa" stopOpacity="1" />
-                <stop offset="84%" stopColor="#fafafa" stopOpacity="0.92" />
-                <stop offset="91%" stopColor="#18181b" stopOpacity="0.22" />
-                <stop offset="96.5%" stopColor="#09090b" stopOpacity="0.55" />
-                <stop offset="100%" stopColor="#09090b" stopOpacity="0.95" />
+                <stop offset="97.5%" stopColor="#fafafa" stopOpacity="1" />
+                <stop offset="99%" stopColor="#18181b" stopOpacity="0.10" />
+                <stop offset="99.6%" stopColor="#09090b" stopOpacity="0.35" />
+                <stop offset="100%" stopColor="#09090b" stopOpacity="0.90" />
               </radialGradient>
 
               <radialGradient
@@ -182,10 +181,10 @@ export default function GlowHorizonFM({
                 r="2040"
                 gradientUnits="userSpaceOnUse"
               >
-                <stop offset="0%" stopColor="#09090b" stopOpacity="0.30" />
-                <stop offset="89.3%" stopColor="#09090b" stopOpacity="0.30" />
-                <stop offset="92%" stopColor="#18181b" stopOpacity="0.14" />
-                <stop offset="96%" stopColor="#71717a" stopOpacity="0.04" />
+                <stop offset="0%" stopColor="#09090b" stopOpacity="0.22" />
+                <stop offset="89.3%" stopColor="#09090b" stopOpacity="0.22" />
+                <stop offset="93%" stopColor="#18181b" stopOpacity="0.08" />
+                <stop offset="97%" stopColor="#71717a" stopOpacity="0.02" />
                 <stop offset="100%" stopColor="#fafafa" stopOpacity="0" />
               </radialGradient>
 
