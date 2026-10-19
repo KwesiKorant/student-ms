@@ -65,8 +65,10 @@ export async function POST(req: NextRequest, { params }: RouteParams) {
       );
     }
 
-    const restored = await prisma.$transaction(async (tx) => {
-      const student = await tx.student.update({
+    // Single Round-Trip Pipelined Atomic Tuple Transaction
+    const restoredAt = new Date();
+    const [restored] = await prisma.$transaction([
+      prisma.student.update({
         where: { id: existingStudent.id },
         data: {
           isArchived: false,
@@ -75,23 +77,20 @@ export async function POST(req: NextRequest, { params }: RouteParams) {
         include: {
           department: true,
         },
-      });
-
-      await tx.auditLog.create({
+      }),
+      prisma.auditLog.create({
         data: {
-          studentId: student.id,
+          studentId: existingStudent.id,
           action: "RESTORE",
           details: JSON.stringify({
             event: "Student record restored from archival",
-            studentId: student.studentId,
-            restoredAt: new Date(),
+            studentId: existingStudent.studentId,
+            restoredAt: restoredAt.toISOString(),
           }),
           performedBy: auth.userId || "admin_registrar",
         },
-      });
-
-      return student;
-    });
+      }),
+    ]);
 
     return successResponse(restored, {
       message: `Student ${restored.firstName} ${restored.lastName} restored successfully.`,

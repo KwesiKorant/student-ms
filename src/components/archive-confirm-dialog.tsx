@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { motion } from "motion/react";
 import { useModalDismiss } from "@/hooks/use-modal-dismiss";
+import { HoldToConfirmButton } from "@/components/ui/hold-to-confirm-button";
 
 interface ArchiveConfirmDialogProps {
   student: Student | null;
@@ -230,33 +231,48 @@ export function ArchiveConfirmDialog({
             Cancel
           </button>
 
-          <button
-            type="button"
-            onClick={handleConfirm}
-            disabled={isSubmitting || (isHardDelete && !canHardDelete)}
-            className={`tap-target inline-flex items-center gap-1.5 px-4 py-1.5 rounded-lg font-medium shadow-xs cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed ${
-              isHardDelete
-                ? "bg-rose-600 hover:bg-rose-700 text-white"
-                : "bg-amber-600 hover:bg-amber-700 text-white"
-            }`}
-          >
-            {isSubmitting ? (
-              <>
-                <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                <span>Processing...</span>
-              </>
-            ) : isHardDelete ? (
-              <>
-                <Trash2 className="w-3.5 h-3.5" />
-                <span>Permanently Delete</span>
-              </>
-            ) : (
-              <>
-                <Archive className="w-3.5 h-3.5" />
-                <span>Archive Student</span>
-              </>
-            )}
-          </button>
+          {isHardDelete ? (
+            <HoldToConfirmButton
+              onConfirm={handleConfirm}
+              disabled={isSubmitting || !canHardDelete}
+              holdDurationMs={1200}
+              label="Hold to Permanently Delete"
+              confirmingLabel="Purging Record..."
+              className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-lg font-medium shadow-xs bg-rose-600 hover:bg-rose-700 text-white disabled:opacity-40 disabled:cursor-not-allowed"
+              progressClassName="bg-rose-950/40"
+            >
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  <span>Processing...</span>
+                </>
+              ) : (
+                <>
+                  <Trash2 className="w-3.5 h-3.5" />
+                  <span>Hold to Permanently Delete</span>
+                </>
+              )}
+            </HoldToConfirmButton>
+          ) : (
+            <button
+              type="button"
+              onClick={handleConfirm}
+              disabled={isSubmitting}
+              className="tap-target inline-flex items-center gap-1.5 px-4 py-1.5 rounded-lg font-medium shadow-xs cursor-pointer bg-amber-600 hover:bg-amber-700 text-white disabled:opacity-40 disabled:cursor-not-allowed active:scale-[0.98] transition-all"
+            >
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  <span>Processing...</span>
+                </>
+              ) : (
+                <>
+                  <Archive className="w-3.5 h-3.5" />
+                  <span>Archive Student</span>
+                </>
+              )}
+            </button>
+          )}
         </div>
       </motion.div>
     </motion.div>

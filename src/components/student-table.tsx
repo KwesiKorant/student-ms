@@ -149,35 +149,64 @@ export function StudentTable({
 
   if (students.length === 0) {
     return (
-      <div className="w-full rounded-2xl border border-dashed border-zinc-300 dark:border-zinc-800 bg-white/40 dark:bg-zinc-900/30 p-12 text-center">
-        <TextReveal delay={0.06} className="w-10 h-10 mx-auto mb-3 rounded-xl bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-400">
-          <AlertCircle className="w-5 h-5" />
-        </TextReveal>
-        <TextReveal as="h3" delay={0.16} className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-          No matching records in registry
-        </TextReveal>
-        <TextReveal as="p" delay={0.28} className="text-xs text-zinc-500 dark:text-zinc-400 mt-1 max-w-sm mx-auto">
-          No student profiles match your search or filter configuration. Reset filters or enroll a new candidate.
-        </TextReveal>
-        <TextReveal delay={0.40} className="mt-4 flex flex-wrap items-center justify-center gap-2">
-          {hasActiveFilters && onResetFilters && (
+      <div className="relative w-full rounded-xl glass-card overflow-hidden p-8 sm:p-14 text-center">
+        {/* Ghost Table Wireframe Silhouette (Preserves spatial bounding volume) */}
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 pointer-events-none opacity-[0.04] dark:opacity-[0.06] select-none overflow-hidden"
+        >
+          <div className="w-full h-11 border-b border-current flex items-center px-4 gap-4">
+            <div className="w-20 h-3 bg-current rounded" />
+            <div className="w-36 h-3 bg-current rounded" />
+            <div className="w-28 h-3 bg-current rounded" />
+            <div className="w-16 h-3 bg-current rounded" />
+            <div className="w-16 h-3 bg-current rounded ml-auto" />
+          </div>
+          {[1, 2, 3, 4, 5, 6].map((i) => (
+            <div key={i} className="w-full h-14 border-b border-current flex items-center px-4 gap-4">
+              <div className="w-8 h-8 rounded-full bg-current shrink-0" />
+              <div className="space-y-1.5 flex-1 max-w-xs">
+                <div className="w-28 h-3 bg-current rounded" />
+                <div className="w-40 h-2 bg-current rounded" />
+              </div>
+              <div className="w-24 h-5 bg-current rounded-full" />
+              <div className="w-16 h-3 bg-current rounded" />
+              <div className="w-14 h-5 bg-current rounded ml-auto" />
+            </div>
+          ))}
+        </div>
+
+        {/* Informative Guidance & Primary Action */}
+        <div className="relative z-10 max-w-sm mx-auto">
+          <TextReveal delay={0.06} className="w-10 h-10 mx-auto mb-3 rounded-xl bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-400 shadow-xs">
+            <AlertCircle className="w-5 h-5" />
+          </TextReveal>
+          <TextReveal as="h3" delay={0.16} className="text-sm font-semibold text-zinc-900 dark:text-zinc-100 font-display">
+            No matching records in registry
+          </TextReveal>
+          <TextReveal as="p" delay={0.28} className="text-xs text-zinc-500 dark:text-zinc-400 mt-1 leading-relaxed">
+            No student profiles match your search or filter configuration. Reset filters or enroll a new candidate.
+          </TextReveal>
+          <TextReveal delay={0.40} className="mt-5 flex flex-wrap items-center justify-center gap-2.5">
+            {hasActiveFilters && onResetFilters && (
+              <button
+                type="button"
+                onClick={onResetFilters}
+                className="tap-target inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-medium rounded-lg border border-zinc-200 dark:border-white/10 bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-700 transition-colors cursor-pointer"
+              >
+                Clear All Filters
+              </button>
+            )}
             <button
               type="button"
-              onClick={onResetFilters}
-              className="tap-target inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg border border-zinc-200 dark:border-white/10 bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-700 transition-colors cursor-pointer"
+              onClick={onOpenEnrollModal}
+              className="tap-target inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-zinc-900 hover:bg-zinc-800 dark:bg-zinc-100 dark:hover:bg-zinc-200 text-white dark:text-zinc-900 transition-colors shadow-xs cursor-pointer active:scale-[0.98]"
             >
-              Clear All Filters
+              <GraduationCap className="w-3.5 h-3.5" />
+              Enroll New Student
             </button>
-          )}
-          <button
-            type="button"
-            onClick={onOpenEnrollModal}
-            className="tap-target inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg bg-zinc-900 hover:bg-zinc-800 dark:bg-zinc-100 dark:hover:bg-zinc-200 text-white dark:text-zinc-900 transition-colors cursor-pointer"
-          >
-            <GraduationCap className="w-3.5 h-3.5" />
-            Enroll New Student
-          </button>
-        </TextReveal>
+          </TextReveal>
+        </div>
       </div>
     );
   }

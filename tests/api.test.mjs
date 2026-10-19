@@ -5,7 +5,7 @@ const BASE_URL = process.env.TEST_BASE_URL || "http://localhost:3000";
 
 async function isServerUp(url) {
   try {
-    const res = await fetch(`${url}/api/v1/departments`, { signal: AbortSignal.timeout(2000) });
+    const res = await fetch(`${url}/api/v1/departments`, { signal: AbortSignal.timeout(8000) });
     return res.status === 200;
   } catch {
     return false;
@@ -355,6 +355,8 @@ async function runTests() {
     assert(pageRes.headers.get("x-frame-options") === "DENY", "X-Frame-Options: DENY present");
     assert(pageRes.headers.get("referrer-policy") === "strict-origin-when-cross-origin", "Referrer-Policy present");
     assert(!pageRes.headers.get("x-powered-by"), "X-Powered-By header suppressed");
+    assert(deptRes.headers.get("cache-control")?.includes("no-store"), "API Cache-Control: private, no-store present");
+    assert(deptRes.headers.get("pragma") === "no-cache", "API Pragma: no-cache present");
 
   } catch (err) {
     console.error("Test execution exception:", err);

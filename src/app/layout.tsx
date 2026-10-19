@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { ToastProvider } from "@/components/ui/toast";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryProvider } from "@/components/query-provider";
+import { OfflineIndicator } from "@/components/ui/offline-indicator";
 import "./globals.css";
 
 const chillax = localFont({
@@ -62,7 +63,10 @@ export default function RootLayout({
         >
           <QueryProvider>
             <TooltipProvider>
-              <ToastProvider>{children}</ToastProvider>
+              <ToastProvider>
+                {children}
+                <OfflineIndicator />
+              </ToastProvider>
             </TooltipProvider>
           </QueryProvider>
         </ThemeProvider>

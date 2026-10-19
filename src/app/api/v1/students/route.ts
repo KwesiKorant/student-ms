@@ -91,18 +91,18 @@ export async function GET(req: NextRequest) {
       if (words.length > 1) {
         where.AND = words.map((w) => ({
           OR: [
-            { firstName: { contains: w } },
-            { lastName: { contains: w } },
-            { email: { contains: w } },
-            { studentId: { contains: w } },
+            { firstName: { contains: w, mode: "insensitive" } },
+            { lastName: { contains: w, mode: "insensitive" } },
+            { email: { contains: w, mode: "insensitive" } },
+            { studentId: { contains: w, mode: "insensitive" } },
           ],
         }));
       } else {
         where.OR = [
-          { firstName: { contains: term } },
-          { lastName: { contains: term } },
-          { email: { contains: term } },
-          { studentId: { contains: term } },
+          { firstName: { contains: term, mode: "insensitive" } },
+          { lastName: { contains: term, mode: "insensitive" } },
+          { email: { contains: term, mode: "insensitive" } },
+          { studentId: { contains: term, mode: "insensitive" } },
         ];
       }
     }

@@ -209,35 +209,33 @@ export async function DELETE(req: NextRequest, { params }: RouteParams) {
       );
     }
 
-    // Default: Soft Archival
-    const archived = await prisma.$transaction(async (tx) => {
-      const student = await tx.student.update({
+    // Default: Soft Archival (Single Round-Trip Pipelined Atomic Tuple Transaction)
+    const archivedAt = new Date();
+    const [archived] = await prisma.$transaction([
+      prisma.student.update({
         where: { id: existingStudent.id },
         data: {
           isArchived: true,
-          archivedAt: new Date(),
+          archivedAt,
         },
         include: {
           department: true,
         },
-      });
-
-      await tx.auditLog.create({
+      }),
+      prisma.auditLog.create({
         data: {
-          studentId: student.id,
+          studentId: existingStudent.id,
           action: "ARCHIVE",
           details: JSON.stringify({
             event: "Student record soft-archived",
-            studentId: student.studentId,
-            fullName: `${student.firstName} ${student.lastName}`,
-            archivedAt: student.archivedAt,
+            studentId: existingStudent.studentId,
+            fullName: `${existingStudent.firstName} ${existingStudent.lastName}`,
+            archivedAt: archivedAt.toISOString(),
           }),
           performedBy: auth.userId || "admin_registrar",
         },
-      });
-
-      return student;
-    });
+      }),
+    ]);
 
     return successResponse(archived, {
       message: `Student ${archived.firstName} ${archived.lastName} archived safely.`,

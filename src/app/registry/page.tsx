@@ -18,6 +18,7 @@ import { useSearchParams } from "next/navigation";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useStudentRealtime } from "@/hooks/use-student-realtime";
 import { Plus } from "lucide-react";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { AnimatePresence } from "motion/react";
 
 function EnrollUrlWatcher({ onOpen }: { onOpen: () => void }) {
@@ -431,7 +432,7 @@ export default function StudentManagementPortal() {
                   delay={0.22}
                   className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5 max-w-xl leading-relaxed"
                 >
-                  <span className="md:hidden font-mono">{metrics.total} students · {departments.length} departments</span>
+                  <span className="md:hidden font-mono"><AnimatedCounter value={metrics.total} /> students · {departments.length} departments</span>
                   <span className="hidden md:inline">Institutional academic records, departmental divisions, and lifecycle registry.</span>
                 </TextReveal>
               </div>
@@ -465,7 +466,7 @@ export default function StudentManagementPortal() {
                   <div className="px-2.5 py-1 rounded-md glass-card-subtle flex items-center gap-1.5 border border-zinc-200/60 dark:border-white/5 cursor-default select-none">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
                     <span className="text-zinc-400 text-[10px]">ACTIVE</span>
-                    <span className="font-semibold text-zinc-900 dark:text-zinc-100">{metrics.active}</span>
+                    <span className="font-semibold text-zinc-900 dark:text-zinc-100"><AnimatedCounter value={metrics.active} /></span>
                   </div>
                 </Tooltip>
 
@@ -476,7 +477,7 @@ export default function StudentManagementPortal() {
                 >
                   <div className="px-2.5 py-1 rounded-md glass-card-subtle flex items-center gap-1.5 border border-zinc-200/60 dark:border-white/5 cursor-default select-none">
                     <span className="text-zinc-400 text-[10px]">TOTAL</span>
-                    <span className="font-semibold text-zinc-900 dark:text-zinc-100">{metrics.total}</span>
+                    <span className="font-semibold text-zinc-900 dark:text-zinc-100"><AnimatedCounter value={metrics.total} /></span>
                   </div>
                 </Tooltip>
 
@@ -500,7 +501,7 @@ export default function StudentManagementPortal() {
                     <div className="px-2.5 py-1 rounded-md glass-card-subtle flex items-center gap-1.5 border border-amber-500/20 text-amber-600 dark:text-amber-400 cursor-default select-none">
                       <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
                       <span className="text-[10px]">ARCHIVED</span>
-                      <span className="font-semibold">{metrics.archived}</span>
+                      <span className="font-semibold"><AnimatedCounter value={metrics.archived} /></span>
                     </div>
                   </Tooltip>
                 )}

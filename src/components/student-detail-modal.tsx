@@ -296,9 +296,9 @@ export function StudentDetailModal({
                   </span>
                   <div className="w-full bg-zinc-200 dark:bg-zinc-800 h-1.5 rounded-full mt-1.5 overflow-hidden">
                     <div
-                      className="bg-emerald-500 h-full rounded-full"
+                      className="bg-emerald-500 h-full w-full rounded-full origin-left transition-transform duration-500 ease-out"
                       style={{
-                        width: `${Math.min(100, ((student.gpa || 0) / 4.0) * 100)}%`,
+                        transform: `scaleX(${Math.max(0, Math.min(1, (student.gpa || 0) / 4.0))})`,
                       }}
                     />
                   </div>

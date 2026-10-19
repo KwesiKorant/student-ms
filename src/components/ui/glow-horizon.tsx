@@ -159,35 +159,66 @@ export default function GlowHorizonFM({
             aria-hidden="true"
           >
             <defs>
-              <linearGradient id="mLightSkyHaze" x1="0" y1="0" x2="0" y2="1">
+              {/* Light Mode Gradients - Concentric with Horizon Arc (cx=500, cy=-1467, R_arc=1822) */}
+              <radialGradient
+                id="mLightSkyHaze"
+                cx="500"
+                cy="-1467"
+                r="1822"
+                gradientUnits="userSpaceOnUse"
+              >
                 <stop offset="0%" stopColor="#fafafa" stopOpacity="1" />
-                <stop offset="45%" stopColor="#fafafa" stopOpacity="0.9" />
-                <stop offset="75%" stopColor="#18181b" stopOpacity="0.25" />
-                <stop offset="92%" stopColor="#09090b" stopOpacity="0.55" />
+                <stop offset="75%" stopColor="#fafafa" stopOpacity="1" />
+                <stop offset="84%" stopColor="#fafafa" stopOpacity="0.92" />
+                <stop offset="91%" stopColor="#18181b" stopOpacity="0.22" />
+                <stop offset="96.5%" stopColor="#09090b" stopOpacity="0.55" />
                 <stop offset="100%" stopColor="#09090b" stopOpacity="0.95" />
-              </linearGradient>
+              </radialGradient>
 
-              <linearGradient id="mLightGroundGlow" x1="0" y1="0" x2="0" y2="1">
+              <radialGradient
+                id="mLightGroundGlow"
+                cx="500"
+                cy="-1467"
+                r="2040"
+                gradientUnits="userSpaceOnUse"
+              >
                 <stop offset="0%" stopColor="#09090b" stopOpacity="0.30" />
-                <stop offset="25%" stopColor="#18181b" stopOpacity="0.14" />
-                <stop offset="65%" stopColor="#71717a" stopOpacity="0.04" />
+                <stop offset="89.3%" stopColor="#09090b" stopOpacity="0.30" />
+                <stop offset="92%" stopColor="#18181b" stopOpacity="0.14" />
+                <stop offset="96%" stopColor="#71717a" stopOpacity="0.04" />
                 <stop offset="100%" stopColor="#fafafa" stopOpacity="0" />
-              </linearGradient>
+              </radialGradient>
 
-              <linearGradient id="mDarkSkyHaze" x1="0" y1="0" x2="0" y2="1">
+              {/* Dark Mode Gradients - Concentric with Horizon Arc (cx=500, cy=-1467, R_arc=1822) */}
+              <radialGradient
+                id="mDarkSkyHaze"
+                cx="500"
+                cy="-1467"
+                r="1822"
+                gradientUnits="userSpaceOnUse"
+              >
                 <stop offset="0%" stopColor="#050507" stopOpacity="1" />
-                <stop offset="50%" stopColor="#09090b" stopOpacity="0.95" />
-                <stop offset="80%" stopColor="#27272a" stopOpacity="0.35" />
-                <stop offset="96%" stopColor="#71717a" stopOpacity="0.65" />
+                <stop offset="75%" stopColor="#050507" stopOpacity="1" />
+                <stop offset="82%" stopColor="#09090b" stopOpacity="0.85" />
+                <stop offset="90%" stopColor="#27272a" stopOpacity="0.28" />
+                <stop offset="96%" stopColor="#71717a" stopOpacity="0.55" />
+                <stop offset="98.5%" stopColor="#ffffff" stopOpacity="0.80" />
                 <stop offset="100%" stopColor="#ffffff" stopOpacity="0.98" />
-              </linearGradient>
+              </radialGradient>
 
-              <linearGradient id="mDarkGroundGlow" x1="0" y1="0" x2="0" y2="1">
+              <radialGradient
+                id="mDarkGroundGlow"
+                cx="500"
+                cy="-1467"
+                r="2040"
+                gradientUnits="userSpaceOnUse"
+              >
                 <stop offset="0%" stopColor="#ffffff" stopOpacity="0.32" />
-                <stop offset="20%" stopColor="#e4e4e7" stopOpacity="0.15" />
-                <stop offset="55%" stopColor="#71717a" stopOpacity="0.05" />
+                <stop offset="89.3%" stopColor="#ffffff" stopOpacity="0.32" />
+                <stop offset="92%" stopColor="#e4e4e7" stopOpacity="0.16" />
+                <stop offset="96%" stopColor="#71717a" stopOpacity="0.05" />
                 <stop offset="100%" stopColor="#050507" stopOpacity="0" />
-              </linearGradient>
+              </radialGradient>
             </defs>
 
             {isDark ? (
