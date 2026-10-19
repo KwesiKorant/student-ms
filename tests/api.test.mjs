@@ -14,7 +14,7 @@ async function isServerUp(url) {
 
 async function runTests() {
   console.log("==========================================================");
-  console.log("   ARCFIELD SYSTEMS — AUSPIFY TASK 2 TEST SUITE          ");
+  console.log("   SMS — STUDENT MANAGEMENT SYSTEM TEST SUITE             ");
   console.log("   Validating AC-1 through AC-8 & Security Controls       ");
   console.log(`   Target Server: ${BASE_URL}                            `);
   console.log("==========================================================\n");
@@ -292,7 +292,7 @@ async function runTests() {
     const pageRes = await fetch(`${BASE_URL}/`);
     const pageHtml = await pageRes.text();
     assert(pageRes.status === 200, "Landing page returns status 200");
-    assert(pageHtml.includes("ARCFIELD"), "Landing page contains 'ARCFIELD' brand");
+    assert(pageHtml.includes("SMS"), "Landing page contains 'SMS' brand");
 
     // Login screen render
     const loginRes = await fetch(`${BASE_URL}/login`);

@@ -8,6 +8,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { EdgeCornerFrame } from "@/components/ui/edge-corner-frame";
 import { TextReveal } from "@/components/ui/text-reveal";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { Logo } from "@/components/ui/logo";
 import { getSafeRedirectUrl } from "@/lib/utils";
 import {
   Lock,
@@ -45,13 +46,13 @@ function LoginFormContent() {
   const handleQuickDemoSignIn = async () => {
     setIsDemoLoading(true);
     setErrorMessage(null);
-    setEmail("registrar@arcfield.systems");
-    setPassword("ArcfieldAdmin2026!");
+    setEmail("registrar@sms.edu");
+    setPassword("SmsAdmin2026!");
 
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
-        email: "registrar@arcfield.systems",
-        password: "ArcfieldAdmin2026!",
+        email: "registrar@sms.edu",
+        password: "SmsAdmin2026!",
       });
 
       if (error) {
@@ -152,19 +153,11 @@ function LoginFormContent() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <Link
             href="/"
-            className="flex items-center gap-2.5 group hover:opacity-85 transition-opacity"
-            title="Arcfield Systems"
+            className="flex items-center hover:opacity-80 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 dark:focus-visible:ring-zinc-600 rounded-sm"
+            title="SMS"
+            aria-label="SMS Home"
           >
-            <div className="w-7 h-7 rounded-md bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-950 font-mono font-bold text-xs flex items-center justify-center shadow-xs">
-              A
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="font-display font-bold text-xs tracking-tight text-zinc-900 dark:text-white uppercase">
-                ARCFIELD
-              </span>
-              <span className="text-zinc-300 dark:text-zinc-800">/</span>
-              <span className="text-xs text-zinc-500 font-medium">Gateway</span>
-            </div>
+            <Logo className="w-7 h-7 text-zinc-950 dark:text-zinc-50" />
           </Link>
 
           <div className="flex items-center gap-2">
@@ -327,7 +320,7 @@ function LoginFormContent() {
                         autoComplete="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        placeholder="name@arcfield.systems"
+                        placeholder="name@sms.edu"
                         required
                         className="w-full pl-8 pr-3 py-2 text-xs rounded-lg bg-zinc-100/60 dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800 focus:outline-none focus:border-zinc-500 dark:focus:border-zinc-400 transition-colors text-zinc-900 dark:text-zinc-100"
                         onFocus={() => setIsFocused(true)}

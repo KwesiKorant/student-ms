@@ -381,7 +381,7 @@ export default function StudentManagementPortal() {
       const timestamp = new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19);
 
       link.setAttribute("href", url);
-      link.setAttribute("download", `arcfield_students_${timestamp}.csv`);
+      link.setAttribute("download", `sms_students_${timestamp}.csv`);
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -613,7 +613,7 @@ export default function StudentManagementPortal() {
 
           {/* Minimalist Institutional Footer */}
           <footer className="pt-8 pb-4 border-t border-zinc-200/60 dark:border-white/5 flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] font-mono text-zinc-400 dark:text-zinc-500">
-            <span>ARCFIELD SYSTEMS · ACADEMIC REGISTRY</span>
+            <span>SMS · ACADEMIC REGISTRY</span>
             <span>SYSTEM ENCRYPTED · PARALLEL PERSISTENCE · REALTIME CDC</span>
           </footer>
         </main>

@@ -1,4 +1,4 @@
--- Arcfield Systems — Supabase Row Level Security (RLS) & Realtime Publication Migration
+-- SMS — Supabase Row Level Security (RLS) & Realtime Publication Migration
 -- Enables table RLS, defines role-based access for Departments/Students/AuditLogs,
 -- installs an immutable append-only trigger for AuditLogs, and registers Students in realtime CDC.
 

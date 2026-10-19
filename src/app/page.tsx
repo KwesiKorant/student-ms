@@ -5,11 +5,12 @@ import Link from "next/link";
 import GlowHorizonFM from "@/components/ui/glow-horizon";
 import { AnimatedTitleFM } from "@/components/ui/glow-horizon-utils/animated-title-fm";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { Logo } from "@/components/ui/logo";
 
 export default function RootLandingPage() {
   const handleEnrollClick = React.useCallback(() => {
     try {
-      sessionStorage.setItem("arcfield_auto_enroll", "true");
+      sessionStorage.setItem("sms_auto_enroll", "true");
     } catch {}
   }, []);
 
@@ -21,15 +22,11 @@ export default function RootLandingPage() {
           {/* Left: Brand Identity */}
           <Link
             href="/"
-            className="flex items-center gap-2.5 group hover:opacity-85 transition-opacity"
-            title="Arcfield Systems"
+            className="flex items-center hover:opacity-80 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 dark:focus-visible:ring-zinc-600 rounded-sm"
+            title="SMS"
+            aria-label="SMS Home"
           >
-            <div className="w-7 h-7 rounded-md bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-950 font-mono font-bold text-xs flex items-center justify-center shadow-xs">
-              A
-            </div>
-            <span className="font-semibold text-xs tracking-tight text-zinc-900 dark:text-white uppercase">
-              ARCFIELD
-            </span>
+            <Logo className="w-7 h-7 text-zinc-950 dark:text-zinc-50" />
           </Link>
 
           {/* Right: Theme Controls */}

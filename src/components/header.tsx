@@ -8,6 +8,7 @@ import { Plus, LogOut, LogIn, ShieldCheck, User } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { AnimatePresence, motion } from "motion/react";
 import { Tooltip } from "@/components/ui/tooltip";
+import { Logo } from "@/components/ui/logo";
 
 interface HeaderProps {
   onOpenEnrollModal?: () => void;
@@ -94,20 +95,11 @@ export function Header({ onOpenEnrollModal, showEnrollButton = false }: HeaderPr
           {/* Left: Brand Identity with Link to Landing */}
           <Link
             href="/"
-            className="flex items-center gap-3 min-w-0 hover:opacity-85 transition-opacity"
+            aria-label="SMS Home"
+            title="SMS"
+            className="flex items-center hover:opacity-80 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 dark:focus-visible:ring-zinc-600 rounded-sm"
           >
-            <div className="w-7 h-7 rounded-md bg-zinc-900 dark:bg-zinc-100 flex items-center justify-center text-zinc-100 dark:text-zinc-900 font-mono font-bold text-xs shadow-xs tracking-tighter">
-              A
-            </div>
-            <div className="flex items-center gap-2 min-w-0">
-              <span className="font-display font-bold text-xs tracking-tight text-zinc-900 dark:text-zinc-100">
-                ARCFIELD
-              </span>
-              <span className="text-zinc-300 dark:text-zinc-700">/</span>
-              <span className="text-xs text-zinc-500 dark:text-zinc-400 font-medium">
-                Registry
-              </span>
-            </div>
+            <Logo className="w-7 h-7 text-zinc-950 dark:text-zinc-50" />
           </Link>
 
           {/* Center spacer / clean breathing room */}

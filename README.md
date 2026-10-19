@@ -1,4 +1,4 @@
-# Arcfield Systems — Student Management System (SMS)
+# SMS — Student Management System
 ### Auspify Technologies Full-Stack Internship · Task 2
 
 > **🌐 Live Production Deployment:** **[https://sms-nk.vercel.app](https://sms-nk.vercel.app)**
@@ -7,7 +7,7 @@
 > • **Student Directory Registry:** [https://sms-nk.vercel.app/registry](https://sms-nk.vercel.app/registry)  
 > • **Institutional Auth Portal:** [https://sms-nk.vercel.app/login](https://sms-nk.vercel.app/login)
 
-An institutional academic records registry and student lifecycle management portal engineered with Arcfield Systems' zero-trust security standards, W3C accessibility compliance, and 60/120 FPS compositor motion standards.
+An institutional academic records registry and student lifecycle management portal engineered with zero-trust security standards, W3C accessibility compliance, and 60/120 FPS compositor motion standards.
 
 ---
 
@@ -64,7 +64,7 @@ Open **[http://localhost:3000](http://localhost:3000)** in your browser. The app
 ## 📖 How to Use the Application
 
 ### 1. Application Routes & Entry
-- **`/` (Root Landing Page):** Institutional hero presentation featuring Arcfield Systems brand horizon, real-time feature overview, and rapid entry points to both the directory and direct student enrollment.
+- **`/` (Root Landing Page):** Institutional hero presentation featuring SMS brand horizon, real-time feature overview, and rapid entry points to both the directory and direct student enrollment.
 - **`/registry` (Student Directory Portal):** Full academic records database, live census strip, search and filter toolbar, tabular registry, and modal inspector.
 
 ### 2. Directory Navigation & Census Strip
@@ -132,7 +132,7 @@ Open **[http://localhost:3000](http://localhost:3000)** in your browser. The app
 
 ### 8. Administrative CSV Export
 - Click the **Download icon** (`Export Registry CSV`) in the toolbar.
-- The system queries up to 1,000 active filtered records and generates an RFC-4180 standard CSV file with UTF-8 BOM encoding (`\uFEFF`) formatted as `arcfield-student-registry-YYYY-MM-DD.csv` for seamless Excel / Google Sheets compatibility.
+- The system queries up to 1,000 active filtered records and generates an RFC-4180 standard CSV file with UTF-8 BOM encoding (`\uFEFF`) formatted as `sms_students_YYYY-MM-DD.csv` for seamless Excel / Google Sheets compatibility.
 
 ### 9. Theme Switching
 - Click the **Sun / Moon icon** in the top navigation bar to toggle between **Light**, **Dark**, and **System** themes. Background surfaces adapt seamlessly between `zinc-50` and `zinc-950` with high contrast.
@@ -271,5 +271,5 @@ npm run db:reset
 ---
 
 ### Author
-**Arcfield Systems** · Auspify Technologies Full-Stack Internship Task 2
+**SMS** · Auspify Technologies Full-Stack Internship Task 2
 All code committed, tested, and maintained under version control.
